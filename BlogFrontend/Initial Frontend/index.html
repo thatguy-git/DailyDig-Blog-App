@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=TASA+Explorer:wght@400..800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Asimovian&display=swap" rel="stylesheet">
+</head>
+<body class="bg-zinc-200 text-black" style="font-family: TASA Explorer", sans-serif;>
+    <div class="container-1 flex bg-zinc-400/30 h-24 sticky top-0  backdrop-blur-md shadow z-50 max-md:h-20">
+        <div class="flex flex-row justify-between items-center p-4 w-full max-md:px-0">
+            <img src="Images/blog_logo-removebg-preview.png" alt="Sample Image" class="w-32 max-md:w-24 ">
+            <div class="flex flex-row space-x-4">
+                <button id="mobile-menu-button" class="max-md:block md:hidden p-4 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                <a href="about.html" class="p-8 hover:text-teal-500 max-md:hidden">About Us</a>
+                <a href="contact.html" class="p-8 hover:text-teal-500 max-md:hidden">Contact Us</a>
+                <a href="blog.html" class="p-8 hover:text-teal-500 max-md:hidden">Blog</a>
+                <a href="signup.html" class="p-8 hover:text-teal-500 max-md:hidden">Sign Up</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-2 flex flex-row max-md:flex-col 100vh px-24 py-24 max-md:py-4 max-md:px-2 justify-between items-center max-md:mb-12">
+        <div class="hero text mr-8 max-md:w-full max-md:m-2 max-md:text-center">
+            <h1 class="text-5xl font-bold mb-4 max-md:text-4xl">Unearth a New Story Every Day.</h1>
+            <p class="mb-8 text-lg">From forgotten facts to future trends, we dig deep to bring you the stories you won't find anywhere else.</p>
+            <a href="login.html"><button class="bg-teal-800 text-white px-4 py-2 rounded-lg hover:bg-teal-500 w-32 h-16 max-md:h-auto max-md:w-auto max-md:py-4 max-md:px-10 max-md:w-1/2">Get Started</button></a>
+        </div>
+        <div class="hero image ml-8 max-md:w-full max-md:m-2 max-md:order-first">
+            <img src="Images/blog banner.png" alt="Hero Image" class="rounded-lg shadow-lg">
+        </div>
+    </div>
+
+    <div class="container-3 flex flex-col items-center px-24 max-md:px-4 my-8 max-md:my-4">
+        <p class="text-4xl font-bold text-center underline underline-offset-8 decoration-teal-500  max-md:underline-offset-4 decoration-2 max-md:text-3xl">Featured Stories</p>
+        <div class="grid grid-cols-3 gap-16 max-md:flex max-md:flex-col my-8 max-md:my-4 place-items-center max-md:gap-2">
+            <div class="card bg-base-100 w-96 max-md:w-auto hover:shadow-lg rounded-lg max-md:my-4 max-md:shadow-lg">
+                <figure class="overflow-hidden rounded-lg w-full h-64 max-md:h-48">
+                    <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp" class="rounded-lg w-full h-full object-cover 
+                    transform transition-transform duration-500 ease-in-out
+                    hover:scale-125" alt="Shoes" />
+                </figure>
+                <div class="card-body p-4 max-md:h-auto max-md:px-2">
+                    <h2 class="card-title mt-2 max-sm:mt-0 max-md:px-0 max-md:font-bold">Card Title</h2>
+                    <p class="my-2 max-md:tracking-tighter max-md:my-0">A card component has a figure, a body part, and inside body there are title and actions parts</p>
+                    <div class="card-actions justify-end">
+                        <button class="btn btn-primary bg-teal-800 p-2 rounded-lg text-white hover:bg-teal-500 max-md:hidden">Read Now</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card bg-base-100 w-96 max-md:w-auto hover:shadow-lg rounded-lg max-md:my-0 max-md:shadow-lg">
+                <figure class="overflow-hidden rounded-lg w-full h-64 max-md:h-48">
+                    <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp" class="rounded-lg w-full h-full object-cover 
+                                transform transition-transform duration-500 ease-in-out
+                                hover:scale-125" alt="Shoes" />
+                </figure>
+                <div class="card-body p-4 max-md:h-auto max-md:px-2">
+                    <h2 class="card-title mt-2 max-sm:mt-0 max-md:px-0 max-md:font-bold">Card Title</h2>
+                    <p class="my-2 max-md:tracking-tighter max-md:my-0">A card component has a figure, a body part, and inside body
+                        there are title and actions parts</p>
+                    <div class="card-actions justify-end">
+                        <button class="btn btn-primary bg-teal-800 p-2 rounded-lg text-white hover:bg-teal-500 max-md:hidden">Read
+                            Now</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card bg-base-100 w-96 max-md:w-auto hover:shadow-lg rounded-lg max-md:my-4 max-md:shadow-lg">
+                <figure class="overflow-hidden rounded-lg w-full h-64 max-md:h-48">
+                    <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp" class="rounded-lg w-full h-full object-cover 
+                                transform transition-transform duration-500 ease-in-out
+                                hover:scale-125" alt="Shoes" />
+                </figure>
+                <div class="card-body p-4 max-md:h-auto max-md:px-2">
+                    <h2 class="card-title mt-2 max-sm:mt-0 max-md:px-0 max-md:font-bold">Card Title</h2>
+                    <p class="my-2 max-md:tracking-tighter max-md:my-0">A card component has a figure, a body part, and inside body
+                        there are title and actions parts</p>
+                    <div class="card-actions justify-end">
+                        <button class="btn btn-primary bg-teal-800 p-2 rounded-lg text-white hover:bg-teal-500 max-md:hidden">Read
+                            Now</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card bg-base-100 w-96 max-md:w-auto hover:shadow-lg rounded-lg max-md:my-4 max-md:shadow-lg">
+                <figure class="overflow-hidden rounded-lg w-full h-64 max-md:h-48">
+                    <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp" class="rounded-lg w-full h-full object-cover 
+                                transform transition-transform duration-500 ease-in-out
+                                hover:scale-125" alt="Shoes" />
+                </figure>
+                <div class="card-body p-4 max-md:h-auto max-md:px-2">
+                    <h2 class="card-title mt-2 max-sm:mt-0 max-md:px-0 max-md:font-bold">Card Title</h2>
+                    <p class="my-2 max-md:tracking-tighter max-md:my-0">A card component has a figure, a body part, and inside body
+                        there are title and actions parts</p>
+                    <div class="card-actions justify-end">
+                        <button class="btn btn-primary bg-teal-800 p-2 rounded-lg text-white hover:bg-teal-500 max-md:hidden">Read
+                            Now</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card bg-base-100 w-96 max-md:w-auto hover:shadow-lg rounded-lg max-md:my-4 max-md:shadow-lg">
+                <figure class="overflow-hidden rounded-lg w-full h-64 max-md:h-48">
+                    <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp" class="rounded-lg w-full h-full object-cover 
+                                transform transition-transform duration-500 ease-in-out
+                                hover:scale-125" alt="Shoes" />
+                </figure>
+                <div class="card-body p-4 max-md:h-auto max-ssmd:px-2">
+                    <h2 class="card-title mt-2 max-sm:mt-0 max-md:px-0 max-md:font-bold">Card Title</h2>
+                    <p class="my-2 max-md:tracking-tighter max-md:my-0">A card component has a figure, a body part, and inside body
+                        there are title and actions parts</p>
+                    <div class="card-actions justify-end">
+                        <button class="btn btn-primary bg-teal-800 p-2 rounded-lg text-white hover:bg-teal-500 max-md:hidden">Read
+                            Now</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card bg-base-100 w-96 max-md:w-auto hover:shadow-lg rounded-lg max-md:my-4 max-md:shadow-lg">
+                <figure class="overflow-hidden rounded-lg w-full h-64 max-md:h-48">
+                    <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp" class="rounded-lg w-full h-full object-cover 
+                                transform transition-transform duration-500 ease-in-out
+                                hover:scale-125" alt="Shoes" />
+                </figure>
+                <div class="card-body p-4 max-md:h-auto max-md:px-2">
+                    <h2 class="card-title mt-2 max-sm:mt-0 max-md:px-0 max-md:font-bold">Card Title</h2>
+                    <p class="my-2 max-md:tracking-tighter max-md:my-0">A card component has a figure, a body part, and inside body
+                        there are title and actions parts</p>
+                    <div class="card-actions justify-end">
+                        <button class="btn btn-primary bg-teal-800 p-2 rounded-lg text-white hover:bg-teal-500 max-md:hidden">Read
+                            Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-4 mt-16 max-md:mt-2 max-md:px-4">
+        <div class="mission">
+            <p class="text-4xl font-bold text-center max-md:text-2xl  decoration-teal-500 decoration-2 underline underline-offset-8">Our Mission</p>
+            <p class="text-lg text-center mx-24 my-8 max-md:mx-2 max-md:my-4 max-md:tracking-tight max-md:text-left">
+            At The Daily Dig, we believe that every day holds a new discovery. In a world full of noise, we're here to do the hard
+            work of digging through the surface to unearth the stories you won't find anywhere else. From forgotten history and
+            scientific breakthroughs to fascinating cultural quirks and emerging trends, our mission is to deliver a fresh dose of
+            insight and inspiration with every post.
+            
+            This blog is a home for the curious, the explorers, and the lifelong learners. It's a place where we celebrate the joy
+            of finding something new and share it with a community that's just as excited to learn. So, welcome to the dig. Get
+            ready to explore.</p>
+        </div>
+    </div>
+
+    <div class="container-5 my-16 max-md:mb-0 max-md:px-2 border-t-2 border-teal-500 max-md:bg-zinc-400/30 max-md:backdrop-blur-md max-md:shadow-lg max-md:border-none ">
+        <footer class="bg-base-200 text-base-content p-10 max-md:p-4">
+            <div class="grid grid-cols-1 max-md:flex max-md:flex-row sm:grid-cols-2 lg:grid-cols-4 gap-8 max-md:gap-2 my-8">
+                <!-- Logo + Description -->
+                <aside class="max-md:hidden">
+                    <img src="Images/blog_logo-removebg-preview.png" alt="Sample Image" class="w-32 ">
+                    <p class="font-medium ">
+                        THE DAILY DIG.<br />
+                        
+                    </p>
+                </aside>
+
+                <!-- Services -->
+                <nav class="flex flex-col space-y-2 px-12 max-md:px-0 max-sm:text-center max-md:mx-auto">
+                    <h6 class="footer-title underline underline-offset-8 max-md:underline-offset-4 decoration-teal-500 decoration-1  max-md:tracking-tighter">SERVICES</h6>
+                    <a class="hover:text-teal-800 max-md:tracking-tighter">Branding</a>
+                    <a class="hover:text-teal-800 max-md:tracking-tighter">Design</a>
+                    <a class="hover:text-teal-800 max-md:tracking-tighter">Marketing</a>
+                    <a class="hover:text-teal-800 max-md:tracking-tighter">Advertisement</a>
+                </nav>
+
+                <!-- Company -->
+                <nav class="flex flex-col space-y-2 px-12 max-md:px-0 max-sm:text-center max-md:mx-auto">
+                    <h6 class="footer-title underline underline-offset-8 max-md:underline-offset-4 decoration-teal-500 decoration-1  max-md:tracking-tighter">COMPANY</h6>
+                    <a class="hover:text-teal-800 max-md:tracking-tighter">About us</a>
+                    <a class="hover:text-teal-800 max-md:tracking-tighter">Contact</a>
+                    <a class="hover:text-teal-800 max-md:tracking-tighter">Jobs</a>
+                    <a class="hover:text-teal-800 max-md:tracking-tighter">Press kit</a>
+                </nav>
+
+                <!-- Legal -->
+                <nav class="flex flex-col space-y-2 px-12 max-md:px-0 max-sm:text-center max-md:mx-auto">
+                    <h6 class="footer-title underline underline-offset-8 max-md:underline-offset-4 decoration-teal-500 decoration-1  max-md:tracking-tighter">LEGAL</h6>
+                    <a class="hover:text-teal-800 max-md:tracking-tighter">Terms of use</a>
+                    <a class="hover:text-teal-800 max-md:tracking-tighter">Privacy policy</a>
+                    <a class="hover:text-teal-800 max-md:tracking-tighter">Cookie policy</a>
+                </nav>
+            </div>
+            <div class="text-center">
+                <p>Copyright © 2025 - All right reserved by The Daily Dig</p>
+            </div>
+        </footer>
+    </div>
+
+                
+            </body>
+            </html>
