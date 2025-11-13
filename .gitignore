@@ -5,8 +5,6 @@
 node_modules/
 
 # ===================================================================
-# Secrets & Environment Variables
-# NEVER commit these. They contain API keys and passwords.
 # ===================================================================
 .env
 .env.local
@@ -16,8 +14,6 @@ node_modules/
 !.env.example
 
 # ===================================================================
-# Build & Output Folders
-# Ignore compiled code and build output (e.g., from Vite or backend)
 # ===================================================================
 dist/
 build/
@@ -31,10 +27,9 @@ yarn-debug.log*
 yarn-error.log*
 
 # ===================================================================
-# IDE & Editor Directories
 # ===================================================================
 .vscode/
-.idea/
+
 
 # ===================================================================
 # OS Files
