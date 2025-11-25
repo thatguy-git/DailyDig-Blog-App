@@ -1,5 +1,6 @@
-import express from "express";
-import { authMiddleware } from "../middleware/authMiddleware.js";
+import express from 'express';
+import { authMiddleware } from '../middleware/authMiddleware.js';
+import { uploadPostImage } from '../middleware/uploadMiddleware.js';
 import {
     getPosts,
     getPost,
@@ -7,18 +8,24 @@ import {
     updatePost,
     deletePost,
     getUserPosts,
-    likePost
-} from "../controller/postController.js";
+    likePost,
+    searchPosts,
+    getPopularPosts,
+    getRelatedPosts,
+} from '../controller/postController.js';
 
 export const router = express.Router();
 
 // Public routes
-router.get("/", getPosts);
-router.get("/:id", getPost);
+router.get('/', getPosts);
+router.get('/search', searchPosts);
+router.get('/popular', getPopularPosts);
+router.get('/related/:id', getRelatedPosts);
+router.get('/:id', getPost);
 
 // Protected routes
-router.post("/", authMiddleware, createPost);
-router.put("/:id", authMiddleware, updatePost);
-router.delete("/:id", authMiddleware, deletePost);
-router.get("/user/posts", authMiddleware, getUserPosts);
-router.post("/:id/like", authMiddleware, likePost);
+router.post('/', authMiddleware, uploadPostImage.single('image'), createPost);
+router.put('/:id', authMiddleware, updatePost);
+router.delete('/:id', authMiddleware, deletePost);
+router.get('/user/posts', authMiddleware, getUserPosts);
+router.post('/:id/like', authMiddleware, likePost);

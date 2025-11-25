@@ -8,7 +8,7 @@ import { transporter } from '../config/mailer.js';
 export const createUser = async (req, res) => {
     try {
         console.log('Request body:', req.body); // Debug log
-        const { email, password, ...rest } = req.body;
+        const { email, password, name } = req.body;
         // checking if email already exists
         const userExists = await User.findOne({ email });
         if (userExists) {
@@ -19,11 +19,42 @@ export const createUser = async (req, res) => {
         const userData = new User({
             email,
             password: trimmedPassword,
+            name,
+            username: name,
             isVerified: false,
-            ...rest,
         });
         const user = await userData.save();
         console.log('User saved:', user); // Debug log
+
+        // Send email verification OTP
+        const otp = generateOTP();
+        const expirationTime = Date.now() + 600000; // 10 mins from generation time
+        user.emailVerificationOTP = otp;
+        user.emailOTPExpiration = expirationTime;
+        await user.save();
+        console.log(
+            'Generated email verification OTP for',
+            user.email,
+            ':',
+            otp
+        );
+
+        try {
+            const mailDetails = {
+                from: process.env.EMAIL_USER,
+                to: user.email,
+                subject: 'Email Verification OTP',
+                text: `Your Email Verification OTP is: ${otp}. It expires in 10 mins`,
+            };
+            await transporter.sendMail(mailDetails);
+            console.log(
+                'Email verification OTP sent successfully to:',
+                user.email
+            );
+        } catch (error) {
+            console.error('Error sending email verification OTP:', error);
+            // Note: Not returning error here to avoid blocking signup, but log it
+        }
 
         return res.status(201).json({
             message: 'User registered successfully. Please verify your email.',
@@ -70,11 +101,15 @@ export const loginUser = async (req, res) => {
             if (passwordMatch) {
                 console.log('Password matched'); // Debug log
                 const token = await generateToken(user._id);
-                return res.status(201).json({
+                return res.status(200).json({
+                    message: 'Login successful',
                     user: {
-                        message: 'User Logged in successfully',
                         id: user._id,
                         email: user.email,
+                        role: user.role,
+                        profileImage: user.profileImage,
+                        name: user.name,
+                        username: user.username,
                     },
                     token,
                 });

@@ -7,6 +7,7 @@ import { router as postRoute } from './routes/postRoutes.js';
 import { router as adminRoutes } from './routes/adminRoutes.js';
 import commentRoute from './routes/commentRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
+import contactRoutes from './routes/contactRoutes.js';
 import cors from 'cors';
 import connectDB from './config/db.js';
 
@@ -17,7 +18,17 @@ console.log('Database connection initiated'); // Debug log
 const app = express();
 
 // Middleware setup
-app.use(cors());
+app.use(
+    cors({
+        origin: [
+            'http://localhost:3000',
+            'http://localhost:5173',
+            'http://localhost:5174',
+            'http://localhost:5000',
+        ],
+        credentials: true,
+    })
+);
 app.use(express.json());
 
 // Debug middleware
@@ -35,6 +46,7 @@ app.use('/api/posts', postRoute);
 app.use('/api/comments', commentRoute);
 app.use('/api/admin', adminRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/contact', contactRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -42,7 +54,7 @@ app.use((err, req, res, next) => {
     res.status(500).json({ error: 'Something went wrong!' });
 });
 
-const PORT = process.env.PORT || 6000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });

@@ -4,6 +4,17 @@ import {
     updateUserByAdmin,
     deleteUserByAdmin,
     createUserByAdmin,
+    getContactMessages,
+    getUnreadContactCount,
+    markContactAsRead,
+    deleteContactMessage,
+    getSystemHealth,
+    getSecurityLogs,
+    getMaintenanceInfo,
+    clearCache,
+    getAllPosts,
+    updatePostByAdmin,
+    deletePostByAdmin,
 } from '../controller/adminController.js';
 import {
     authMiddleware,
@@ -20,5 +31,22 @@ router.get('/users', getAllUsers);
 router.post('/users', createUserByAdmin);
 router.put('/users/:id', updateUserByAdmin);
 router.delete('/users/:id', deleteUserByAdmin);
+
+// Contact management routes
+router.get('/contacts', getContactMessages);
+router.get('/contacts/unread-count', getUnreadContactCount);
+router.put('/contacts/:contactId/read', markContactAsRead);
+router.delete('/contacts/:contactId', deleteContactMessage);
+
+// Post management routes
+router.get('/posts', getAllPosts);
+router.put('/posts/:id', updatePostByAdmin);
+router.delete('/posts/:id', deletePostByAdmin);
+
+// Security and Maintenance routes
+router.get('/system/health', getSystemHealth);
+router.get('/security/logs', getSecurityLogs);
+router.get('/maintenance/info', getMaintenanceInfo);
+router.post('/maintenance/clear-cache', clearCache);
 
 export { router };

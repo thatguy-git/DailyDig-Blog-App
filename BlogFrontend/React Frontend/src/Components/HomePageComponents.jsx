@@ -1,246 +1,957 @@
-import React from 'react'
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { BlogCardsA } from './BlogCards.jsx';
+import { useAuth } from '../constants/AuthContext.jsx';
 
 export const HeroSection = () => {
     return (
         <div>
             <div className="container-2 flex flex-row max-md:flex-col 100vh px-12 py-12 max-md:py-4 max-md:px-2 justify-between items-center max-md:mb-12">
                 <div className="hero text mr-8 max-md:w-full max-md:m-2 max-md:text-center">
-                    <h1 className="text-5xl font-bold mb-4 max-md:text-4xl">Unearth a New Story Every Day.</h1>
-                    <p className="mb-8 text-lg">From forgotten facts to future trends, we dig deep to bring you the stories you won't find anywhere else.</p>
-                    <a href="login.html"><button className="bg-teal-800 text-white px-4 py-2 rounded-lg hover:bg-teal-500 w-32 h-16 max-md:h-auto max-md:py-4 max-md:px-10 max-md:w-1/2">Get Started</button></a>
+                    <h1 className="text-5xl font-medium mb-4 max-md:text-4xl tracking-tighter">
+                        Unearth a New Story Every Day.
+                    </h1>
+                    <p className="mb-8 text-lg">
+                        From forgotten facts to future trends, we dig deep to
+                        bring you the stories you won't find anywhere else.
+                    </p>
+                    <Link to="/blog">
+                        <button className="bg-teal-800 text-white px-4 py-2 rounded-lg hover:bg-teal-500 w-32 h-12 max-md:h-auto max-md:py-4 max-md:px-10 max-md:w-1/2">
+                            Get Started
+                        </button>
+                    </Link>
                 </div>
                 <div className="hero image ml-8 max-md:w-full max-md:m-2 max-md:order-first">
-                    <img src="/blog banner.png" alt="Hero Image" className="rounded-lg shadow-lg" />
+                    <img
+                        src="/blog banner.png"
+                        alt="Hero Image"
+                        className="rounded-lg shadow-lg"
+                    />
                 </div>
             </div>
         </div>
-    )
+    );
 };
 
-export const HomePageCard =()=>{
-    return(
-        <div className="card bg-base-100 w-96 max-md:w-auto hover:shadow-lg rounded-lg max-md:my-4 max-md:shadow-lg">
-                <figure className="overflow-hidden rounded-lg w-full h-64 max-md:h-48">
-                    <img src="/blog banner.png" className="rounded-lg w-full h-full object-cover 
+export const HomePageCard = () => {
+    return (
+        <div className="card bg-base-100 w-full max-md:w-auto hover:shadow-lg rounded-lg max-md:my-4 max-md:shadow-lg">
+            <figure className="overflow-hidden rounded-lg w-full h-64 max-md:h-48">
+                <img
+                    src="/blog banner.png"
+                    className="rounded-lg w-full h-full object-cover 
                     transform transition-transform duration-500 ease-in-out
-                    hover:scale-125" alt="Shoes" />
-                </figure>
-                <div className="card-body p-4 max-md:h-auto max-md:px-2">
-                    <h2 className="card-title mt-2 max-sm:mt-0 max-md:px-0 max-md:font-bold font-bold">Card Title</h2>
-                    <p className="my-2 max-md:tracking-tighter max-md:my-0">A card component has a figure, a body part, and inside body there are title and actions parts</p>
-                    <div className="card-actions justify-end">
-                        <button className="btn btn-primary bg-teal-800 p-2 rounded-lg text-white hover:bg-teal-500 max-md:hidden">Read Now</button>
-                    </div>
+                    hover:scale-125"
+                    alt="Shoes"
+                />
+            </figure>
+            <div className="card-body p-4 max-md:h-auto max-md:px-2">
+                <h2 className="card-title mt-2 max-sm:mt-0 max-md:px-0 max-md:font-bold font-bold">
+                    Card Title
+                </h2>
+                <p className="my-2 max-md:tracking-tighter max-md:my-0">
+                    A card component has a figure, a body part, and inside body
+                    there are title and actions parts
+                </p>
+                <div className="card-actions justify-end">
+                    <button className="btn btn-primary bg-teal-800 p-2 rounded-lg text-white hover:bg-teal-500 max-md:hidden">
+                        Read Now
+                    </button>
                 </div>
             </div>
-    )
+        </div>
+    );
 };
 
 export const HomePageCardsSection = () => {
-    return(
-        <div className='container-3 flex flex-col items-center px-12 max-md:px-4 my-8 max-md:my-4'>
-            <p className="text-4xl font-bold text-center underline underline-offset-8 decoration-teal-500  max-md:underline-offset-4 decoration-2 max-md:text-3xl">Featured Stories</p>
-            <div className="grid grid-cols-3 gap-16 max-md:flex max-md:flex-col my-8 max-md:my-4 place-items-center max-md:gap-2">
-                <HomePageCard />
-                <HomePageCard />
-                <HomePageCard />
-                <HomePageCard />
-                <HomePageCard />
-                <HomePageCard />
+    const {
+        data: posts,
+        isLoading,
+        error,
+    } = useQuery({
+        queryKey: ['posts'],
+        queryFn: async () => {
+            const response = await fetch('http://localhost:3000/api/posts');
+            if (!response.ok) {
+                throw new Error('Failed to fetch posts');
+            }
+            const result = await response.json();
+            return result.data;
+        },
+    });
+
+    if (isLoading) {
+        return (
+            <div className="container-3 flex flex-col items-center px-12 max-md:px-4 my-8 max-md:my-4">
+                <p className="text-4xl font-medium tracking-tighter text-center underline underline-offset-8 decoration-teal-500 max-md:underline-offset-4 decoration-2 max-md:text-3xl">
+                    Featured Stories
+                </p>
+                <div className="flex justify-center items-center min-h-[200px]">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600"></div>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="container-3 flex flex-col items-center px-12 max-md:px-4 my-8 max-md:my-4">
+                <p className="text-4xl font-medium tracking-tighter text-center underline underline-offset-8 decoration-teal-500 max-md:underline-offset-4 decoration-2 max-md:text-3xl">
+                    Featured Stories
+                </p>
+                <p className="text-red-500 text-center">
+                    Error loading stories: {error.message}
+                </p>
+            </div>
+        );
+    }
+
+    return (
+        <div className="container-3 flex flex-col items-center px-12 max-md:px-4 my-8 max-md:my-4">
+            <p className="text-4xl font-medium tracking-tighter text-center underline underline-offset-8 decoration-teal-500 max-md:underline-offset-4 decoration-2 max-md:text-3xl">
+                Featured Stories
+            </p>
+            <div className="w-full my-8 max-md:my-4">
+                <BlogCardsA posts={posts?.slice(0, 9)} />
             </div>
         </div>
-        
-    )
+    );
 };
 
-export const Mission=()=>{
-    return(
+export const Mission = () => {
+    return (
         <div className="container-4 mt-16 max-md:mt-2 max-md:px-4">
             <div className="mission">
-                <p className="text-4xl font-bold text-center max-md:text-2xl  decoration-teal-500 decoration-2 underline underline-offset-8">Our Mission</p>
+                <p className="text-4xl font-medium text-center max-md:text-2xl  decoration-teal-500 decoration-2 underline underline-offset-8">
+                    Our Mission
+                </p>
                 <p className="text-lg text-center mx-24 my-8 max-md:mx-2 max-md:my-4 max-md:tracking-tight max-md:text-left">
-                At The Daily Dig, we believe that every day holds a new discovery. In a world full of noise, we're here to do the hard
-                work of digging through the surface to unearth the stories you won't find anywhere else. From forgotten history and
-                scientific breakthroughs to fascinating cultural quirks and emerging trends, our mission is to deliver a fresh dose of
-                insight and inspiration with every post.
-
-                This blog is a home for the curious, the explorers, and the lifelong learners. It's a place where we celebrate the joy
-                of finding something new and share it with a community that's just as excited to learn. So, welcome to the dig. Get
-                ready to explore.</p>
+                    At The Daily Dig, we believe that every day holds a new
+                    discovery. In a world full of noise, we're here to do the
+                    hard work of digging through the surface to unearth the
+                    stories you won't find anywhere else. From forgotten history
+                    and scientific breakthroughs to fascinating cultural quirks
+                    and emerging trends, our mission is to deliver a fresh dose
+                    of insight and inspiration with every post. This blog is a
+                    home for the curious, the explorers, and the lifelong
+                    learners. It's a place where we celebrate the joy of finding
+                    something new and share it with a community that's just as
+                    excited to learn. So, welcome to the dig. Get ready to
+                    explore.
+                </p>
             </div>
         </div>
-    )
+    );
 };
 
-export const AddStory=()=>{
-    return(
-        <>
-            <div className='container-2 flex flex-col items-center px-0 mx-0'>
-                <div className="flex flex-col items-center justify-center w-full gap-8 my-16">
-                    <div className="">
-                        <p className="text-4xl text font-bold max-md:text-2xl">Write Story</p>
+export const AddStory = () => {
+    const fileInputRef = useRef(null);
+
+    // 1. Update State to include image data
+    const [formData, setFormData] = useState({
+        title: '',
+        content: '',
+        selectedTags: [],
+        coverImage: null, // The actual file object
+        coverImagePreview: '', // The URL for display
+    });
+
+    const AVAILABLE_TAGS = [
+        'Technology',
+        'Health',
+        'Business',
+        'Science',
+        'Education',
+        'Sports',
+        'Lifestyle',
+        'Politics',
+    ];
+
+    // --- Handlers ---
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const toggleTag = (tag) => {
+        setFormData((prev) => {
+            if (prev.selectedTags.includes(tag)) {
+                return {
+                    ...prev,
+                    selectedTags: prev.selectedTags.filter((t) => t !== tag),
+                };
+            } else {
+                return { ...prev, selectedTags: [...prev.selectedTags, tag] };
+            }
+        });
+    };
+
+    // 2. Handle Image Selection
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            // Create a fake URL for immediate preview
+            const previewUrl = URL.createObjectURL(file);
+            setFormData((prev) => ({
+                ...prev,
+                coverImage: file,
+                coverImagePreview: previewUrl,
+            }));
+        }
+    };
+
+    // 3. Handle Image Removal
+    const removeImage = () => {
+        setFormData((prev) => ({
+            ...prev,
+            coverImage: null,
+            coverImagePreview: '',
+        }));
+        // Reset file input so selecting the same file works again if needed
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+    };
+
+    const triggerFileInput = () => {
+        fileInputRef.current.click();
+    };
+
+    return (
+        <div className="min-h-screen  py-12 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="p-8 sm:p-12">
+                    <div className="mb-10 border-b border-gray-100 pb-6">
+                        <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
+                            Write a New Story
+                        </h1>
                     </div>
-                    <div className="flex flex-col items-center justify-center max-sm:w-full">
-                        <input type="text" id="name" name="name" required
-                            className="w-full h-16 px-4 rounded-lg shadow-lg my-4 bg-slate-100 max-sm:w-72" placeholder="Title" />
-                        <label for="cars">Select Tag</label>
-                        <select id="cars" name="cars" className="w-96 h-16 px-4 rounded-lg shadow-lg my-2 bg-slate-100 max-sm:w-72">
-                            <option value="volvo">Sports</option>
-                            <option value="saab">Science&Technology</option>
-                            <option value="fiat">Business</option>
-                            <option value="audi">Education</option>
-                        </select>
-                        
+
+                    {/* --- 4. New Cover Image Section --- */}
+                    <div className="mb-8">
+                        <label className="block text-sm font-medium text-gray-700 mb-3">
+                            Cover Image (Optional)
+                        </label>
+
+                        {/* Hidden Input */}
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleImageChange}
+                            accept="image/*"
+                            className="hidden"
+                        />
+
+                        {formData.coverImagePreview ? (
+                            // PREVIEW STATE
+                            <div className="relative w-full h-64 md:h-80 rounded-xl overflow-hidden group">
+                                <img
+                                    src={formData.coverImagePreview}
+                                    alt="Cover Preview"
+                                    className="w-full h-full object-cover"
+                                />
+                                {/* Overlay with Remove Button */}
+                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <button
+                                        onClick={removeImage}
+                                        className="bg-red-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-600 transition shadow-lg flex items-center gap-2 hover:cursor-pointer"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="20"
+                                            height="20"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        >
+                                            <path d="M3 6h18" />
+                                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                            <path d="M8 6V4c0-1 1-1 1-1h6c1 0 1 1 1 1v2" />
+                                        </svg>
+                                        Remove Image
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            // UPLOAD STATE
+                            <div
+                                onClick={triggerFileInput}
+                                className="w-full h-32 border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center text-gray-500 cursor-pointer hover:border-teal-500 hover:text-teal-600 hover:bg-gray-50 transition-all duration-200"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="32"
+                                    height="32"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    className="mb-2"
+                                >
+                                    <rect
+                                        width="18"
+                                        height="18"
+                                        x="3"
+                                        y="3"
+                                        rx="2"
+                                        ry="2"
+                                    />
+                                    <circle cx="9" cy="9" r="2" />
+                                    <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                                </svg>
+                                <span className="text-sm font-medium">
+                                    Click to add a cover image
+                                </span>
+                            </div>
+                        )}
                     </div>
-                </div>
-                <div className="flex flex-col w-full justify-center items-center">
-                    <textarea id="story" name="story" placeholder="Write your story..."
-                        className="w-3/4 h-96 px-8 py-8 rounded-lg shadow-lg bg-slate-100 placeholder-gray-500"></textarea>
-                    
-                    <button className=" bg-teal-800 text-white px-8 py-4 rounded-lg my-8 hover:bg-teal-500 resize-none">Submit</button>
+
+                    {/* Title Input */}
+                    <div className="mb-8">
+                        <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            value={formData.title}
+                            onChange={handleChange}
+                            placeholder="Give your story a title..."
+                            className="block w-full text-4xl font-bold text-gray-900 placeholder-gray-300 border-none focus:ring-0 focus:outline-none px-0 py-3 bg-transparent leading-normal h-auto"
+                        />
+                    </div>
+
+                    {/* Tag Selection */}
+                    <div className="mb-8">
+                        <div className="flex flex-wrap gap-2">
+                            {AVAILABLE_TAGS.map((tag) => {
+                                const isSelected =
+                                    formData.selectedTags.includes(tag);
+                                return (
+                                    <button
+                                        key={tag}
+                                        type="button"
+                                        onClick={() => toggleTag(tag)}
+                                        className={`
+                                            px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 hover:cursor-pointer
+                                            ${
+                                                isSelected
+                                                    ? 'bg-teal-600 text-white shadow-md transform scale-105'
+                                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                            }
+                                        `}
+                                    >
+                                        {tag}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {/* Content Textarea */}
+                    <div className="mb-8">
+                        <textarea
+                            id="content"
+                            name="content"
+                            value={formData.content}
+                            onChange={handleChange}
+                            placeholder="Tell your story..."
+                            className="w-full h-96 p-4 text-lg text-gray-800 bg-gray-100 rounded-lg border-transparent focus:border-teal-500 focus:bg-white focus:ring-0 resize-y transition-colors duration-200 leading-relaxed"
+                        ></textarea>
+                    </div>
+
+                    {/* Buttons */}
+                    <div className="flex items-center justify-end gap-4">
+                        <button className="px-6 py-3 text-gray-600 hover:text-gray-900 font-medium transition-colors hover:cursor-pointer">
+                            Cancel
+                        </button>
+                        <button className="px-8 py-3 bg-teal-600 text-white font-bold rounded-lg shadow-lg hover:bg-teal-700 transform transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 hover:cursor-pointer">
+                            Publish Story
+                        </button>
+                    </div>
                 </div>
             </div>
-        </>
-    )
+        </div>
+    );
 };
 
-export const HomePageLayout=()=>{
-    return(
+export const HomePageLayout = () => {
+    return (
         <>
             <HeroSection />
             <HomePageCardsSection />
             <Mission />
-        </>   
-    )
+        </>
+    );
 };
 
-export const SignupLayout =()=>{
-    return(
-        <div className="container-2 flex flex-col items-center px-24 py-12">
-            <p className="text-4xl font-bold text-center decoration-teal-500 decoration-2 max-md:text-2xl mb-6 ">Create Account</p>
-            <div className="flex flex-row space-x-4 my-4 w-96 justify-center text-allign h-16">
-                <a className="flex items-center justify-center gap-2 w-24 px-4 py-2 rounded-full hover:bg-zinc-300" href="index.html">
-                    {/*-- Google Logo --*/}
-                    <svg className="w-12 h-20 justify-center items-center" viewBox="0 0 48 48">
-                        <path fill="#4285F4"
-                            d="M24 9.5c3.5 0 6.6 1.2 9.1 3.2l6.8-6.8C35.6 2.1 30.2 0 24 0 14.6 0 6.4 5.5 2.5 13.5l7.9 6.1C12.5 13 17.8 9.5 24 9.5z" />
-                        <path fill="#34A853"
-                            d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.5c-.5 2.8-2 5.2-4.3 6.8l7.9 6.1c4.6-4.2 7.3-10.3 7.3-17.4z" />
-                        <path fill="#FBBC05"
-                            d="M10.4 28.1c-.5-1.3-.8-2.7-.8-4.1s.3-2.8.8-4.1l-7.9-6.1C.9 16.6 0 20.2 0 24s.9 7.4 2.5 10.2l7.9-6.1z" />
-                        <path fill="#EA4335"
-                            d="M24 48c6.5 0 12-2.1 16-5.8l-7.9-6.1c-2.2 1.5-5.1 2.4-8.1 2.4-6.2 0-11.5-4.2-13.6-9.9l-7.9 6.1C6.4 42.5 14.6 48 24 48z" />
-                    </svg>
-                </a>
-                <a
-                    className="flex items-center justify-center gap-2 w-24 px-4 py-2 rounded-full transition  hover:bg-zinc-300" href="index.html">
-                    {/*-- Facebook Logo -- */}
-                    <svg className="w-12 h-20 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-                        <path
-                            d="M22 12a10 10 0 1 0-11.5 9.9v-7h-2v-3h2v-2c0-2 1.2-3 3-3 .9 0 1.8.1 1.8.1v2h-1c-1 0-1.3.6-1.3 1.2v1.7h2.2l-.4 3h-1.8v7A10 10 0 0 0 22 12z" />
-                    </svg>
-                </a>
-                <a className="flex items-center justify-center gap-2 w-24 px-4 py-2 rounded-full hover:bg-zinc-300" href="index.html">
-                    {/*-- Twitter Logo --*/}
-                    <svg className="w-12 h-20 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
-                        <path
-                            d="M23 3a10.9 10.9 0 0 1-3.1 1.5 4.5 4.5 0 0 0-7.7 4.1A12.8 12.8 0 0 1 3 4s-4 9 5 13a13.1 13.1 0 0 1-8 2c9 5 20 0 20-11.5a4.6 4.6 0 0 0-.1-1z" />
-                    </svg>
-                </a>
+export const SignupLayout = () => {
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        password: '',
+    });
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
+    const navigate = useNavigate();
+    const { login } = useAuth();
+
+    const signupMutation = useMutation({
+        mutationFn: async (data) => {
+            const response = await fetch(
+                'http://localhost:3000/api/auth/signup',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                }
+            );
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Signup failed');
+            }
+            return response.json();
+        },
+        onSuccess: (data) => {
+            setSuccess(
+                'Account created successfully! Redirecting to email verification...'
+            );
+            setError('');
+            setTimeout(
+                () => navigate(`/verify-email?email=${formData.email}`),
+                2000
+            );
+        },
+        onError: (error) => {
+            setError(error.message);
+            setSuccess('');
+        },
+    });
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value,
+        });
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setError('');
+        setSuccess('');
+        signupMutation.mutate(formData);
+    };
+
+    return (
+        // 1. Main Container: Centered, with padding for mobile safety
+        <div className="flex flex-col items-center justify-center min-h-screen px-4 py-2 w-full">
+            {/* 2. Content Wrapper: Limits width on desktop (max-w-md), full width on mobile */}
+            <div className=" w-full max-w-lg flex flex-col items-center backdrop-blur-sm px-16 space-y-2 rounded-2xl  ">
+                <img
+                    src="/blog_logo-removebg-preview.png"
+                    alt="Sample Image"
+                    className="w-24"
+                />
+
+                <p className="tracking-tighter text-4xl font-medium text-center decoration-teal-500 decoration-2 max-md:text-2xl">
+                    Join us at The Daily Dig,
+                </p>
+
+                <p className="tracking-tighter text-xl font-base text-center decoration-teal-500 decoration-2 max-md:text-2xl">
+                    Create your Account
+                </p>
+
+                {/* Social Icons */}
+                <div className="flex flex-row gap-4 w-full justify-center">
+                    <Link
+                        to="/"
+                        className="flex items-center justify-center w-16 h-12 rounded-full hover:bg-zinc-300 border border-zinc-100 shadow-sm transition"
+                    >
+                        {/* Google SVG */}
+                        <svg className="w-6 h-6" viewBox="0 0 48 48">
+                            <path
+                                fill="#4285F4"
+                                d="M24 9.5c3.5 0 6.6 1.2 9.1 3.2l6.8-6.8C35.6 2.1 30.2 0 24 0 14.6 0 6.4 5.5 2.5 13.5l7.9 6.1C12.5 13 17.8 9.5 24 9.5z"
+                            />
+                            <path
+                                fill="#34A853"
+                                d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.5c-.5 2.8-2 5.2-4.3 6.8l7.9 6.1c4.6-4.2 7.3-10.3 7.3-17.4z"
+                            />
+                            <path
+                                fill="#FBBC05"
+                                d="M10.4 28.1c-.5-1.3-.8-2.7-.8-4.1s.3-2.8.8-4.1l-7.9-6.1C.9 16.6 0 20.2 0 24s.9 7.4 2.5 10.2l7.9-6.1z"
+                            />
+                            <path
+                                fill="#EA4335"
+                                d="M24 48c6.5 0 12-2.1 16-5.8l-7.9-6.1c-2.2 1.5-5.1 2.4-8.1 2.4-6.2 0-11.5-4.2-13.6-9.9l-7.9 6.1C6.4 42.5 14.6 48 24 48z"
+                            />
+                        </svg>
+                    </Link>
+                    <Link
+                        to="/"
+                        className="flex items-center justify-center w-16 h-12 rounded-full hover:bg-zinc-300 border border-zinc-100 shadow-sm transition"
+                    >
+                        {/* Facebook SVG */}
+                        <svg
+                            className="w-6 h-6 text-blue-600"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path d="M22 12a10 10 0 1 0-11.5 9.9v-7h-2v-3h2v-2c0-2 1.2-3 3-3 .9 0 1.8.1 1.8.1v2h-1c-1 0-1.3.6-1.3 1.2v1.7h2.2l-.4 3h-1.8v7A10 10 0 0 0 22 12z" />
+                        </svg>
+                    </Link>
+                    <Link
+                        to="/"
+                        className="flex items-center justify-center w-16 h-12 rounded-full hover:bg-zinc-300 border border-zinc-100 shadow-sm transition"
+                    >
+                        {/* Twitter SVG */}
+                        <svg
+                            className="w-6 h-6 text-blue-500"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path d="M23 3a10.9 10.9 0 0 1-3.1 1.5 4.5 4.5 0 0 0-7.7 4.1A12.8 12.8 0 0 1 3 4s-4 9 5 13a13.1 13.1 0 0 1-8 2c9 5 20 0 20-11.5a4.6 4.6 0 0 0-.1-1z" />
+                        </svg>
+                    </Link>
+                </div>
+
+                <div className="text-center font-medium">Or</div>
+
+                {/* Form: w-full ensures it takes the width of the parent (max-w-md) */}
+                <form onSubmit={handleSubmit} className="w-full flex flex-col">
+                    {/* Input Group 1 */}
+                    <label
+                        className="font-medium text-left mb-1"
+                        htmlFor="name"
+                    >
+                        Username
+                    </label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                        className="bg-white w-full h-12 rounded-lg px-4 shadow-lg mb-6 border border-gray-100"
+                    />
+
+                    {/* Input Group 2 */}
+                    <label
+                        className="font-medium text-left mb-1"
+                        htmlFor="email"
+                    >
+                        Email
+                    </label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                        className="bg-white w-full h-12 rounded-lg px-4 shadow-lg mb-6 border border-gray-100"
+                    />
+
+                    {/* Input Group 3 */}
+                    <label
+                        className="font-medium text-left mb-1"
+                        htmlFor="password"
+                    >
+                        Password
+                    </label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        required
+                        placeholder="********"
+                        className="bg-white w-full h-12 rounded-lg px-4 shadow-lg mb-6 border border-gray-100"
+                    />
+
+                    {/* Error/Success Messages */}
+                    {error && (
+                        <p className="text-red-500 text-base italic mb-2">
+                            {error}
+                        </p>
+                    )}
+                    {success && (
+                        <p className="text-green-500 text-base italic mb-2">
+                            {success}
+                        </p>
+                    )}
+
+                    {/* Submit Button: w-full to fill container */}
+                    <button
+                        type="submit"
+                        disabled={signupMutation.isPending}
+                        className="bg-teal-800 text-white px-4 py-2 w-full rounded-lg hover:bg-teal-500 font-bold disabled:opacity-50 transition duration-300 mb-4"
+                    >
+                        {signupMutation.isPending
+                            ? 'Creating Account...'
+                            : 'Create Account'}
+                    </button>
+
+                    {/* Login Link */}
+                    <div className="text-center w-full">
+                        <p>
+                            Have an Account?
+                            <Link
+                                to="/login"
+                                className="inline-block align-baseline font-medium text-sm text-teal-500 hover:text-teal-800 ml-1"
+                            >
+                                Log in
+                            </Link>
+                        </p>
+                    </div>
+                </form>
             </div>
-            <div className="text-center font-bold mb-4 ">
-                Or
-            </div>
-            <div className="container-4  px-24 ">
-                <p className="font-bold text-left my-2" for="name">Username</p>
-                <input type="text" id="name" name="name" required className="bg-white w-96 h-16 px-4 rounded-lg shadow-lg mb-4" /><br/>
-                <p className="font-bold text-left my-2" for="email">Email</p>
-                <input type="email" id="email" name="email" required className="bg-white w-96 h-16 px-4 rounded-lg shadow-lg mb-4" /><br/>
-                <p className="font-bold text-left my-2" for="password">Password</p>
-                <input type="password" id="password" name="password" className=" bg-white w-96 h-16 rounded-lg px-4 shadow-lg" required
-                    placeholder="******************" />
-                <p className="text-red-500 text-base italic  mb-8">Please choose a password.</p>
-                <a className="" href="index.html">
-                    <button className="bg-teal-800 text-white px-4 py-4 w-96 rounded-lg hover:bg-teal-500 font-bold"
-                        type="button">Create Account</button><br/><br/>
-                </a>
-                <div className="text-center w-96 mb-4">
-                    <p className="">Have an Account? 
-                        <a href="login.html"
-                            className="inline-block align-baseline font-bold text-sm text-teal-500 hover:text-teal-800">Log in
-                        </a>
+        </div>
+    );
+};
+
+export const ResetPasswordLayout = () => {
+    return (
+        <div className="flex flex-col items-center justify-center min-h-screen px-4 py-8 w-full ">
+            <div className="w-full max-w-md flex flex-col items-center bg-white/50 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-zinc-100">
+                <img
+                    src="/blog_logo-removebg-preview.png"
+                    alt="Logo"
+                    className="w-24 mb-4"
+                />
+                <p className="text-4xl font-medium text-center decoration-teal-500 decoration-2 max-md:text-2xl tracking-tighter ">
+                    Reset Password
+                </p>
+                <div className="w-full flex flex-col">
+                    <p className="font-medium text-left my-2" for="email">
+                        Email
                     </p>
-                    
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        required
+                        className="bg-white w-full h-12 px-4 rounded-lg shadow-lg mb-4"
+                        placeholder="Enter your email"
+                    />
+                    <br />
+                    <a className="" href="/verify-otp">
+                        <button
+                            className="bg-teal-800 text-white px-4 py-2 w-full rounded-lg hover:bg-teal-500 font-bold"
+                            type="button"
+                        >
+                            Send OTP
+                        </button>
+                        <br />
+                        <br />
+                    </a>
+                    <div className="text-center w-full mb-4">
+                        <p className="">
+                            Remember your password?
+                            <a
+                                href="/login"
+                                className="inline-block align-baseline font-medium text-sm text-teal-500 hover:text-teal-800"
+                            >
+                                Log in
+                            </a>
+                        </p>
+                        <p className="">
+                            Don't have an account?
+                            <a
+                                href="/signup"
+                                className="inline-block align-baseline font-medium text-sm text-teal-500 hover:text-teal-800"
+                            >
+                                Sign up
+                            </a>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
-    )
+    );
 };
 
-export const LoginLayout =()=>{
-    return(
-        <div className="container-2 flex flex-col items-center px-24 py-12">
-            <p className="text-4xl font-bold text-center decoration-teal-500 decoration-2 max-md:text-2xl mb-6 ">Log in to your account </p>
-            <div className="flex flex-row space-x-4 my-4 w-96 justify-center text-allign h-16">
-                <a className="flex items-center justify-center gap-2 w-24 px-4 py-2 rounded-full hover:bg-zinc-300" href="index.html">
-                    {/*-- Google Logo --*/}
-                    <svg className="w-12 h-20 justify-center items-center" viewBox="0 0 48 48">
-                        <path fill="#4285F4"
-                            d="M24 9.5c3.5 0 6.6 1.2 9.1 3.2l6.8-6.8C35.6 2.1 30.2 0 24 0 14.6 0 6.4 5.5 2.5 13.5l7.9 6.1C12.5 13 17.8 9.5 24 9.5z" />
-                        <path fill="#34A853"
-                            d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.5c-.5 2.8-2 5.2-4.3 6.8l7.9 6.1c4.6-4.2 7.3-10.3 7.3-17.4z" />
-                        <path fill="#FBBC05"
-                            d="M10.4 28.1c-.5-1.3-.8-2.7-.8-4.1s.3-2.8.8-4.1l-7.9-6.1C.9 16.6 0 20.2 0 24s.9 7.4 2.5 10.2l7.9-6.1z" />
-                        <path fill="#EA4335"
-                            d="M24 48c6.5 0 12-2.1 16-5.8l-7.9-6.1c-2.2 1.5-5.1 2.4-8.1 2.4-6.2 0-11.5-4.2-13.6-9.9l-7.9 6.1C6.4 42.5 14.6 48 24 48z" />
-                    </svg>
-                </a>
-                <a
-                    className="flex items-center justify-center gap-2 w-24 px-4 py-2 rounded-full transition  hover:bg-zinc-300" href="index.html">
-                    {/*-- Facebook Logo -- */}
-                    <svg className="w-12 h-20 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-                        <path
-                            d="M22 12a10 10 0 1 0-11.5 9.9v-7h-2v-3h2v-2c0-2 1.2-3 3-3 .9 0 1.8.1 1.8.1v2h-1c-1 0-1.3.6-1.3 1.2v1.7h2.2l-.4 3h-1.8v7A10 10 0 0 0 22 12z" />
-                    </svg>
-                </a>
-                <a className="flex items-center justify-center gap-2 w-24 px-4 py-2 rounded-full hover:bg-zinc-300" href="index.html">
-                    {/*-- Twitter Logo --*/}
-                    <svg className="w-12 h-20 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
-                        <path
-                            d="M23 3a10.9 10.9 0 0 1-3.1 1.5 4.5 4.5 0 0 0-7.7 4.1A12.8 12.8 0 0 1 3 4s-4 9 5 13a13.1 13.1 0 0 1-8 2c9 5 20 0 20-11.5a4.6 4.6 0 0 0-.1-1z" />
-                    </svg>
-                </a>
-            </div>
-            <div className="text-center font-bold mb-4 ">
-                Or
-            </div>
+export const VerifyOTPLayout = () => {
+    return (
+        <div className="container-2 flex flex-col items-center justify-center min-h-screen px-24 py-12">
+            <p className="text-4xl font-medium text-center decoration-teal-500 decoration-2 max-md:text-2xl tracking-tighter ">
+                Verify OTP
+            </p>
+
             <div className="container-4  px-24 ">
-                <p className="font-bold text-left my-2" for="name">Username</p>
-                <input type="text" id="name" name="name" required className="bg-white w-96 h-16 px-4 rounded-lg shadow-lg mb-4" /><br/>
-                <p className="font-bold text-left my-2" for="email">Email</p>
-                <input type="email" id="email" name="email" required className="bg-white w-96 h-16 px-4 rounded-lg shadow-lg mb-4" /><br/>
-                <p className="font-bold text-left my-2" for="password">Password</p>
-                <input type="password" id="password" name="password" className=" bg-white w-96 h-16 rounded-lg px-4 shadow-lg" required
-                    placeholder="******************" />
-                <p className="text-red-500 text-base italic  mb-8">Please choose a password.</p>
-                <a className="" href="index.html">
-                    <button className="bg-teal-800 text-white px-4 py-4 w-96 rounded-lg hover:bg-teal-500 font-bold"
-                        type="button">Create Account</button><br/><br/>
+                <p className="font-medium text-left my-2" for="otp">
+                    Enter OTP
+                </p>
+                <input
+                    type="text"
+                    id="otp"
+                    name="otp"
+                    required
+                    className="bg-white w-full h-12 px-4 rounded-lg shadow-lg mb-4"
+                    placeholder="Enter the OTP sent to your email"
+                />
+                <br />
+                <a className="" href="/new-password">
+                    <button
+                        className="bg-teal-800 text-white px-4 py-2 w-full rounded-lg hover:bg-teal-500 font-bold"
+                        type="button"
+                    >
+                        Verify OTP
+                    </button>
+                    <br />
+                    <br />
                 </a>
-                <div className="text-center w-96 mb-4">
-                    <p className="">Forgot your password? 
-                        <a href="login.html"
-                            className="inline-block align-baseline font-bold text-sm text-teal-500 hover:text-teal-800">Reset it
+                <div className="text-center w-full mb-4">
+                    <p className="">
+                        Didn't receive OTP?
+                        <a
+                            href="/reset-password"
+                            className="inline-block align-baseline font-medium text-sm text-teal-500 hover:text-teal-800"
+                        >
+                            Resend OTP
                         </a>
                     </p>
-                    <p className="">Don't have an account? 
-                        <a href="login.html"
-                            className="inline-block align-baseline font-bold text-sm text-teal-500 hover:text-teal-800">Sign up
+                    <p className="">
+                        Remember your password?
+                        <a
+                            href="/login"
+                            className="inline-block align-baseline font-medium text-sm text-teal-500 hover:text-teal-800"
+                        >
+                            Log in
                         </a>
                     </p>
-                    
                 </div>
             </div>
         </div>
-    )
+    );
+};
+
+export const LoginLayout = () => {
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+    });
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
+    const { login } = useAuth();
+
+    const loginMutation = useMutation({
+        mutationFn: async (data) => {
+            const response = await fetch(
+                'http://localhost:3000/api/auth/login',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                }
+            );
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Login failed');
+            }
+            return response.json();
+        },
+        onSuccess: (data) => {
+            console.log('SERVER RESPONSE:', data);
+            // ensure server returned token and user
+            if (!data?.token || !data?.user) return;
+            login(data.token, data.user);
+            if (data.user.role === 'admin') {
+                navigate('/dashboard', { replace: true });
+            } else {
+                navigate('/blog', { replace: true });
+            }
+        },
+        onError: (error) => {
+            setError(error.message);
+        },
+    });
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value,
+        });
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setError('');
+        loginMutation.mutate(formData);
+    };
+
+    // Auto hide the error message after 5 seconds
+    useEffect(() => {
+        if (loginMutation.isError) {
+            const timer = setTimeout(() => {
+                loginMutation.reset();
+                setError('');
+            }, 5000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [loginMutation.isError]);
+
+    return (
+        // 1. Main Container: Full width, centered content, safe padding for mobile
+        <div className="flex flex-col items-center justify-center min-h-screen w-full">
+            {/* 2. Constraint Wrapper: Prevents content getting too wide on desktop (max-w-md) */}
+            <div className=" w-full max-w-lg flex flex-col items-center backdrop-blur-sm px-8 py-4 rounded-2xl">
+                <img
+                    src="/blog_logo-removebg-preview.png"
+                    alt="Sample Image"
+                    className="w-24 mb-4"
+                />
+
+                <p className="text-4xl font-medium text-center decoration-teal-500 decoration-2 max-md:text-2xl tracking-tighter mb-2">
+                    Welcome to The Daily Dig,
+                </p>
+
+                <p className="text-xl font-base text-center decoration-teal-500 decoration-2 max-md:text-xl tracking-tighter mb-2">
+                    Log in to your account
+                </p>
+
+                {/* Social Icons: Removed fixed width, used gap for spacing */}
+                <div className="flex flex-row gap-4 my-2 w-full justify-center">
+                    <Link
+                        to="/"
+                        className="flex items-center justify-center w-16 h-12 rounded-full hover:bg-zinc-300 border border-zinc-100 shadow-sm transition"
+                    >
+                        {/* Google Logo */}
+                        <svg className="w-6 h-6" viewBox="0 0 48 48">
+                            <path
+                                fill="#4285F4"
+                                d="M24 9.5c3.5 0 6.6 1.2 9.1 3.2l6.8-6.8C35.6 2.1 30.2 0 24 0 14.6 0 6.4 5.5 2.5 13.5l7.9 6.1C12.5 13 17.8 9.5 24 9.5z"
+                            />
+                            <path
+                                fill="#34A853"
+                                d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.5c-.5 2.8-2 5.2-4.3 6.8l7.9 6.1c4.6-4.2 7.3-10.3 7.3-17.4z"
+                            />
+                            <path
+                                fill="#FBBC05"
+                                d="M10.4 28.1c-.5-1.3-.8-2.7-.8-4.1s.3-2.8.8-4.1l-7.9-6.1C.9 16.6 0 20.2 0 24s.9 7.4 2.5 10.2l7.9-6.1z"
+                            />
+                            <path
+                                fill="#EA4335"
+                                d="M24 48c6.5 0 12-2.1 16-5.8l-7.9-6.1c-2.2 1.5-5.1 2.4-8.1 2.4-6.2 0-11.5-4.2-13.6-9.9l-7.9 6.1C6.4 42.5 14.6 48 24 48z"
+                            />
+                        </svg>
+                    </Link>
+                    <Link
+                        to="/"
+                        className="flex items-center justify-center w-16 h-12 rounded-full hover:bg-zinc-300 border border-zinc-100 shadow-sm transition"
+                    >
+                        {/* Facebook Logo */}
+                        <svg
+                            className="w-6 h-6 text-blue-600"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path d="M22 12a10 10 0 1 0-11.5 9.9v-7h-2v-3h2v-2c0-2 1.2-3 3-3 .9 0 1.8.1 1.8.1v2h-1c-1 0-1.3.6-1.3 1.2v1.7h2.2l-.4 3h-1.8v7A10 10 0 0 0 22 12z" />
+                        </svg>
+                    </Link>
+                    <Link
+                        to="/"
+                        className="flex items-center justify-center w-16 h-12 rounded-full hover:bg-zinc-300 border border-zinc-100 shadow-sm transition"
+                    >
+                        {/* Twitter Logo */}
+                        <svg
+                            className="w-6 h-6 text-blue-500"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path d="M23 3a10.9 10.9 0 0 1-3.1 1.5 4.5 4.5 0 0 0-7.7 4.1A12.8 12.8 0 0 1 3 4s-4 9 5 13a13.1 13.1 0 0 1-8 2c9 5 20 0 20-11.5a4.6 4.6 0 0 0-.1-1z" />
+                        </svg>
+                    </Link>
+                </div>
+
+                <div className="text-center font-medium my-2">Or</div>
+
+                {/* 3. Form: Removed px-24, set width to full */}
+                <form onSubmit={handleSubmit} className="w-full flex flex-col">
+                    <label
+                        className="font-medium text-left mb-1"
+                        htmlFor="email"
+                    >
+                        Email
+                    </label>
+                    {/* Input: Changed w-96 to w-full */}
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                        className="bg-white w-full h-12 px-4 rounded-lg shadow-lg mb-4 border border-gray-100"
+                    />
+
+                    <label
+                        className="font-medium text-left mb-1"
+                        htmlFor="password"
+                    >
+                        Password
+                    </label>
+                    {/* Input: Changed w-96 to w-full */}
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        className="bg-white w-full h-12 rounded-lg px-4 shadow-lg mb-6 border border-gray-100"
+                        required
+                        placeholder="********"
+                    />
+
+                    {error && (
+                        <p className="text-red-500 text-base italic text-center">
+                            {error}
+                        </p>
+                    )}
+
+                    {/* Button: Changed w-96 to w-full */}
+                    <button
+                        type="submit"
+                        disabled={loginMutation.isPending}
+                        className="bg-teal-800 text-white px-4 py-2 w-full rounded-lg hover:bg-teal-500 font-bold disabled:opacity-50 mb-6"
+                    >
+                        {loginMutation.isPending ? 'Logging in...' : 'Login'}
+                    </button>
+
+                    {/* Removed <br> tags, used flex col + margin */}
+                    <div className="text-center w-full flex flex-col gap-2">
+                        <p>
+                            Forgot your password?
+                            <Link
+                                to="/reset-password"
+                                className="inline-block align-baseline font-medium text-sm text-teal-500 hover:text-teal-800 ml-1"
+                            >
+                                Reset it
+                            </Link>
+                        </p>
+                        <p>
+                            Don't have an account?
+                            <Link
+                                to="/signup"
+                                className="inline-block align-baseline font-medium text-sm text-teal-500 hover:text-teal-800 ml-1"
+                            >
+                                Sign up
+                            </Link>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
 };
