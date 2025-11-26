@@ -33,7 +33,10 @@ router.get(
 );
 router.get(
     '/google/callback',
-    passport.authenticate('google', { failureRedirect: '/login' }),
+    passport.authenticate('google', {
+        session: false,
+        failureRedirect: '/login',
+    }),
     (req, res) => {
         const token = jwt.sign(
             { userId: req.user._id },
@@ -62,19 +65,19 @@ router.get(
 //     }
 // );
 
-// Twitter OAuth
-router.get('/twitter', passport.authenticate('twitter'));
-router.get(
-    '/twitter/callback',
-    passport.authenticate('twitter', { failureRedirect: '/login' }),
-    (req, res) => {
-        const token = jwt.sign(
-            { userId: req.user._id },
-            process.env.JWT_SECRET,
-            { expiresIn: '7d' }
-        );
-        res.redirect(`${process.env.FRONTEND_URL}/callback?token=${token}`);
-    }
-);
+// // Twitter OAuth
+// router.get('/twitter', passport.authenticate('twitter'));
+// router.get(
+//     '/twitter/callback',
+//     passport.authenticate('twitter', { failureRedirect: '/login' }),
+//     (req, res) => {
+//         const token = jwt.sign(
+//             { userId: req.user._id },
+//             process.env.JWT_SECRET,
+//             { expiresIn: '7d' }
+//         );
+//         res.redirect(`${process.env.FRONTEND_URL}/callback?token=${token}`);
+//     }
+// );
 
 export default router;

@@ -5,6 +5,7 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export const authMiddleware = (req, res, next) => {
+    // 1. Get token
     const token = req.header('Authorization')?.replace('Bearer ', '');
 
     if (!token) {
@@ -12,11 +13,33 @@ export const authMiddleware = (req, res, next) => {
     }
 
     try {
+        // 2. Verify token
         const decoded = jwt.verify(token, JWT_SECRET);
-        req.user_id = decoded.id;
-        req.user_role = decoded.role; // Add role to request
+
+        // 3. DEBUG: Check what is inside the token
+        // console.log("Decoded Token:", decoded);
+
+        // 4. FIX: Handle both 'id' (standard) and 'userId' (Google Auth)
+        const userId = decoded.userId || decoded.id;
+
+        if (!userId) {
+            return res
+                .status(401)
+                .json({ message: 'Token is valid but contains no ID' });
+        }
+
+        // 5. Attach to request
+        // We attach to BOTH req.user and req.user_id to be safe and compatible with all your routes
+        req.user_id = userId;
+        req.user = {
+            userId: userId,
+            role: decoded.role,
+        };
+        req.user_role = decoded.role;
+
         next();
     } catch (error) {
+        console.error('Middleware Error:', error.message);
         return res.status(401).json({ message: 'Invalid token' });
     }
 };

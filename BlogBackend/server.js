@@ -1,5 +1,4 @@
 import 'dotenv/config'; // First: Load ENV variables
-
 import express from 'express';
 import session from 'express-session';
 import passport from 'passport';
