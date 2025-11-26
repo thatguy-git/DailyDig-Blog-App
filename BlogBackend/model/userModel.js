@@ -23,7 +23,10 @@ const userSchema = new mongoose.Schema(
         },
         password: {
             type: String,
-            required: true,
+            required: function () {
+                // Only required if not using social login
+                return !this.googleId && !this.twitterId;
+            },
         },
         isVerified: {
             type: Boolean,
@@ -50,6 +53,9 @@ const userSchema = new mongoose.Schema(
             url: String,
             publicId: String,
         },
+        googleId: { type: String, unique: true, sparse: true },
+        twitterId: { type: String, unique: true, sparse: true },
+        facebookId: { type: String, unique: true, sparse: true },
     },
     {
         timestamps: true,

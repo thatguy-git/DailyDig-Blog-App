@@ -18,6 +18,7 @@ import ProfilePage from './Pages/ProfilePage';
 import Navbar from './Components/Navbar';
 import WriteStoryButton from './Components/WriteStoryButton.jsx';
 import toast, { Toaster } from 'react-hot-toast';
+import AuthCallback from './Components/AuthCallback.jsx';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -148,6 +149,7 @@ const App = () => {
                 />
                 <Route path="/blog" element={<BlogPage />} />
                 <Route path="/post/:id" element={<PostPage />} />
+                <Route path="/callback" element={<AuthCallback />} />
 
                 {/* Protected Routes */}
                 <Route

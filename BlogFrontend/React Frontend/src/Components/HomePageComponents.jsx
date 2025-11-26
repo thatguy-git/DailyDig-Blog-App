@@ -802,6 +802,11 @@ export const LoginLayout = () => {
         }
     }, [loginMutation.isError]);
 
+    const handleGoogleSignIn = () => {
+        console.log('handleGoogleSignIn clicked');
+        window.location.href = 'http://localhost:3000/api/auth/google';
+    };
+
     return (
         // 1. Main Container: Full width, centered content, safe padding for mobile
         <div className="flex flex-col items-center justify-center min-h-screen w-full">
@@ -813,20 +818,25 @@ export const LoginLayout = () => {
                     className="w-24 mb-4"
                 />
 
-                <p className="text-4xl font-medium text-center decoration-teal-500 decoration-2 max-md:text-2xl tracking-tighter mb-2">
-                    Welcome to The Daily Dig,
-                </p>
-
-                <p className="text-xl font-base text-center decoration-teal-500 decoration-2 max-md:text-xl tracking-tighter mb-2">
-                    Log in to your account
-                </p>
+                <div className=" border-b pb-1">
+                    <p className="text-4xl font-medium text-center decoration-teal-500 decoration-2 max-md:text-2xl tracking-tighter mb-2">
+                        Welcome to The Daily Dig,
+                    </p>
+                    <p className="text-xl font-base text-center decoration-teal-500 decoration-2 max-md:text-xl tracking-tighter mb-2">
+                        Log in to your account
+                    </p>
+                </div>
 
                 {/* Social Icons: Removed fixed width, used gap for spacing */}
-                <div className="flex flex-row gap-4 my-2 w-full justify-center">
-                    <Link
-                        to="/"
-                        className="flex items-center justify-center w-16 h-12 rounded-full hover:bg-zinc-300 border border-zinc-100 shadow-sm transition"
+                <div className="flex flex-row gap-4 my-4 w-full justify-center">
+                    <button
+                        type="button"
+                        onClick={handleGoogleSignIn}
+                        className="flex items-center justify-center w-auto px-4 py-2 h-12 rounded-lg hover:cursor-pointer hover:bg-zinc-300 border border-zinc-100 shadow-sm transition"
                     >
+                        <p className="text-base font-medium mr-2 tracking-tighter">
+                            Continue with Google
+                        </p>
                         {/* Google Logo */}
                         <svg className="w-6 h-6" viewBox="0 0 48 48">
                             <path
@@ -846,33 +856,7 @@ export const LoginLayout = () => {
                                 d="M24 48c6.5 0 12-2.1 16-5.8l-7.9-6.1c-2.2 1.5-5.1 2.4-8.1 2.4-6.2 0-11.5-4.2-13.6-9.9l-7.9 6.1C6.4 42.5 14.6 48 24 48z"
                             />
                         </svg>
-                    </Link>
-                    <Link
-                        to="/"
-                        className="flex items-center justify-center w-16 h-12 rounded-full hover:bg-zinc-300 border border-zinc-100 shadow-sm transition"
-                    >
-                        {/* Facebook Logo */}
-                        <svg
-                            className="w-6 h-6 text-blue-600"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path d="M22 12a10 10 0 1 0-11.5 9.9v-7h-2v-3h2v-2c0-2 1.2-3 3-3 .9 0 1.8.1 1.8.1v2h-1c-1 0-1.3.6-1.3 1.2v1.7h2.2l-.4 3h-1.8v7A10 10 0 0 0 22 12z" />
-                        </svg>
-                    </Link>
-                    <Link
-                        to="/"
-                        className="flex items-center justify-center w-16 h-12 rounded-full hover:bg-zinc-300 border border-zinc-100 shadow-sm transition"
-                    >
-                        {/* Twitter Logo */}
-                        <svg
-                            className="w-6 h-6 text-blue-500"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path d="M23 3a10.9 10.9 0 0 1-3.1 1.5 4.5 4.5 0 0 0-7.7 4.1A12.8 12.8 0 0 1 3 4s-4 9 5 13a13.1 13.1 0 0 1-8 2c9 5 20 0 20-11.5a4.6 4.6 0 0 0-.1-1z" />
-                        </svg>
-                    </Link>
+                    </button>
                 </div>
 
                 <div className="text-center font-medium my-2">Or</div>
