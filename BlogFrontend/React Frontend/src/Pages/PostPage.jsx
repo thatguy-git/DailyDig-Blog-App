@@ -4,8 +4,9 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Navbar from '../Components/Navbar.jsx';
 import Footer from '../Components/Footer.jsx';
 import { useAuth } from '../constants/AuthContext.jsx';
+import CommentSection from '../Components/CommentSection.jsx';
 
-const PostPage = () => {
+export const PostPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     // Get token and user from context; derive isLoggedIn
@@ -278,7 +279,7 @@ const PostPage = () => {
                                                     );
                                                 });
                                         }}
-                                        className="px-3 py-1 bg-teal-600 text-white hover:cursor-pointer rounded-lg hover:bg-teal-400 transition-colors"
+                                        className="px-3 py-1 bg-teal-600 text-white hover:cursor-pointer rounded-md hover:bg-teal-400 transition-colors"
                                     >
                                         Share
                                     </button>
@@ -286,6 +287,7 @@ const PostPage = () => {
                             </div>
                         </div>
                     </div>
+                    <CommentSection postId={id} />
                 </div>
                 {/* Sidebar */}
                 <div className="w-full md:w-1/3 pt-16 ">
@@ -407,5 +409,3 @@ const PostPage = () => {
         </>
     );
 };
-
-export { PostPage };

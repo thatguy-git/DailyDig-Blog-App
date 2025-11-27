@@ -3,14 +3,39 @@ import { NavLink, Link } from 'react-router-dom';
 import { HiMenu, HiOutlineMenu } from 'react-icons/hi';
 import { LogOut } from 'lucide-react';
 import { useAuth } from '../constants/AuthContext.jsx';
+import { useQuery } from '@tanstack/react-query';
+
+const fetchCurrentUser = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+    const res = await fetch('http://localhost:3000/api/user/profile', {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return null;
+    const body = await res.json();
+    return body.user;
+};
 
 const Navbar = (props) => {
-    const { user, logout } = useAuth();
-    console.log('Navbar User Data:', user);
+    const { user, logout, setUser } = useAuth();
+
+    const { data: currentUser } = useQuery({
+        queryKey: ['currentUser'],
+        queryFn: fetchCurrentUser,
+        enabled: !!localStorage.getItem('token'),
+        staleTime: 1000 * 60 * 5,
+    });
+
+    useEffect(() => {
+        if (currentUser) {
+            setUser(currentUser);
+        }
+    }, [currentUser, setUser]);
 
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const profileRef = useRef(null);
 
+    //mostly not functional code for navlinks
     const getLinkClasses = ({ isActive }) => {
         // Base classes that all links should have
         const baseClasses =
@@ -53,7 +78,7 @@ const Navbar = (props) => {
                     <div className="relative"></div>
                 </div>
                 <div className="flex items-center space-x-4">
-                    {/* ...other nav items (search, notifications, etc.)... */}
+                    {/* other nav items (search, notifications, etc.) */}
 
                     {user ? (
                         <div className="relative mt-4" ref={profileRef}>

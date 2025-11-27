@@ -24,7 +24,7 @@ const postSchema = new mongoose.Schema(
         ],
         published: {
             type: Boolean,
-            default: false,
+            default: true,
         },
         estimatedReadTime: {
             type: Number, // in minutes
@@ -59,6 +59,6 @@ const postSchema = new mongoose.Schema(
 postSchema.index({ author: 1, createdAt: -1 });
 postSchema.index({ published: 1, createdAt: -1 });
 
-const Post = mongoose.model('Post', postSchema);
+const Post = mongoose.models.Post || mongoose.model('Post', postSchema);
 
 export default Post;

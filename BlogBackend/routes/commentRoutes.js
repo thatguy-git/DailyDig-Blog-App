@@ -11,8 +11,8 @@ import {
 const router = express.Router();
 
 // Comment routes
-router.post("/:postId/comments", authMiddleware, createComment);
-router.get("/:postId/comments", getComments);
+router.post("/:postId", authMiddleware, createComment);
+router.get("/:postId", getComments);
 router.put("/:commentId", authMiddleware, updateComment);
 router.delete("/:commentId", authMiddleware, deleteComment);
 router.post("/:commentId/like", authMiddleware, likeComment);

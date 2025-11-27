@@ -24,7 +24,12 @@ router.get('/related/:id', getRelatedPosts);
 router.get('/:id', getPost);
 
 // Protected routes
-router.post('/', authMiddleware, uploadPostImage.single('image'), createPost);
+router.post(
+    '/',
+    authMiddleware,
+    uploadPostImage.single('coverImage'),
+    createPost
+);
 router.put('/:id', authMiddleware, updatePost);
 router.delete('/:id', authMiddleware, deletePost);
 router.get('/user/posts', authMiddleware, getUserPosts);

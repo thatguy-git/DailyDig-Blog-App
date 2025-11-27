@@ -6,9 +6,15 @@ export const getPosts = async (req, res) => {
         const posts = await Post.find({ published: true })
             .populate('author', 'name username')
             .sort({ createdAt: -1 });
+
+        const postsWithIntro = posts.map((post) => ({
+            ...post.toObject(),
+            intro: extractIntro(post.content),
+        }));
+
         res.status(200).json({
             success: true,
-            data: posts,
+            data: postsWithIntro,
         });
     } catch (error) {
         console.error('Error fetching posts:', error);
@@ -49,13 +55,16 @@ export const getPost = async (req, res) => {
             (userId) => userId.toString() === currentUserId
         );
 
+        const postWithIntro = {
+            ...post.toObject(), // Convert mongoose doc to plain object
+            intro: extractIntro(post.content),
+            isLiked, // <--- SEND THIS BOOLEAN
+            likeCount: post.likes.length, // Ensure count is accurate
+        };
+
         res.status(200).json({
             success: true,
-            data: {
-                ...post.toObject(), // Convert mongoose doc to plain object
-                isLiked, // <--- SEND THIS BOOLEAN
-                likeCount: post.likes.length, // Ensure count is accurate
-            },
+            data: postWithIntro,
         });
     } catch (error) {
         console.error('Error fetching post:', error);
@@ -94,53 +103,62 @@ const extractIntro = (content) => {
 // Create new post
 export const createPost = async (req, res) => {
     try {
-        const { title, content, tags, published, alt, ...rest } = req.body; // estimatedReadTime is ignored
+        // debug helpers (optional)
+        // console.log('req.user:', req.user, 'req.userId:', req.userId, 'req.user_id:', req.user_id);
+        // console.log('req.body:', req.body);
 
-        if (!title || !content) {
-            return res.status(400).json({
-                success: false,
-                message: 'Title and content are required',
+        // Resolve author id from common middleware shapes
+        const authorId =
+            req.userId || req.user_id || req.user?.id || req.user?._id;
+        if (!authorId) {
+            return res.status(401).json({
+                message: 'Authentication required: author id missing',
             });
         }
 
-        const estimatedReadTime = calculateReadTime(content);
-        const intro = extractIntro(content);
+        const { title, content } = req.body;
+        // tags might be sent as JSON string from FormData; handle both
+        let tags = req.body.tags;
+        if (typeof tags === 'string' && tags.length) {
+            try {
+                tags = JSON.parse(tags);
+            } catch (e) {
+                tags = tags
+                    .split(',')
+                    .map((t) => t.trim())
+                    .filter(Boolean);
+            }
+        }
+        if (!Array.isArray(tags)) tags = [];
 
-        const newPost = new Post({
+        // If client doesn't specify published, default to true on server (Mongoose default applies only if undefined)
+        const published = req.body.published ?? true;
+
+        const postObj = {
             title,
             content,
-            author: req.user_id,
-            tags: tags || [],
-            published: published || false,
-            estimatedReadTime,
-            intro,
-        });
+            tags,
+            author: authorId,
+            published,
+        };
 
-        // Handle image upload if provided
+        // If you accept file uploads (multer/cloudinary), attach featuredImage
         if (req.file) {
-            newPost.featuredImage = {
-                url: req.file.path,
-                publicId: req.file.filename,
-                alt: alt || '',
+            postObj.featuredImage = {
+                url: req.file.path || req.file.location || req.file.url,
+                publicId:
+                    req.file.filename || req.file.key || req.file.public_id,
             };
         }
 
-        const savedPost = await newPost.save();
-
-        // Populate author info
-        await savedPost.populate('author', 'name username');
-
-        res.status(201).json({
-            success: true,
-            message: 'Post created successfully',
-            data: savedPost,
-        });
-    } catch (error) {
-        console.error('Error creating post:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Internal server error',
-        });
+        const post = await Post.create(postObj);
+        return res.status(201).json({ data: post });
+    } catch (err) {
+        console.error('createPost error:', err);
+        // return useful error for debugging
+        return res
+            .status(500)
+            .json({ message: 'Server error', error: err.message });
     }
 };
 
@@ -238,9 +256,14 @@ export const getUserPosts = async (req, res) => {
             .populate('author', 'name username')
             .sort({ createdAt: -1 });
 
+        const postsWithIntro = posts.map((post) => ({
+            ...post.toObject(),
+            intro: extractIntro(post.content),
+        }));
+
         res.status(200).json({
             success: true,
-            data: posts,
+            data: postsWithIntro,
         });
     } catch (error) {
         console.error('Error fetching user posts:', error);
@@ -322,9 +345,14 @@ export const searchPosts = async (req, res) => {
             .populate('author', 'name username')
             .sort({ createdAt: -1 });
 
+        const postsWithIntro = posts.map((post) => ({
+            ...post.toObject(),
+            intro: extractIntro(post.content),
+        }));
+
         res.status(200).json({
             success: true,
-            data: posts,
+            data: postsWithIntro,
         });
     } catch (error) {
         console.error('Error searching posts:', error);
@@ -343,9 +371,14 @@ export const getPopularPosts = async (req, res) => {
             .sort({ likeCount: -1, createdAt: -1 }) // Sort by likes descending, then by date
             .limit(10); // Limit to top 10 popular posts
 
+        const postsWithIntro = posts.map((post) => ({
+            ...post.toObject(),
+            intro: extractIntro(post.content),
+        }));
+
         res.status(200).json({
             success: true,
-            data: posts,
+            data: postsWithIntro,
         });
     } catch (error) {
         console.error('Error fetching popular posts:', error);
@@ -382,9 +415,14 @@ export const getRelatedPosts = async (req, res) => {
             .sort({ createdAt: -1 })
             .limit(10);
 
+        const postsWithIntro = relatedPosts.map((post) => ({
+            ...post.toObject(),
+            intro: extractIntro(post.content),
+        }));
+
         res.status(200).json({
             success: true,
-            data: relatedPosts,
+            data: postsWithIntro,
         });
     } catch (error) {
         console.error('Error fetching related posts:', error);

@@ -63,7 +63,7 @@ const BlogCardA = ({ blog = {}, removeBorder = false }) => {
 };
 
 export const BlogCardsA = ({ posts = [] }) => {
-    const displayPosts = posts.slice(0, 4);
+    const displayPosts = Array.isArray(posts) ? posts.slice(0, 4) : [];
 
     return (
         <div className="flex flex-row flex-nowrap w-full gap-4 my-2 h-auto max-md:flex-wrap max-md:gap-1">
@@ -175,7 +175,7 @@ export const BlogCardsB = ({ posts = [] }) => {
         }
     };
 
-    const displayPosts = posts.slice(0, 10);
+    const displayPosts = Array.isArray(posts) ? posts.slice(0, 10) : [];
 
     return (
         <div className="pt-6 border-t border-t-zinc-400 w-full">
@@ -317,7 +317,7 @@ const BlogCardC2 = ({ blog = {}, removeBorder = false }) => {
 };
 
 export const BlogCardsC = ({ posts = [] }) => {
-    const displayPosts = posts.slice(0, 4); // Take first 4 posts for editor picks
+    const displayPosts = Array.isArray(posts) ? posts.slice(0, 4) : []; // Take first 4 posts for editor picks
 
     return (
         <div className="border-t border-t-zinc-400 pt-6">
@@ -402,7 +402,7 @@ export const BlogCardsD = ({ posts = [] }) => {
         }
     };
 
-    const displayPosts = posts.slice(0, 10);
+    const displayPosts = Array.isArray(posts) ? posts.slice(0, 10) : [];
 
     return (
         <div className="pt-6 border-t border-t-zinc-400 w-full">
@@ -458,7 +458,7 @@ export const BlogCardE = ({ blogs = [], removeBorder = false }) => {
     // We split the array:
     // - mainPost gets the first item (e.g., blogs[0])
     // - secondaryPosts gets the rest in a new array (e.g., blogs[1], blogs[2], ...)
-    const [mainPost, ...secondaryPosts] = blogs;
+    const [mainPost, ...secondaryPosts] = Array.isArray(blogs) ? blogs : [];
 
     // Destructure the main post's data, providing defaults
     const {

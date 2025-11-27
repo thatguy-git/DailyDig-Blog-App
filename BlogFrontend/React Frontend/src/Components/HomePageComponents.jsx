@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { BlogCardsA } from './BlogCards.jsx';
 import { useAuth } from '../constants/AuthContext.jsx';
 
@@ -17,8 +17,8 @@ export const HeroSection = () => {
                         bring you the stories you won't find anywhere else.
                     </p>
                     <Link to="/blog">
-                        <button className="bg-teal-800 text-white px-4 py-2 rounded-lg hover:bg-teal-500 w-32 h-12 max-md:h-auto max-md:py-4 max-md:px-10 max-md:w-1/2">
-                            Get Started
+                        <button className="bg-teal-800 text-white px-4 py-2 rounded-lg hover:bg-teal-500 hover:cursor-pointer w-32 h-12 max-md:h-auto max-md:py-4 max-md:px-10 max-md:w-1/2">
+                            Go To Blog
                         </button>
                     </Link>
                 </div>
@@ -65,6 +65,7 @@ export const HomePageCard = () => {
 };
 
 export const HomePageCardsSection = () => {
+    const queryClient = useQueryClient();
     const {
         data: posts,
         isLoading,
@@ -80,6 +81,10 @@ export const HomePageCardsSection = () => {
             return result.data;
         },
     });
+
+    useEffect(() => {
+        queryClient.invalidateQueries('posts');
+    }, []);
 
     if (isLoading) {
         return (
@@ -157,6 +162,49 @@ export const AddStory = () => {
         coverImagePreview: '', // The URL for display
     });
 
+    const [publishError, setPublishError] = useState('');
+    const [publishSuccess, setPublishSuccess] = useState('');
+    const navigate = useNavigate();
+
+    const publishMutation = useMutation({
+        // 1. Move the async function to the 'mutationFn' property
+        mutationFn: async (data) => {
+            // Make sure this matches what you saved in AuthCallback ('authToken' or 'token')
+            const token = localStorage.getItem('authToken');
+
+            const payload = new FormData();
+            payload.append('title', data.title);
+            payload.append('content', data.content);
+            payload.append('tags', JSON.stringify(data.selectedTags || []));
+            if (data.coverImage) payload.append('coverImage', data.coverImage);
+
+            const res = await fetch('http://localhost:3000/api/posts', {
+                method: 'POST',
+                headers: token ? { Authorization: `Bearer ${token}` } : {},
+                body: payload,
+            });
+
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(
+                    err.message || `Publish failed (${res.status})`
+                );
+            }
+            return res.json();
+        },
+        // 2. Keep onSuccess and onError in the same object
+        onSuccess: (result) => {
+            setPublishSuccess('Story published successfully.');
+            setPublishError('');
+            const newId = result?.data?._id || result?.post?._id || result?.id;
+            if (newId) navigate(`/post/${newId}`);
+        },
+        onError: (err) => {
+            setPublishError(err.message || 'Failed to publish story');
+            setPublishSuccess('');
+        },
+    });
+
     const AVAILABLE_TAGS = [
         'Technology',
         'Health',
@@ -166,6 +214,7 @@ export const AddStory = () => {
         'Sports',
         'Lifestyle',
         'Politics',
+        'Entertainment',
     ];
 
     // --- Handlers ---
@@ -216,6 +265,17 @@ export const AddStory = () => {
 
     const triggerFileInput = () => {
         fileInputRef.current.click();
+    };
+
+    const handlePublish = (e) => {
+        if (e && e.preventDefault) e.preventDefault();
+        setPublishError('');
+        setPublishSuccess('');
+        if (!formData.title || !formData.content) {
+            setPublishError('Title and content are required.');
+            return;
+        }
+        publishMutation.mutate(formData);
     };
 
     return (
@@ -369,10 +429,23 @@ export const AddStory = () => {
                         <button className="px-6 py-3 text-gray-600 hover:text-gray-900 font-medium transition-colors hover:cursor-pointer">
                             Cancel
                         </button>
-                        <button className="px-8 py-3 bg-teal-600 text-white font-bold rounded-lg shadow-lg hover:bg-teal-700 transform transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 hover:cursor-pointer">
-                            Publish Story
+                        <button
+                            type="button"
+                            onClick={handlePublish}
+                            disabled={publishMutation.isLoading}
+                            className="px-8 py-3 bg-teal-600 text-white font-bold rounded-lg shadow-lg hover:bg-teal-700 transform transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 disabled:opacity-50"
+                        >
+                            {publishMutation.isLoading
+                                ? 'Publishing...'
+                                : 'Publish Story'}
                         </button>
                     </div>
+                    {publishError && (
+                        <p className="text-red-500 mt-3">{publishError}</p>
+                    )}
+                    {publishSuccess && (
+                        <p className="text-green-500 mt-3">{publishSuccess}</p>
+                    )}
                 </div>
             </div>
         </div>
@@ -818,7 +891,7 @@ export const LoginLayout = () => {
                     className="w-24 mb-4"
                 />
 
-                <div className=" border-b pb-1">
+                <div className=" border-b pb-0.5">
                     <p className="text-4xl font-medium text-center decoration-teal-500 decoration-2 max-md:text-2xl tracking-tighter mb-2">
                         Welcome to The Daily Dig,
                     </p>
@@ -828,7 +901,7 @@ export const LoginLayout = () => {
                 </div>
 
                 {/* Social Icons: Removed fixed width, used gap for spacing */}
-                <div className="flex flex-row gap-4 my-4 w-full justify-center">
+                <div className="flex flex-row gap-4 mt-6 w-full justify-center">
                     <button
                         type="button"
                         onClick={handleGoogleSignIn}

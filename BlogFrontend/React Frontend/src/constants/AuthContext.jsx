@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = ({ children, queryClient }) => {
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(null);
     // Add a loading state to prevent flickering
@@ -32,6 +32,7 @@ export const AuthProvider = ({ children }) => {
         setToken(null);
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+        queryClient.clear();
         navigate('/');
     };
 
