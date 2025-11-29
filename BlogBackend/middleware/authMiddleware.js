@@ -9,7 +9,8 @@ export const authMiddleware = (req, res, next) => {
     const token = req.header('Authorization')?.replace('Bearer ', '');
 
     if (!token) {
-        return res.status(401).json({ message: 'No token provided' });
+        // No token, proceed without user info
+        return next();
     }
 
     try {
@@ -23,9 +24,9 @@ export const authMiddleware = (req, res, next) => {
         const userId = decoded.userId || decoded.id;
 
         if (!userId) {
-            return res
-                .status(401)
-                .json({ message: 'Token is valid but contains no ID' });
+            // Token is valid but doesn't contain a user ID.
+            // Proceed without user info.
+            return next();
         }
 
         // 5. Attach to request
@@ -39,8 +40,10 @@ export const authMiddleware = (req, res, next) => {
 
         next();
     } catch (error) {
+        // Token is invalid (expired, etc.).
+        // Proceed without user info.
         console.error('Middleware Error:', error.message);
-        return res.status(401).json({ message: 'Invalid token' });
+        return next();
     }
 };
 

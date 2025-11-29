@@ -2,8 +2,8 @@ import express from 'express';
 import { authMiddleware } from '../middleware/authMiddleware.js';
 import { uploadPostImage } from '../middleware/uploadMiddleware.js';
 import {
-    getPosts,
-    getPost,
+    getAllPosts,
+    getPostById,
     createPost,
     updatePost,
     deletePost,
@@ -17,11 +17,11 @@ import {
 export const router = express.Router();
 
 // Public routes
-router.get('/', getPosts);
+router.get('/', getAllPosts);
 router.get('/search', searchPosts);
 router.get('/popular', getPopularPosts);
 router.get('/related/:id', getRelatedPosts);
-router.get('/:id', getPost);
+router.get('/:id', getPostById);
 
 // Protected routes
 router.post(

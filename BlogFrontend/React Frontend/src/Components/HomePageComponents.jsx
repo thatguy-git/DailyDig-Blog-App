@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { BlogCardsA } from './BlogCards.jsx';
 import { useAuth } from '../constants/AuthContext.jsx';
@@ -170,7 +170,7 @@ export const AddStory = () => {
         // 1. Move the async function to the 'mutationFn' property
         mutationFn: async (data) => {
             // Make sure this matches what you saved in AuthCallback ('authToken' or 'token')
-            const token = localStorage.getItem('authToken');
+            const token = localStorage.getItem('token');
 
             const payload = new FormData();
             payload.append('title', data.title);
@@ -496,10 +496,10 @@ export const SignupLayout = () => {
                 'Account created successfully! Redirecting to email verification...'
             );
             setError('');
-            setTimeout(
-                () => navigate(`/verify-email?email=${formData.email}`),
-                2000
-            );
+            // Navigate to the verification page with email and type
+            setTimeout(() => {
+                navigate(`/verify-otp?email=${formData.email}&type=verify`);
+            }, 2000);
         },
         onError: (error) => {
             setError(error.message);
@@ -521,6 +521,11 @@ export const SignupLayout = () => {
         signupMutation.mutate(formData);
     };
 
+    const handleGoogleSignUp = () => {
+        console.log('handleGoogleSignUp clicked');
+        window.location.href = 'http://localhost:3000/api/auth/google';
+    };
+
     return (
         // 1. Main Container: Centered, with padding for mobile safety
         <div className="flex flex-col items-center justify-center min-h-screen px-4 py-2 w-full">
@@ -532,66 +537,48 @@ export const SignupLayout = () => {
                     className="w-24"
                 />
 
-                <p className="tracking-tighter text-4xl font-medium text-center decoration-teal-500 decoration-2 max-md:text-2xl">
-                    Join us at The Daily Dig,
-                </p>
-
-                <p className="tracking-tighter text-xl font-base text-center decoration-teal-500 decoration-2 max-md:text-2xl">
-                    Create your Account
-                </p>
+                <div className="border-b pb-2 flex-col space-y-2">
+                    <p className="tracking-tighter text-4xl font-medium text-center decoration-teal-500 decoration-2 max-md:text-2xl">
+                        Join us at The Daily Dig
+                    </p>
+                    <p className="tracking-tighter text-xl font-base text-center decoration-teal-500 decoration-2 max-md:text-2xl">
+                        Create your Account
+                    </p>
+                </div>
 
                 {/* Social Icons */}
                 <div className="flex flex-row gap-4 w-full justify-center">
-                    <Link
-                        to="/"
-                        className="flex items-center justify-center w-16 h-12 rounded-full hover:bg-zinc-300 border border-zinc-100 shadow-sm transition"
-                    >
-                        {/* Google SVG */}
-                        <svg className="w-6 h-6" viewBox="0 0 48 48">
-                            <path
-                                fill="#4285F4"
-                                d="M24 9.5c3.5 0 6.6 1.2 9.1 3.2l6.8-6.8C35.6 2.1 30.2 0 24 0 14.6 0 6.4 5.5 2.5 13.5l7.9 6.1C12.5 13 17.8 9.5 24 9.5z"
-                            />
-                            <path
-                                fill="#34A853"
-                                d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.5c-.5 2.8-2 5.2-4.3 6.8l7.9 6.1c4.6-4.2 7.3-10.3 7.3-17.4z"
-                            />
-                            <path
-                                fill="#FBBC05"
-                                d="M10.4 28.1c-.5-1.3-.8-2.7-.8-4.1s.3-2.8.8-4.1l-7.9-6.1C.9 16.6 0 20.2 0 24s.9 7.4 2.5 10.2l7.9-6.1z"
-                            />
-                            <path
-                                fill="#EA4335"
-                                d="M24 48c6.5 0 12-2.1 16-5.8l-7.9-6.1c-2.2 1.5-5.1 2.4-8.1 2.4-6.2 0-11.5-4.2-13.6-9.9l-7.9 6.1C6.4 42.5 14.6 48 24 48z"
-                            />
-                        </svg>
-                    </Link>
-                    <Link
-                        to="/"
-                        className="flex items-center justify-center w-16 h-12 rounded-full hover:bg-zinc-300 border border-zinc-100 shadow-sm transition"
-                    >
-                        {/* Facebook SVG */}
-                        <svg
-                            className="w-6 h-6 text-blue-600"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
+                    {/* Google SVG */}
+                    <div className="flex flex-row gap-4 mt-2 w-full justify-center">
+                        <button
+                            type="button"
+                            onClick={handleGoogleSignUp}
+                            className="flex items-center justify-center w-auto px-4 py-2 h-12 rounded-lg hover:cursor-pointer hover:bg-zinc-300 border border-zinc-100 shadow-sm transition"
                         >
-                            <path d="M22 12a10 10 0 1 0-11.5 9.9v-7h-2v-3h2v-2c0-2 1.2-3 3-3 .9 0 1.8.1 1.8.1v2h-1c-1 0-1.3.6-1.3 1.2v1.7h2.2l-.4 3h-1.8v7A10 10 0 0 0 22 12z" />
-                        </svg>
-                    </Link>
-                    <Link
-                        to="/"
-                        className="flex items-center justify-center w-16 h-12 rounded-full hover:bg-zinc-300 border border-zinc-100 shadow-sm transition"
-                    >
-                        {/* Twitter SVG */}
-                        <svg
-                            className="w-6 h-6 text-blue-500"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path d="M23 3a10.9 10.9 0 0 1-3.1 1.5 4.5 4.5 0 0 0-7.7 4.1A12.8 12.8 0 0 1 3 4s-4 9 5 13a13.1 13.1 0 0 1-8 2c9 5 20 0 20-11.5a4.6 4.6 0 0 0-.1-1z" />
-                        </svg>
-                    </Link>
+                            <p className="text-base font-medium mr-2 tracking-tighter">
+                                Continue with Google
+                            </p>
+                            {/* Google Logo */}
+                            <svg className="w-6 h-6" viewBox="0 0 48 48">
+                                <path
+                                    fill="#4285F4"
+                                    d="M24 9.5c3.5 0 6.6 1.2 9.1 3.2l6.8-6.8C35.6 2.1 30.2 0 24 0 14.6 0 6.4 5.5 2.5 13.5l7.9 6.1C12.5 13 17.8 9.5 24 9.5z"
+                                />
+                                <path
+                                    fill="#34A853"
+                                    d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.5c-.5 2.8-2 5.2-4.3 6.8l7.9 6.1c4.6-4.2 7.3-10.3 7.3-17.4z"
+                                />
+                                <path
+                                    fill="#FBBC05"
+                                    d="M10.4 28.1c-.5-1.3-.8-2.7-.8-4.1s.3-2.8.8-4.1l-7.9-6.1C.9 16.6 0 20.2 0 24s.9 7.4 2.5 10.2l7.9-6.1z"
+                                />
+                                <path
+                                    fill="#EA4335"
+                                    d="M24 48c6.5 0 12-2.1 16-5.8l-7.9-6.1c-2.2 1.5-5.1 2.4-8.1 2.4-6.2 0-11.5-4.2-13.6-9.9l-7.9 6.1C6.4 42.5 14.6 48 24 48z"
+                                />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 <div className="text-center font-medium">Or</div>
@@ -599,10 +586,7 @@ export const SignupLayout = () => {
                 {/* Form: w-full ensures it takes the width of the parent (max-w-md) */}
                 <form onSubmit={handleSubmit} className="w-full flex flex-col">
                     {/* Input Group 1 */}
-                    <label
-                        className="font-medium text-left mb-1"
-                        htmlFor="name"
-                    >
+                    <label className="font-medium text-left " htmlFor="name">
                         Username
                     </label>
                     <input
@@ -612,14 +596,11 @@ export const SignupLayout = () => {
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        className="bg-white w-full h-12 rounded-lg px-4 shadow-lg mb-6 border border-gray-100"
+                        className="bg-white w-full h-10 rounded-lg px-4 shadow-lg mb-6 border border-gray-100"
                     />
 
                     {/* Input Group 2 */}
-                    <label
-                        className="font-medium text-left mb-1"
-                        htmlFor="email"
-                    >
+                    <label className="font-medium text-left " htmlFor="email">
                         Email
                     </label>
                     <input
@@ -629,12 +610,12 @@ export const SignupLayout = () => {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        className="bg-white w-full h-12 rounded-lg px-4 shadow-lg mb-6 border border-gray-100"
+                        className="bg-white w-full h-10 rounded-lg px-4 shadow-lg mb-6 border border-gray-100"
                     />
 
                     {/* Input Group 3 */}
                     <label
-                        className="font-medium text-left mb-1"
+                        className="font-medium text-left "
                         htmlFor="password"
                     >
                         Password
@@ -647,7 +628,7 @@ export const SignupLayout = () => {
                         onChange={handleChange}
                         required
                         placeholder="********"
-                        className="bg-white w-full h-12 rounded-lg px-4 shadow-lg mb-6 border border-gray-100"
+                        className="bg-white w-full h-10 rounded-lg px-4 shadow-lg mb-6 border border-gray-100"
                     />
 
                     {/* Error/Success Messages */}
@@ -692,6 +673,52 @@ export const SignupLayout = () => {
 };
 
 export const ResetPasswordLayout = () => {
+    const [email, setEmail] = useState('');
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
+    const navigate = useNavigate();
+
+    const mutation = useMutation({
+        mutationFn: async (email) => {
+            const response = await fetch(
+                'http://localhost:3000/api/auth/send-otp',
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email }),
+                }
+            );
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to send OTP');
+            }
+            return response.json();
+        },
+        onSuccess: (data) => {
+            setSuccess(data.message);
+            setError('');
+            // Navigate to OTP page for password reset
+            setTimeout(() => {
+                navigate(`/verify-otp?email=${email}&type=reset`);
+            }, 2000);
+        },
+        onError: (error) => {
+            setError(error.message);
+            setSuccess('');
+        },
+    });
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!email) {
+            setError('Please enter your email address.');
+            return;
+        }
+        setError('');
+        setSuccess('');
+        mutation.mutate(email);
+    };
+
     return (
         <div className="flex flex-col items-center justify-center min-h-screen px-4 py-8 w-full ">
             <div className="w-full max-w-md flex flex-col items-center bg-white/50 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-zinc-100">
@@ -703,47 +730,61 @@ export const ResetPasswordLayout = () => {
                 <p className="text-4xl font-medium text-center decoration-teal-500 decoration-2 max-md:text-2xl tracking-tighter ">
                     Reset Password
                 </p>
-                <div className="w-full flex flex-col">
-                    <p className="font-medium text-left my-2" for="email">
+                <form
+                    onSubmit={handleSubmit}
+                    className="w-full flex flex-col mt-4"
+                >
+                    <label
+                        className="font-medium text-left my-2"
+                        htmlFor="email"
+                    >
                         Email
-                    </p>
+                    </label>
                     <input
                         type="email"
                         id="email"
                         name="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         required
                         className="bg-white w-full h-12 px-4 rounded-lg shadow-lg mb-4"
                         placeholder="Enter your email"
                     />
-                    <br />
-                    <a className="" href="/verify-otp">
-                        <button
-                            className="bg-teal-800 text-white px-4 py-2 w-full rounded-lg hover:bg-teal-500 font-bold"
-                            type="button"
-                        >
-                            Send OTP
-                        </button>
-                        <br />
-                        <br />
-                    </a>
+                    {error && (
+                        <p className="text-red-500 text-center mb-2">{error}</p>
+                    )}
+                    {success && (
+                        <p className="text-green-500 text-center mb-2">
+                            {success}
+                        </p>
+                    )}
+                    <button
+                        className="bg-teal-800 text-white px-4 py-2 w-full rounded-lg hover:bg-teal-500 font-bold disabled:opacity-50"
+                        type="submit"
+                        disabled={mutation.isPending}
+                    >
+                        {mutation.isPending ? 'Sending...' : 'Send OTP'}
+                    </button>
+                </form>
+                <div className="w-full mt-4">
                     <div className="text-center w-full mb-4">
                         <p className="">
                             Remember your password?
-                            <a
-                                href="/login"
+                            <Link
+                                to="/login"
                                 className="inline-block align-baseline font-medium text-sm text-teal-500 hover:text-teal-800"
                             >
                                 Log in
-                            </a>
+                            </Link>
                         </p>
                         <p className="">
                             Don't have an account?
-                            <a
-                                href="/signup"
+                            <Link
+                                to="/signup"
                                 className="inline-block align-baseline font-medium text-sm text-teal-500 hover:text-teal-800"
                             >
                                 Sign up
-                            </a>
+                            </Link>
                         </p>
                     </div>
                 </div>
@@ -753,55 +794,159 @@ export const ResetPasswordLayout = () => {
 };
 
 export const VerifyOTPLayout = () => {
-    return (
-        <div className="container-2 flex flex-col items-center justify-center min-h-screen px-24 py-12">
-            <p className="text-4xl font-medium text-center decoration-teal-500 decoration-2 max-md:text-2xl tracking-tighter ">
-                Verify OTP
-            </p>
+    const [otp, setOtp] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
+    const navigate = useNavigate();
+    const { search } = useLocation();
+    const queryParams = new URLSearchParams(search);
+    const email = queryParams.get('email');
+    const type = queryParams.get('type'); // 'reset' or 'verify'
+    const isResetFlow = type === 'reset';
 
-            <div className="container-4  px-24 ">
-                <p className="font-medium text-left my-2" for="otp">
-                    Enter OTP
+    const verifyEmailMutation = useMutation({
+        mutationFn: (data) =>
+            fetch('http://localhost:3000/api/auth/verify-email-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            }).then((res) =>
+                res.ok
+                    ? res.json()
+                    : res.json().then((err) => {
+                          throw new Error(err.message);
+                      })
+            ),
+        onSuccess: (data) => {
+            setSuccess(data.message + ' Redirecting to login...');
+            setError('');
+            setTimeout(() => navigate('/login'), 3000);
+        },
+        onError: (error) => setError(error.message),
+    });
+
+    const resetPasswordMutation = useMutation({
+        mutationFn: async ({ email, otp, newPassword }) => {
+            // Step 1: Verify OTP to get tempToken
+            const verifyRes = await fetch(
+                'http://localhost:3000/api/auth/verify-otp',
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, otp }),
+                }
+            );
+            if (!verifyRes.ok)
+                throw new Error(
+                    (await verifyRes.json()).message || 'Invalid OTP'
+                );
+            const { tempToken } = await verifyRes.json();
+
+            // Step 2: Reset password with tempToken
+            const resetRes = await fetch(
+                'http://localhost:3000/api/auth/reset-password',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${tempToken}`,
+                    },
+                    body: JSON.stringify({ newPassword }),
+                }
+            );
+            if (!resetRes.ok)
+                throw new Error(
+                    (await resetRes.json()).message ||
+                        'Failed to reset password'
+                );
+            return resetRes.json();
+        },
+        onSuccess: (data) => {
+            setSuccess(data.message + ' Redirecting to login...');
+            setError('');
+            setTimeout(() => navigate('/login'), 3000);
+        },
+        onError: (error) => setError(error.message),
+    });
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setError('');
+        setSuccess('');
+        if (isResetFlow) {
+            if (!newPassword) return setError('New password is required.');
+            resetPasswordMutation.mutate({ email, otp, newPassword });
+        } else {
+            verifyEmailMutation.mutate({ email, otp });
+        }
+    };
+
+    return (
+        <div className="flex flex-col items-center justify-center min-h-screen px-4 py-8 w-full">
+            <div className="w-full max-w-md flex flex-col items-center bg-white/50 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-zinc-100">
+                <p className="text-4xl font-medium text-center decoration-teal-500 decoration-2 max-md:text-2xl tracking-tighter mb-4">
+                    {isResetFlow ? 'Set New Password' : 'Verify Your Email'}
                 </p>
-                <input
-                    type="text"
-                    id="otp"
-                    name="otp"
-                    required
-                    className="bg-white w-full h-12 px-4 rounded-lg shadow-lg mb-4"
-                    placeholder="Enter the OTP sent to your email"
-                />
-                <br />
-                <a className="" href="/new-password">
+                <p className="text-center text-gray-600 mb-4">
+                    An OTP has been sent to <strong>{email}</strong>.
+                </p>
+                <form onSubmit={handleSubmit} className="w-full flex flex-col">
+                    <label className="font-medium text-left my-2" htmlFor="otp">
+                        Enter OTP
+                    </label>
+                    <input
+                        type="text"
+                        id="otp"
+                        name="otp"
+                        value={otp}
+                        onChange={(e) => setOtp(e.target.value)}
+                        required
+                        className="bg-white w-full h-12 px-4 rounded-lg shadow-lg mb-4"
+                        placeholder="6-digit code"
+                    />
+                    {isResetFlow && (
+                        <>
+                            <label
+                                className="font-medium text-left my-2"
+                                htmlFor="password"
+                            >
+                                New Password
+                            </label>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                value={newPassword}
+                                onChange={(e) => setNewPassword(e.target.value)}
+                                required
+                                className="bg-white w-full h-12 px-4 rounded-lg shadow-lg mb-4"
+                                placeholder="Enter new password"
+                            />
+                        </>
+                    )}
+                    {error && (
+                        <p className="text-red-500 text-center mb-2">{error}</p>
+                    )}
+                    {success && (
+                        <p className="text-green-500 text-center mb-2">
+                            {success}
+                        </p>
+                    )}
                     <button
-                        className="bg-teal-800 text-white px-4 py-2 w-full rounded-lg hover:bg-teal-500 font-bold"
-                        type="button"
+                        className="bg-teal-800 text-white px-4 py-2 w-full rounded-lg hover:bg-teal-500 font-bold disabled:opacity-50"
+                        type="submit"
+                        disabled={
+                            verifyEmailMutation.isPending ||
+                            resetPasswordMutation.isPending
+                        }
                     >
-                        Verify OTP
+                        {verifyEmailMutation.isPending ||
+                        resetPasswordMutation.isPending
+                            ? 'Verifying...'
+                            : 'Verify & Proceed'}
                     </button>
-                    <br />
-                    <br />
-                </a>
-                <div className="text-center w-full mb-4">
-                    <p className="">
-                        Didn't receive OTP?
-                        <a
-                            href="/reset-password"
-                            className="inline-block align-baseline font-medium text-sm text-teal-500 hover:text-teal-800"
-                        >
-                            Resend OTP
-                        </a>
-                    </p>
-                    <p className="">
-                        Remember your password?
-                        <a
-                            href="/login"
-                            className="inline-block align-baseline font-medium text-sm text-teal-500 hover:text-teal-800"
-                        >
-                            Log in
-                        </a>
-                    </p>
-                </div>
+                </form>
             </div>
         </div>
     );
@@ -893,7 +1038,7 @@ export const LoginLayout = () => {
 
                 <div className=" border-b pb-0.5">
                     <p className="text-4xl font-medium text-center decoration-teal-500 decoration-2 max-md:text-2xl tracking-tighter mb-2">
-                        Welcome to The Daily Dig,
+                        Welcome to The Daily Dig
                     </p>
                     <p className="text-xl font-base text-center decoration-teal-500 decoration-2 max-md:text-xl tracking-tighter mb-2">
                         Log in to your account
@@ -950,7 +1095,7 @@ export const LoginLayout = () => {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        className="bg-white w-full h-12 px-4 rounded-lg shadow-lg mb-4 border border-gray-100"
+                        className="bg-white w-full h-10 px-4 rounded-lg shadow-lg mb-4 border border-gray-100"
                     />
 
                     <label
@@ -966,7 +1111,7 @@ export const LoginLayout = () => {
                         name="password"
                         value={formData.password}
                         onChange={handleChange}
-                        className="bg-white w-full h-12 rounded-lg px-4 shadow-lg mb-6 border border-gray-100"
+                        className="bg-white w-full h-10 rounded-lg px-4 shadow-lg mb-6 border border-gray-100"
                         required
                         placeholder="********"
                     />

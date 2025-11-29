@@ -1,20 +1,24 @@
-import express from "express";
-import { authMiddleware } from "../middleware/authMiddleware.js";
+import express from 'express';
 import {
     createComment,
     getComments,
     updateComment,
     deleteComment,
-    likeComment
-} from "../controller/commentController.js";
+    likeComment,
+} from '../controller/commentController.js';
+import authMiddleware from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// Comment routes
-router.post("/:postId", authMiddleware, createComment);
-router.get("/:postId", getComments);
-router.put("/:commentId", authMiddleware, updateComment);
-router.delete("/:commentId", authMiddleware, deleteComment);
-router.post("/:commentId/like", authMiddleware, likeComment);
+// Routes for a specific post's comments
+router.route('/:postId').post(authMiddleware, createComment).get(getComments);
+
+// Routes for a specific comment
+router
+    .route('/:commentId')
+    .put(authMiddleware, updateComment)
+    .delete(authMiddleware, deleteComment);
+
+router.route('/:commentId/like').put(authMiddleware, likeComment);
 
 export default router;

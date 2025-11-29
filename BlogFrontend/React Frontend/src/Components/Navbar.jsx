@@ -3,34 +3,9 @@ import { NavLink, Link } from 'react-router-dom';
 import { HiMenu, HiOutlineMenu } from 'react-icons/hi';
 import { LogOut } from 'lucide-react';
 import { useAuth } from '../constants/AuthContext.jsx';
-import { useQuery } from '@tanstack/react-query';
-
-const fetchCurrentUser = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) return null;
-    const res = await fetch('http://localhost:3000/api/user/profile', {
-        headers: { Authorization: `Bearer ${token}` },
-    });
-    if (!res.ok) return null;
-    const body = await res.json();
-    return body.user;
-};
 
 const Navbar = (props) => {
-    const { user, logout, setUser } = useAuth();
-
-    const { data: currentUser } = useQuery({
-        queryKey: ['currentUser'],
-        queryFn: fetchCurrentUser,
-        enabled: !!localStorage.getItem('token'),
-        staleTime: 1000 * 60 * 5,
-    });
-
-    useEffect(() => {
-        if (currentUser) {
-            setUser(currentUser);
-        }
-    }, [currentUser, setUser]);
+    const { user, logout } = useAuth();
 
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const profileRef = useRef(null);
@@ -69,11 +44,13 @@ const Navbar = (props) => {
     return (
         <nav className="bg-zinc-400/20 p-0 mx-0 rounded-b-md shadow-lg sticky top-0 z-10 backdrop-blur-sm">
             <div className="container mx-auto flex justify-between items-center w-full">
-                <img
-                    src="/blog_logo-removebg-preview.png"
-                    alt="Logo"
-                    className="w-20"
-                />
+                <Link to="/">
+                    <img
+                        src="/blog_logo-removebg-preview.png"
+                        alt="Logo"
+                        className="w-20"
+                    />
+                </Link>
                 <div className="flex items-center space-x-8 px-8">
                     <div className="relative"></div>
                 </div>

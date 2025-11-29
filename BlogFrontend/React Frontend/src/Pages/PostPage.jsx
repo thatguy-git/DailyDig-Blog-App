@@ -8,9 +8,11 @@ import CommentSection from '../Components/CommentSection.jsx';
 
 export const PostPage = () => {
     const { id } = useParams();
+    console.log(id === '6929a343d528a1813266f222'); //debug log
     const navigate = useNavigate();
     // Get token and user from context; derive isLoggedIn
     const { user, token } = useAuth();
+    console.log('Auth context - user:', user, 'token:', token); //debug log
     const isLoggedIn = !!token || !!user;
     const [isLiked, setIsLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(0);
@@ -20,7 +22,7 @@ export const PostPage = () => {
         isLoading,
         error,
     } = useQuery({
-        queryKey: ['post', id],
+        queryKey: ['post', id, user?._id],
         queryFn: async () => {
             const headers = {
                 'Content-Type': 'application/json',
@@ -37,6 +39,9 @@ export const PostPage = () => {
                 throw new Error('Failed to fetch post');
             }
             const result = await response.json();
+            console.log('Fetched result data:', result);
+            console.log('Fetched post data:', post); //debug log
+            console.log('biyachhh', post === result.data); //debug log
             return result.data;
         },
         onSuccess: (data) => {
@@ -177,7 +182,7 @@ export const PostPage = () => {
                     {/* Back Button */}
                     <button
                         onClick={handleBackToBlog}
-                        className="mb-6 px-2 py-1 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition duration-300 hover:cursor-pointer"
+                        className="mb-6 px-2 py-1 bg-teal-600 text-white rounded-sm hover:bg-teal-700 transition duration-300 hover:cursor-pointer"
                     >
                         ←Back
                     </button>
@@ -192,7 +197,6 @@ export const PostPage = () => {
                                 />
                             </div>
                         )}
-                        {/* Border starts from here */}
 
                         {/* Post Title */}
                         <h1 className="text-4xl tracking-tight font-bold mb-6">
@@ -202,7 +206,7 @@ export const PostPage = () => {
                         <div className="flex items-center mb-8">
                             {post.author?.profileImage && (
                                 <img
-                                    src={post.author.profileImage}
+                                    src={post.author.profileImage.url}
                                     alt={post.author.name}
                                     className="w-12 h-12 rounded-full mr-4"
                                 />
@@ -245,7 +249,7 @@ export const PostPage = () => {
                                             !isLoggedIn ||
                                             likeMutation.isPending
                                         }
-                                        className={`flex items-center space-x-1 px-3 py-1 rounded-lg transition-colors ${
+                                        className={`flex items-center space-x-1 px-3 py-1 rounded-sm transition-colors ${
                                             isLiked
                                                 ? 'bg-zinc-400/30 text-red-600 hover:bg-red-200'
                                                 : 'bg-zinc-400/30 text-gray-600 hover:bg-zinc-200'
@@ -279,7 +283,7 @@ export const PostPage = () => {
                                                     );
                                                 });
                                         }}
-                                        className="px-3 py-1 bg-teal-600 text-white hover:cursor-pointer rounded-md hover:bg-teal-400 transition-colors"
+                                        className="px-3 py-1 bg-teal-600 text-white hover:cursor-pointer rounded-sm hover:bg-teal-400 transition-colors"
                                     >
                                         Share
                                     </button>

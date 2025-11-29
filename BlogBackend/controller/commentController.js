@@ -1,5 +1,5 @@
-import Comment from "../model/commentModel.js";
-import Post from "../model/postModel.js";
+import Comment from '../model/commentModel.js';
+import Post from '../model/postModel.js';
 
 // Create a new comment on a post
 export const createComment = async (req, res) => {
@@ -11,7 +11,7 @@ export const createComment = async (req, res) => {
         if (!content || !content.trim()) {
             return res.status(400).json({
                 success: false,
-                message: "Comment content is required"
+                message: 'Comment content is required',
             });
         }
 
@@ -20,29 +20,29 @@ export const createComment = async (req, res) => {
         if (!post || !post.published) {
             return res.status(404).json({
                 success: false,
-                message: "Post not found"
+                message: 'Post not found',
             });
         }
 
         const comment = new Comment({
             content: content.trim(),
             author: userId,
-            post: postId
+            post: postId,
         });
 
         const savedComment = await comment.save();
-        await savedComment.populate('author', 'name username');
+        await savedComment.populate('author', 'name username profileImage');
 
         res.status(201).json({
             success: true,
-            message: "Comment created successfully",
-            data: savedComment
+            message: 'Comment created successfully',
+            data: savedComment,
         });
     } catch (error) {
-        console.error("Error creating comment:", error);
+        console.error('Error creating comment:', error);
         res.status(500).json({
             success: false,
-            message: "Internal server error"
+            message: 'Internal server error',
         });
     }
 };
@@ -60,22 +60,22 @@ export const getComments = async (req, res) => {
         if (!post) {
             return res.status(404).json({
                 success: false,
-                message: "Post not found"
+                message: 'Post not found',
             });
         }
 
         const comments = await Comment.find({
             post: postId,
-            isDeleted: false
+            isDeleted: false,
         })
-        .populate('author', 'name username')
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit);
+            .populate('author', 'name username profileImage')
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
 
         const totalComments = await Comment.countDocuments({
             post: postId,
-            isDeleted: false
+            isDeleted: false,
         });
 
         res.status(200).json({
@@ -86,19 +86,19 @@ export const getComments = async (req, res) => {
                 totalPages: Math.ceil(totalComments / limit),
                 totalComments,
                 hasNextPage: page * limit < totalComments,
-                hasPrevPage: page > 1
-            }
+                hasPrevPage: page > 1,
+            },
         });
     } catch (error) {
-        console.error("Error fetching comments:", error);
+        console.error('Error fetching comments:', error);
         res.status(500).json({
             success: false,
-            message: "Internal server error"
+            message: 'Internal server error',
         });
     }
 };
 
-// Update a comment
+// Update a comment //not functional yet
 export const updateComment = async (req, res) => {
     try {
         const { content } = req.body;
@@ -108,7 +108,7 @@ export const updateComment = async (req, res) => {
         if (!content || !content.trim()) {
             return res.status(400).json({
                 success: false,
-                message: "Comment content is required"
+                message: 'Comment content is required',
             });
         }
 
@@ -117,7 +117,7 @@ export const updateComment = async (req, res) => {
         if (!comment || comment.isDeleted) {
             return res.status(404).json({
                 success: false,
-                message: "Comment not found"
+                message: 'Comment not found',
             });
         }
 
@@ -125,24 +125,24 @@ export const updateComment = async (req, res) => {
         if (comment.author.toString() !== userId) {
             return res.status(403).json({
                 success: false,
-                message: "Access denied"
+                message: 'Access denied',
             });
         }
 
         comment.content = content.trim();
         const updatedComment = await comment.save();
-        await updatedComment.populate('author', 'name username');
+        await updatedComment.populate('author', 'name username profileImage');
 
         res.status(200).json({
             success: true,
-            message: "Comment updated successfully",
-            data: updatedComment
+            message: 'Comment updated successfully',
+            data: updatedComment,
         });
     } catch (error) {
-        console.error("Error updating comment:", error);
+        console.error('Error updating comment:', error);
         res.status(500).json({
             success: false,
-            message: "Internal server error"
+            message: 'Internal server error',
         });
     }
 };
@@ -158,7 +158,7 @@ export const deleteComment = async (req, res) => {
         if (!comment || comment.isDeleted) {
             return res.status(404).json({
                 success: false,
-                message: "Comment not found"
+                message: 'Comment not found',
             });
         }
 
@@ -170,7 +170,7 @@ export const deleteComment = async (req, res) => {
         if (!isAuthor && !isPostAuthor) {
             return res.status(403).json({
                 success: false,
-                message: "Access denied"
+                message: 'Access denied',
             });
         }
 
@@ -179,13 +179,13 @@ export const deleteComment = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: "Comment deleted successfully"
+            message: 'Comment deleted successfully',
         });
     } catch (error) {
-        console.error("Error deleting comment:", error);
+        console.error('Error deleting comment:', error);
         res.status(500).json({
             success: false,
-            message: "Internal server error"
+            message: 'Internal server error',
         });
     }
 };
@@ -200,7 +200,7 @@ export const likeComment = async (req, res) => {
         if (!comment || comment.isDeleted) {
             return res.status(404).json({
                 success: false,
-                message: "Comment not found"
+                message: 'Comment not found',
             });
         }
 
@@ -208,32 +208,32 @@ export const likeComment = async (req, res) => {
 
         if (isLiked) {
             // Unlike the comment
-            await Comment.findByIdAndUpdate(commentId, {
-                $pull: { likes: userId },
-                $inc: { likeCount: -1 }
-            });
+            comment.likes.pull(userId);
+            comment.likeCount -= 1;
+            await comment.save();
             res.json({
                 success: true,
-                message: "Comment unliked",
-                liked: false
+                message: 'Comment unliked',
+                liked: false,
+                likeCount: comment.likeCount,
             });
         } else {
             // Like the comment
-            await Comment.findByIdAndUpdate(commentId, {
-                $addToSet: { likes: userId },
-                $inc: { likeCount: 1 }
-            });
+            comment.likes.addToSet(userId);
+            comment.likeCount += 1;
+            await comment.save();
             res.json({
                 success: true,
-                message: "Comment liked",
-                liked: true
+                message: 'Comment liked',
+                liked: true,
+                likeCount: comment.likeCount,
             });
         }
     } catch (error) {
-        console.error("Error liking/unliking comment:", error);
+        console.error('Error liking/unliking comment:', error);
         res.status(500).json({
             success: false,
-            message: "Internal server error"
+            message: 'Internal server error',
         });
     }
 };

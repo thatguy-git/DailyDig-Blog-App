@@ -20,6 +20,35 @@ export const AuthProvider = ({ children, queryClient }) => {
         setLoading(false);
     }, []);
 
+    // Add this effect to sync logout across tabs
+    useEffect(() => {
+        const syncLogout = (event) => {
+            if (event.key === 'token' && !event.newValue) {
+                console.log('Token removed from storage, logging out.');
+                setToken(null);
+                setUser(null);
+                if (queryClient) {
+                    queryClient.clear();
+                }
+                navigate('/');
+            } else if (event.key === 'user' && !event.newValue) {
+                console.log('User removed from storage, logging out.');
+                setToken(null);
+                setUser(null);
+                if (queryClient) {
+                    queryClient.clear();
+                }
+                navigate('/');
+            }
+        };
+
+        window.addEventListener('storage', syncLogout);
+
+        return () => {
+            window.removeEventListener('storage', syncLogout);
+        };
+    }, [navigate, queryClient]);
+
     const login = (newToken, userData) => {
         setUser(userData);
         setToken(newToken);
@@ -32,6 +61,8 @@ export const AuthProvider = ({ children, queryClient }) => {
         setToken(null);
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+        // Also clear the old, stale key as a safety measure
+        localStorage.removeItem('authToken');
         queryClient.clear();
         navigate('/');
     };
@@ -59,7 +90,7 @@ export const AuthProvider = ({ children, queryClient }) => {
             if (response.ok) {
                 const userData = await response.json();
                 // 3. Now we have both Token AND User Data -> Login fully
-                login(newToken, userData);
+                login(newToken, userData.user);
                 return true;
             } else {
                 console.error('Failed to fetch user profile');

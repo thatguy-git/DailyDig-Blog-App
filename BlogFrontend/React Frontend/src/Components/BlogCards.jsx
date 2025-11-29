@@ -269,7 +269,7 @@ const BlogCardC1 = ({ blog = {} }) => {
                     <p className="text-4xl tracking-tight font-bold leading-tight line-clamp-2">
                         {title}
                     </p>
-                    <p className="text-lg my-2 line-clamp-2">{introText}</p>
+                    <p className="text-lg my-2 line-clamp-3">{introText}</p>
                 </div>
             </div>
         </Link>

@@ -8,10 +8,12 @@ if (!EMAIL_USER || !EMAIL_PASS) {
 }
 
 export const transporter = nodemailer.createTransport({
-    service: 'Gmail',
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false, // use true for port 465, false for all other ports
     auth: {
         user: EMAIL_USER,
-        pass: EMAIL_PASS
+        pass: EMAIL_PASS,
     },
 });
 

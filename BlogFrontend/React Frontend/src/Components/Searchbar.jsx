@@ -21,11 +21,11 @@ const Searchbar = ({ onSearch }) => {
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Search blogs..."
-                className="w-full px-4 py-2 border border-zinc-300 rounded-l-full focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white/80 backdrop-blur-sm"
+                className="w-full px-4 py-2 border border-zinc-300 rounded-l-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white/80 backdrop-blur-sm"
             />
             <button
                 onClick={handleSearch}
-                className="px-4 py-2 bg-teal-500 text-white rounded-r-full hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="hover:cursor-pointer px-4 py-2 bg-teal-500 text-white rounded-r-sm hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500"
             >
                 Search
             </button>
