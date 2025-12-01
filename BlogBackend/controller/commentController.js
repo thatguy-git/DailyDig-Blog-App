@@ -31,7 +31,10 @@ export const createComment = async (req, res) => {
         });
 
         const savedComment = await comment.save();
-        await savedComment.populate('author', 'name username profileImage');
+        await savedComment.populate(
+            'author',
+            '_id name username profileImage'
+        );
 
         res.status(201).json({
             success: true,
@@ -68,7 +71,7 @@ export const getComments = async (req, res) => {
             post: postId,
             isDeleted: false,
         })
-            .populate('author', 'name username profileImage')
+            .populate('author', '_id name username profileImage')
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit);
@@ -131,7 +134,7 @@ export const updateComment = async (req, res) => {
 
         comment.content = content.trim();
         const updatedComment = await comment.save();
-        await updatedComment.populate('author', 'name username profileImage');
+        await updatedComment.populate('author', '_id name username profileImage');
 
         res.status(200).json({
             success: true,
