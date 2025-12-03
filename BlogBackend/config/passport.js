@@ -44,6 +44,7 @@ passport.use(
                         email,
                         username,
                         profileImage: { url: profile.photos?.[0]?.value },
+                        isVerified: true,
                         // omit password for social accounts
                     });
                 }
@@ -97,30 +98,30 @@ passport.use(
 // );
 
 // Twitter
-passport.use(
-    new TwitterStrategy(
-        {
-            consumerKey: process.env.TWITTER_CLIENT_ID,
-            consumerSecret: process.env.TWITTER_CLIENT_SECRET,
-            callbackURL: process.env.TWITTER_CALLBACK_URL,
-            includeEmail: true,
-        },
-        async (token, tokenSecret, profile, done) => {
-            try {
-                let user = await User.findOne({ twitterId: profile.id });
-                if (!user) {
-                    user = await User.create({
-                        twitterId: profile.id,
-                        name: profile.displayName || profile.username,
-                        email: profile.emails?.[0]?.value, // may be undefined if not provided
-                        username: profile.username || `tw_${profile.id}`,
-                        profileImage: { url: profile.photos?.[0]?.value },
-                    });
-                }
-                return done(null, user);
-            } catch (error) {
-                return done(error, null);
-            }
-        }
-    )
-);
+// passport.use(
+//     new TwitterStrategy(
+//         {
+//             consumerKey: process.env.TWITTER_CLIENT_ID,
+//             consumerSecret: process.env.TWITTER_CLIENT_SECRET,
+//             callbackURL: process.env.TWITTER_CALLBACK_URL,
+//             includeEmail: true,
+//         },
+//         async (token, tokenSecret, profile, done) => {
+//             try {
+//                 let user = await User.findOne({ twitterId: profile.id });
+//                 if (!user) {
+//                     user = await User.create({
+//                         twitterId: profile.id,
+//                         name: profile.displayName || profile.username,
+//                         email: profile.emails?.[0]?.value, // may be undefined if not provided
+//                         username: profile.username || `tw_${profile.id}`,
+//                         profileImage: { url: profile.photos?.[0]?.value },
+//                     });
+//                 }
+//                 return done(null, user);
+//             } catch (error) {
+//                 return done(error, null);
+//             }
+//         }
+//     )
+// );

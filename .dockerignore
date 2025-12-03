@@ -1,0 +1,7 @@
+node_modules
+BlogFrontend/React-frontend/node_modules
+.git
+.env
+.gitignore
+docker-compose.yml
+README.md

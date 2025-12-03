@@ -31,7 +31,7 @@ export const createPost = async (req, res) => {
             title,
             content,
             author: authorId,
-            tags: tags ? JSON.parse(tags) : [],
+            tags: tags ? tags.split(',').map((tag) => tag.trim()) : [],
             featuredImage,
             published: true, // Or based on a request body field
         });
@@ -50,6 +50,75 @@ export const createPost = async (req, res) => {
         });
     } catch (error) {
         console.error('Error creating post:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+// Get featured posts (latest 4)
+export const getFeaturedPosts = async (req, res) => {
+    try {
+        const featuredPosts = await Post.find({ published: true })
+            .sort({ createdAt: -1 })
+            .limit(4)
+            .populate('author', 'name');
+
+        const postsWithIntro = featuredPosts.map((post) => {
+            const postObject = post.toObject();
+            postObject.intro = extractIntro(post.content);
+            return postObject;
+        });
+
+        res.status(200).json({ success: true, data: postsWithIntro });
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+// Get posts marked as editor picks
+export const getEditorPicksPosts = async (req, res) => {
+    try {
+        const editorPicksPosts = await Post.find({
+            published: true,
+            isEditorPick: true,
+        })
+            .sort({ createdAt: -1 })
+            .limit(5)
+            .populate('author', 'name');
+
+        const postsWithIntro = editorPicksPosts.map((post) => {
+            const postObject = post.toObject();
+            postObject.intro = extractIntro(post.content);
+            return postObject;
+        });
+
+        res.status(200).json({ success: true, data: postsWithIntro });
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+// Get posts with the most comments (highlights)
+export const getHighlightsPosts = async (req, res) => {
+    try {
+        const highlightsPosts = await Post.find({ published: true })
+            .sort({ 'comments.length': -1 })
+            .limit(9)
+            .populate('author', 'name');
+        res.status(200).json({ success: true, data: highlightsPosts });
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+// Get recent posts (latest 10)
+export const getRecentPosts = async (req, res) => {
+    try {
+        const recentPosts = await Post.find({ published: true })
+            .sort({ createdAt: -1 })
+            .limit(10)
+            .populate('author', 'name');
+        res.status(200).json({ success: true, data: recentPosts });
+    } catch (error) {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
@@ -156,6 +225,7 @@ export const searchPosts = async (req, res) => {
             data: posts,
         });
     } catch (error) {
+        console.log('Error searching posts:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };
@@ -165,7 +235,7 @@ export const getPopularPosts = async (req, res) => {
     try {
         const popularPosts = await Post.find({ published: true })
             .sort({ likeCount: -1 })
-            .limit(5) // Get top 5 popular posts
+            .limit(20) // Get top 5 popular posts
             .populate('author', 'name');
         res.status(200).json({ success: true, data: popularPosts });
     } catch (error) {

@@ -50,16 +50,8 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Debug middleware
-app.use((req, res, next) => {
-    console.log('Request URL:', req.url);
-    console.log('Request Method:', req.method);
-    console.log('Request Body:', req.body);
-    next();
-});
-
 // Routes
-app.use('/api/user', route);
+app.use('/api/users', route);
 app.use('/api/auth', authRoute);
 app.use('/api/posts', postRoute);
 app.use('/api/comments', commentRoute);

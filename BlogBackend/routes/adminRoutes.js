@@ -15,6 +15,7 @@ import {
     getAllPosts,
     updatePostByAdmin,
     deletePostByAdmin,
+    toggleIsEditorPick,
 } from '../controller/adminController.js';
 import {
     authMiddleware,
@@ -42,6 +43,7 @@ router.delete('/contacts/:contactId', deleteContactMessage);
 router.get('/posts', getAllPosts);
 router.put('/posts/:id', updatePostByAdmin);
 router.delete('/posts/:id', deletePostByAdmin);
+router.put('/posts/:id/toggle-editor-pick', toggleIsEditorPick);
 
 // Security and Maintenance routes
 router.get('/system/health', getSystemHealth);

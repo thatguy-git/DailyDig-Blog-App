@@ -474,6 +474,7 @@ export const getAllPosts = async (req, res) => {
                     content: 1,
                     tags: 1,
                     published: 1,
+                    isEditorPick: 1,
                     createdAt: 1,
                     updatedAt: 1,
                     likeCount: 1,
@@ -552,6 +553,43 @@ export const deletePostByAdmin = async (req, res) => {
         });
     } catch (error) {
         console.error('Error deleting post:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+export const toggleIsEditorPick = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const post = await Post.findById(id);
+        if (!post) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
+
+        // If the post is not currently an editor pick, check the limit
+        if (!post.isEditorPick) {
+            const editorPicksCount = await Post.countDocuments({
+                isEditorPick: true,
+            });
+            if (editorPicksCount >= 5) {
+                return res.status(400).json({
+                    message:
+                        "You can only have a maximum of 5 Editor's Picks.",
+                });
+            }
+        }
+
+        post.isEditorPick = !post.isEditorPick;
+        await post.save();
+
+        res.status(200).json({
+            message: `Post has been ${
+                post.isEditorPick ? 'selected as' : 'removed from'
+            } an Editor's Pick.`,
+            post,
+        });
+    } catch (error) {
+        console.error("Error toggling Editor's Pick:", error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };

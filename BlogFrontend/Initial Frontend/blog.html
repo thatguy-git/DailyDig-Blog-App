@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>blog</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=TASA+Explorer:wght@400..800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Asimovian&display=swap" rel="stylesheet">
+</head>
+<body class="bg-zinc-200 mx-4" style="font-family: TASA Explorer", sans-serif;>
+    <div class="container-1 flex bg-zinc-400/30 h-24 sticky top-0 rounded-b-lg backdrop-blur-md shadow z-50 max-md:h-20 transition-all duration-300" id="navbar-container">
+        <div class="flex flex-row justify-between items-center p-4 w-full max-md:px-0">
+            <img src="Images/blog_logo-removebg-preview.png" alt="Sample Image" class="w-32 max-md:w-24 ">
+            <div class="flex flex-row space-x-4">
+                <button id="mobile-menu-button" class="max-md:block md:hidden p-4 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                        </path>
+                    </svg>
+                </button>
+                <a href="about.html" class="p-8 hover:text-teal-500 max-md:hidden">About Us</a>
+                <a href="contact.html" class="p-8 hover:text-teal-500 max-md:hidden">Contact Us</a>
+                <a href="blog.html" class="p-8 hover:text-teal-500 max-md:hidden">Blog</a>
+                <a href="signup.html" class="p-8 hover:text-teal-500 max-md:hidden">Sign Up</a>
+            </div>
+        </div>
+        <!--mobile menu -->
+        <div id="mobile-menu" class="fixed w-full rounded-b-lg backdrop-blur-xl bg-white/40 px-4 z-40 top-20 opacity-0 invisible transition-all duration-300">
+            <div class="flex flex-col items-center py-4 space-y-4">
+                <a href="about.html" class="py-2 text-xl hover:text-teal-500 backdrop-blur-xl">About Us</a>
+                <a href="contact.html" class="py-2 text-xl hover:text-teal-500">Contact Us</a>
+                <a href="blog.html" class="py-2 text-xl hover:text-teal-500">Blog</a>
+                <a href="signup.html" class="py-2 text-xl hover:text-teal-500">Sign Up</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-2">
+        <div class="flex flex-row w-full space-x-4 my-2 h-24 max-md:h-48 max-md:gap-1">
+            <a href="#" class="w-1/4 h-full max-md:w-1/2" id="readMoreLink">
+                <div class="flex flex-row max-md:flex-col border-2 border-r-zinc-400 max-md:border-none">
+                    <div class="shrink-0 rounded-lg">
+                        <img src="Images/blog banner.png" alt="" class="w-28 h-20 max-md:w-full max-md:h-32 rounded-lg object-cover transform transition-transform duration-300 ease-in-out
+                        hover:scale-y-125">
+                    </div>
+                    <div class="p-2">
+                        <p class="text-sm">FEBRUARY 12TH, 2025</p>
+                        <p class="text-base tracking-tight font-bold leading-tight">10 Simple Habits for a More Fufilling Life</p>
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="w-1/4 h-full max-md:w-1/2" id="readMoreLink">
+                <div class="flex flex-row max-md:flex-col border-2 border-r-zinc-400 max-md:border-none">
+                    <div class="shrink-0 rounded-lg">
+                        <img src="Images/blog banner.png" alt="" class="w-28 h-20 max-md:w-full max-md:h-32 rounded-lg object-cover transform transition-transform duration-300 ease-in-out
+                                    hover:scale-y-125">
+                    </div>
+                    <div class="p-2">
+                        <p class="text-sm">FEBRUARY 12TH, 2025</p>
+                        <p class="text-base tracking-tight font-bold leading-tight">10 Simple Habits for a More Fufilling Life</p>
+                    </div>
+                </div>
+            </a>
+            <a href="#" class= "w-1/4 h-full max-md:hidden">
+                <div class="flex flex-row border-2 border-r-zinc-400">
+                    <div class="shrink-0 rounded-lg">
+                        <img src="Images/blog banner.png" alt="" class="w-28 h-20 rounded-lg object-cover transform transition-transform duration-300 ease-in-out
+                        hover:scale-y-125">
+                    </div>
+                    <div class="p-2">
+                        <p class="text-sm">APRIL 3RD, 2025</p>
+                        <p class="text-base tracking-tight font-bold leading-tight">Morning vs. Night Routines:
+                            What's the Difference?</p>
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="w-1/4 h-full max-md:hidden ">
+                <div class="flex flex-row border-2 ">
+                    <div class="shrink-0 rounded-lg">
+                        <img src="Images/blog banner.png" alt="" class="w-28 h-20 rounded-lg object-cover transform transition-transform duration-300 ease-in-out
+                        hover:scale-y-125">
+                    </div>
+                    <div class="p-2">
+                        <p class="text-sm">JANUARY 28TH, 2025</p>
+                        <p class="text-base tracking-tight font-bold leading-tight">5 SuperFoods You Should be Eating </p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <a href="#" class="w-full">
+            <div class=" my-8 border-2 border-b-zinc-400 pb-6">
+                <!--container that controls zoom area -->
+                <div class="relative w-full h-[425px] rounded-lg overflow-hidden group">
+                    <!--the zooming image -->
+                    <img src="Images/blog banner.png" alt="banner"
+                        class="w-full h-full object-cover transform transition-transform duration-500 ease-in-out group-hover:scale-110">
+                    <!--bottom-left text overlay -->
+                    <div class="absolute inset-0 flex flex-col items-start justify-end my-4">
+                        <p class="text-sm text-white px-4 py-2 max-md:py-0">APRIL 3RD, 2025</p>
+                        <p class="text-white text-3xl tracking-wider font-bold px-4 py-2 max-md:text-2xl max-md:py-0">
+                            How Minimalism is Changing Modern Lifestyles.<br>
+                        </p>
+                        <p class="text-white text-lg px-4 py-2 max-md:py-0">Teahupo'o has one of the world's deadliest surf breaks in the world. Athletes could face waves...</p>
+                    </div>
+                    <!--top-right badge -->
+                    <div class="absolute top-4 right-4 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full px-4">
+                        <p class="text-black text-base tracking-tighter">7 mins read</p>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+
+        <p class="text-3xl tracking-tighter max-md:text-center">Most Popular</p>
+        <div class="flex flex-row space-x-4 pb-6 my-8 max-md:flex-col max-md:space-x-0 max-md:space-y-4 w-full h-full">
+
+            <!--responsiveness for large screens-->
+            <div class="flex flex-row space-x-4 my-8 w-full max-md:hidden">
+                <a href="" class="w-1/5 ">
+                    <div class="flex flex-col border-2 border-r-zinc-400 pr-6">
+                        <div class="relative rounded-lg">
+                            <img src="Images/blog banner.png" alt="" class="w-76 h-64 object-cover rounded-lg transform transition-transform duration-300 ease-in-out
+                                                    hover:scale-110">
+                            <div
+                                class="absolute top-4 right-4 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                                <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-col justify-center py-2">
+                            <p class="text-sm">JUNE 19TH, 2025</p>
+                            <p class="text-lg tracking-tight font-bold leading-tight">How To Start Journaling For Mental Clarity</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="" class="w-1/5">
+                    <div class="flex flex-col border-2 border-r-zinc-400 pr-6">
+                        <div class="relative rounded-lg">
+                            <img src="Images/blog banner.png" alt="" class="w-76 h-64 object-cover rounded-lg transform transition-transform duration-300 ease-in-out
+                                                    hover:scale-110">
+                            <div
+                                class="absolute top-4 right-4 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                                <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-col justify-center py-2">
+                            <p class="text-sm">JUNE 19TH, 2025</p>
+                            <p class="text-lg tracking-tight font-bold leading-tight">How To Start Journaling For Mental Clarity</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="" class="w-1/5">
+                    <div class="flex flex-col border-2 border-r-zinc-400 pr-6">
+                        <div class="relative rounded-lg">
+                            <img src="Images/blog banner.png" alt="" class="w-76 h-64 object-cover rounded-lg transform transition-transform duration-300 ease-in-out
+                                                    hover:scale-110">
+                            <div
+                                class="absolute top-4 right-4 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                                <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-col justify-center py-2">
+                            <p class="text-sm">JUNE 19TH, 2025</p>
+                            <p class="text-lg tracking-tight font-bold leading-tight">How To Start Journaling For Mental Clarity</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="" class="w-1/5">
+                    <div class="flex flex-col border-2 border-r-zinc-400 pr-6">
+                        <div class="relative rounded-lg">
+                            <img src="Images/blog banner.png" alt="" class="w-76 h-64 object-cover rounded-lg transform transition-transform duration-300 ease-in-out
+                                                    hover:scale-110">
+                            <div
+                                class="absolute top-4 right-4 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                                <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-col justify-center py-2">
+                            <p class="text-sm">JUNE 19TH, 2025</p>
+                            <p class="text-lg tracking-tight font-bold leading-tight">How To Start Journaling For Mental Clarity</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="" class="w-1/5">
+                    <div class="flex flex-col 0 pr-6">
+                        <div class="relative rounded-lg">
+                            <img src="Images/blog banner.png" alt="" class="w-76 h-64 object-cover rounded-lg transform transition-transform duration-300 ease-in-out
+                                                    hover:scale-110">
+                            <div
+                                class="absolute top-4 right-4 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                                <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-col justify-center py-2">
+                            <p class="text-sm">JUNE 19TH, 2025</p>
+                            <p class="text-lg tracking-tight font-bold leading-tight">How To Start Journaling For Mental Clarity</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!--responsiveness for small screens-->
+            <div class="max-md:flex max-md:flex-row gap-4 hidden">
+                <div class="flex flex-col pr-4 border-2 border-r-zinc-400 w-1/5 max-md:w-1/2 max-md:border-none max-md:pr-0 "  >
+                    <div class="relative rounded-lg ">
+                        <img src="Images/blog banner.png" alt="" class="rounded-lg h-48 object-cover transform transition-transform duration-300 ease-in-out
+                        ">
+                        <div class="absolute top-4 left-1/2 -translate-x-1/2 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                        </div>
+                    
+                    </div>
+                    <div class="py-2">
+                        <p class="text-sm">FEBRUARY 19TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">How To Start Your Own Online Magazine</p>
+                    
+                    </div>
+                </div>
+                <div class="flex flex-col pr-4 border-2 border-r-zinc-400 w-1/5 max-md:w-1/2 max-md:border-none  max-md:pr-0 ">
+                    <div class="relative rounded-lg">
+                        <img src="Images/blog banner.png" alt="" class="rounded-lg h-48 object-cover transform transition-transform duration-300 ease-in-out
+                        hover:scale-110">
+                        <div class="absolute top-4 left-1/2 -translate-x-1/2 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                        </div>
+                    
+                    </div>
+                    <div class="p-2">
+                        <p class="text-sm">MARCH 25TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">Exploring Europe on a Budget: 7 Must-Visit Cities</p>
+                    
+                    </div>
+                </div>
+            </div>
+            <div class="max-md:flex max-md:flex-row gap-4 hidden">
+                <div class="flex flex-col pr-4 border-2 border-r-zinc-400 w-1/5 max-md:w-1/2 max-md:border-none max-md:pr-0">
+                    <div class="relative rounded-lg ">
+                        <img src="Images/blog banner.png" alt="" class="rounded-lg h-48 object-cover transform transition-transform duration-300 ease-in-out
+                        hover:scale-110">
+                        <div class="absolute top-4 left-1/2 -translate-x-1/2 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                        </div>
+                    
+                    </div>
+                    <div class="py-2">
+                        <p class="text-sm">FEBRUARY 19TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">How To Start Your Own Online Magazine</p>
+                    
+                    </div>
+                </div>
+                <div class="flex flex-col pr-4 border-2 border-r-zinc-400 w-1/5 max-md:w-1/2 max-md:border-none max-md:pr-0 ">
+                    <div class="relative rounded-lg">
+                        <img src="Images/blog banner.png" alt="" class="rounded-lg h-48 object-cover transform transition-transform duration-300 ease-in-out
+                        hover:scale-110">
+                        <div class="absolute top-4 left-1/2 -translate-x-1/2 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                        </div>
+                    
+                    </div>
+                    <div class="p-2">
+                        <p class="text-sm">MARCH 25TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">Exploring Europe on a Budget: 7 Must-Visit Cities</p>
+                    
+                    </div>
+                </div>
+            </div>
+            <div class="max-md:flex max-md:flex-row gap-4 hidden ">
+                <div class="flex flex-col pr-4 border-2 border-r-zinc-400 w-1/5 max-md:w-1/2 max-md:border-none max-md:pr-0">
+                    <div class="relative rounded-lg ">
+                        <img src="Images/blog banner.png" alt="" class="rounded-lg h-48 object-cover transform transition-transform duration-300 ease-in-out
+                                    hover:scale-110 ">
+                        <div
+                            class="absolute top-4 left-1/2 -translate-x-1/2 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                        </div>
+                    </div>
+                    <div class="py-2">
+                        <p class="text-sm">FEBRUARY 19TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">How To Start Your Own Online Magazine</p>
+                    </div>
+                </div>
+                <div class="flex flex-col pr-4 border-2 border-r-zinc-400 w-1/5 max-md:w-1/2 max-md:border-none max-md:pr-0 ">
+                    <div class="relative rounded-lg">
+                        <img src="Images/blog banner.png" alt="" class="rounded-lg h-48 object-cover transform transition-transform duration-300 ease-in-out
+                                    hover:scale-110">
+                        <div
+                            class="absolute top-4 left-1/2 -translate-x-1/2 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                        </div>
+                    </div>
+                    <div class="p-2">
+                        <p class="text-sm">MARCH 25TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">Exploring Europe on a Budget: 7 Must-Visit Cities
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="max-md:flex max-md:flex-row gap-4 hidden ">
+                <div class="flex flex-col pr-4 border-2 border-r-zinc-400 w-1/5 max-md:w-1/2 max-md:border-none max-md:pr-0">
+                    <div class="relative rounded-lg ">
+                        <img src="Images/blog banner.png" alt="" class="rounded-lg h-48 object-cover transform transition-transform duration-300 ease-in-out
+                                    hover:scale-110 ">
+                        <div
+                            class="absolute top-4 left-1/2 -translate-x-1/2 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                        </div>
+                    </div>
+                    <div class="py-2">
+                        <p class="text-sm">FEBRUARY 19TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">How To Start Your Own Online Magazine</p>
+                    </div>
+                </div>
+                <div class="flex flex-col pr-4 border-2 border-r-zinc-400 w-1/5 max-md:w-1/2 max-md:border-none max-md:pr-0 ">
+                    <div class="relative rounded-lg">
+                        <img src="Images/blog banner.png" alt="" class="rounded-lg h-48 object-cover transform transition-transform duration-300 ease-in-out
+                                    hover:scale-110">
+                        <div
+                            class="absolute top-4 left-1/2 -translate-x-1/2 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                        </div>
+                    </div>
+                    <div class="p-2">
+                        <p class="text-sm">MARCH 25TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">Exploring Europe on a Budget: 7 Must-Visit Cities
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="max-md:flex max-md:flex-row gap-4 hidden ">
+                <div class="flex flex-col pr-4 border-2 border-r-zinc-400 w-1/5 max-md:w-1/2 max-md:border-none max-md:pr-0">
+                    <div class="relative rounded-lg ">
+                        <img src="Images/blog banner.png" alt="" class="rounded-lg h-48 object-cover transform transition-transform duration-300 ease-in-out
+                                    hover:scale-110">
+                        <div
+                            class="absolute top-4 left-1/2 -translate-x-1/2 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                        </div>
+                    </div>
+                    <div class="py-2">
+                        <p class="text-sm">FEBRUARY 19TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">How To Start Your Own Online Magazine</p>
+                    </div>
+                </div>
+                <div class="flex flex-col pr-4 border-2 border-r-zinc-400 w-1/5 max-md:w-1/2 max-md:border-none max-md:pr-0 ">
+                    <div class="relative rounded-lg">
+                        <img src="Images/blog banner.png" alt="" class="rounded-lg h-48 object-cover transform transition-transform duration-300 ease-in-out
+                                    hover:scale-110">
+                        <div
+                            class="absolute top-4 left-1/2 -translate-x-1/2 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                        </div>
+                    </div>
+                    <div class="p-2">
+                        <p class="text-sm">MARCH 25TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">Exploring Europe on a Budget: 7 Must-Visit Cities
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <p class="border-2 border-t-zinc-400 pt-6 text-3xl tracking-tighter max-md:text-center">Editor Picks</p>
+        <div class="flex gap-6 my-8 max-md:hidden">
+            <!-- Left big post -->
+            <a href="#" class="w-1/2">
+                <div class="flex flex-col space-y-4 border-2 border-r-zinc-400 pr-6">
+                    <div class=" relative overflow-hidden rounded-lg">
+                        <img src="Images/blog banner.png" alt="" class="w-full h-[475px] object-cover rounded-lg transform transition-transform duration-500 ease-in-out
+                        hover:scale-125">
+                        <div class="absolute top-4 right-4 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter ">7 mins read</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col justify-center">
+                        <p class="text-sm">FEBRUARY 12TH, 2025</p>
+                        <p class="text-4xl tracking-tight font-bold leading-tight">10 Simple Habits To Build A More Joyful And Fulfilling Life</p>
+                        <p class="text-lg py-2">Learn how to build a personalised self-care routine that fits your lifestyle, brings real results, and support your long-term mental 
+                        ...</p>
+                    </div>
+                </div>
+            </a>
+        
+            <!-- Right side blogs-->
+            
+            <div class="w-1/2 flex flex-col space-y-6">
+                <!-- Single item -->
+                <a href="#" class="h-1/3">
+                    <div class="flex flex-row gap-4 border-2 border-b-zinc-400 pb-6 w-full">
+                        <div class="relative rounded-lg w-1/3">
+                            <img src="Images/blog banner.png" alt="" class="w-72 h-48 object-cover rounded-lg transform transition-transform duration-300 ease-in-out
+                            hover:scale-x-110">
+                            <div class="absolute top-4 right-4 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                                <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col justify-center w-2/3">
+                            <p class="text-sm">JANUARY 10TH, 2025</p>
+                            <p class="text-xl tracking-tight font-bold leading-tight">Weekend Projects That Refresh Your Home And Save Money.</p>
+                            <p class="text-lg">Learn how to build a personalised self-care routine that fits your lifestyle, brings real
+                                results, and support your long-term mental
+                                ...</p>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="#" class="h-1/3">
+                    <div class="flex flex-row gap-4 border-2 border-b-zinc-400 pb-6 w-full">
+                        <div class="relative rounded-lg w-1/3">
+                            <img src="Images/blog banner.png" alt="" class="w-72 h-48 object-cover rounded-lg transform transition-transform duration-300 ease-in-out
+                            hover:scale-x-110">
+                            <div class="absolute top-4 right-4 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                                <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                            </div>
+                        
+                        </div>
+                        <div class="flex flex-col justify-center w-2/3">
+                            <p class="text-sm">MARCH 19TH, 2025</p>
+                            <p class="text-xl tracking-tight font-bold leading-tight">Healthy Treats Your Dog Will Love And Beg You For Daily.</p>
+                            <p class="text-lg py-2">Learn how to build a personalised self-care routine that fits your lifestyle, brings real
+                                results, and support your long-term mental
+                                ...</p>
+                        </div>
+                    </div>
+
+                </a>
+
+                <a href="#" class="h-1/3">
+                    <div class="flex flex-row gap-4 w-full ">
+                        <div class="relative rounded-lg w-1/3">
+                            <img src="Images/blog banner.png" alt="" class="w-72 h-48 object-cover rounded-lg transform transition-transform duration-300 ease-in-out
+                            hover:scale-x-110">
+                            <div class="absolute top-4 right-4 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                                <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                            </div>
+                        
+                        </div>
+                        <div class="flex flex-col justify-center w-2/3">
+                            <p class="text-sm">JUNE 3RD, 2025</p>
+                            <p class="text-xl tracking-tight font-bold leading-tight">How To Beat Procrastination And Boost Your Productivity Fast.</p>
+                            <p class="text-lg py-2">Learn how to build a personalised self-care routine that fits your lifestyle, brings real
+                                results, and support your long-term mental
+                                ...</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <!--responsiveness for mobile-->
+        <div class="max-md:h-auto max-md:w-full max-md:block hidden max-md:my-8">
+            <div class="relative rounded-lg">
+                <img src="Images/blog logo.png" alt="" class="rounded-lg h-96 max-md:w-full object-cover transform transition-transform duration-300 ease-in-out
+                            ">
+                <div
+                    class="absolute top-4 right-4 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                    <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                </div>
+            </div>
+            <div class="flex flex-col items-start justify-end my-4">
+                <p class="text-sm text-black px-2 py-2 max-md:py-0">APRIL 3RD, 2025</p>
+                <p class="text-black text-3xl tracking-tighter font-bold px-2 py-2 max-md:text-2xl max-md:py-0">
+                    How Minimalism is Changing Modern Lifestyles.<br>
+                </p>
+                <p class="text-black text-lg px-2 py-2 max-md:py-0 tracking-tighter">Teahupo'o has one of the world's deadliest surf breaks in the
+                    world. Athletes could face waves...</p>
+            </div>
+            
+        </div>
+
+        <div class="flex flex-row space-x-4 pb-6 my-8 max-md:flex-col max-md:space-x-0 max-md:space-y-4 w-full h-full">
+
+            <div class="max-md:flex max-md:flex-row gap-4 hidden">
+                <div class="flex flex-col pr-4 border-2 border-r-zinc-400 w-1/5 max-md:w-1/2 max-md:border-none max-md:pr-0 ">
+                    <div class="relative rounded-lg ">
+                        <img src="Images/blog banner.png" alt="" class="rounded-lg h-48 object-cover transform transition-transform duration-300 ease-in-out
+                                    hover:scale-110 ">
+                        <div class="absolute top-4 left-1/2 -translate-x-1/2 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                        </div>
+            
+                    </div>
+                    <div class="py-2">
+                        <p class="text-sm">FEBRUARY 19TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">How To Start Your Own Online Magazine</p>
+            
+                    </div>
+                </div>
+                <div class="flex flex-col pr-4 border-2 border-r-zinc-400 w-1/5 max-md:w-1/2 max-md:border-none  max-md:pr-0 ">
+                    <div class="relative rounded-lg">
+                        <img src="Images/blog banner.png" alt="" class="rounded-lg h-48 object-cover transform transition-transform duration-300 ease-in-out
+                                    hover:scale-110">
+                        <div class="absolute top-4 left-1/2 -translate-x-1/2 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                        </div>
+            
+                    </div>
+                    <div class="p-2">
+                        <p class="text-sm">MARCH 25TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">Exploring Europe on a Budget: 7 Must-Visit Cities
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="max-md:flex max-md:flex-row gap-4 hidden ">
+                <div class="flex flex-col pr-4 border-2 border-r-zinc-400 w-1/5 max-md:w-1/2 max-md:border-none max-md:pr-0">
+                    <div class="relative rounded-lg ">
+                        <img src="Images/blog banner.png" alt="" class="rounded-lg h-48 object-cover transform transition-transform duration-300 ease-in-out
+                                    hover:scale-110">
+                        <div class="absolute top-4 left-1/2 -translate-x-1/2 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                        </div>
+            
+                    </div>
+                    <div class="py-2">
+                        <p class="text-sm">FEBRUARY 19TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">How To Start Your Own Online Magazine</p>
+            
+                    </div>
+                </div>
+                <div class="flex flex-col pr-4 border-2 border-r-zinc-400 w-1/5 max-md:w-1/2 max-md:border-none  max-md:pr-0 ">
+                    <div class="relative rounded-lg">
+                        <img src="Images/blog banner.png" alt="" class="rounded-lg h-48 object-cover transform transition-transform duration-300 ease-in-out
+                                    hover:scale-110">
+                        <div class="absolute top-4 left-1/2 -translate-x-1/2 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                        </div>
+                    </div>
+                    <div class="p-2">
+                        <p class="text-sm">MARCH 25TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">Exploring Europe on a Budget: 7 Must-Visit Cities
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="max-md:flex max-md:flex-row gap-4 hidden ">
+                <div class="flex flex-col pr-4 border-2 border-r-zinc-400 w-1/5 max-md:w-1/2 max-md:border-none max-md:pr-0">
+                    <div class="relative rounded-lg ">
+                        <img src="Images/blog banner.png" alt="" class="rounded-lg h-48 object-cover transform transition-transform duration-300 ease-in-out
+                                    hover:scale-110">
+                        <div class="absolute top-4 left-1/2 -translate-x-1/2 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                        </div>
+            
+                    </div>
+                    <div class="py-2">
+                        <p class="text-sm">FEBRUARY 19TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">How To Start Your Own Online Magazine</p>
+            
+                    </div>
+                </div>
+                <div class="flex flex-col pr-4 border-2 border-r-zinc-400 w-1/5 max-md:w-1/2 max-md:border-none max-md:pr-0 ">
+                    <div class="relative rounded-lg">
+                        <img src="Images/blog banner.png" alt="" class="rounded-lg h-48 object-cover transform transition-transform duration-300 ease-in-out
+                                    hover:scale-110">
+                        <div class="absolute top-4 left-1/2 -translate-x-1/2 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                        </div>
+            
+                    </div>
+                    <div class="p-2">
+                        <p class="text-sm">MARCH 25TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">Exploring Europe on a Budget: 7 Must-Visit Cities
+                        </p>
+            
+                    </div>
+            
+                </div>
+            </div>
+            <div class="max-md:flex max-md:flex-row gap-4 hidden">
+                <div class="flex flex-col pr-4 border-2 border-r-zinc-400 w-1/5 max-md:w-1/2 max-md:border-none max-md:pr-0">
+                    <div class="relative rounded-lg ">
+                        <img src="Images/blog banner.png" alt="" class="rounded-lg h-48 object-cover transform transition-transform duration-300 ease-in-out
+                                    hover:scale-110">
+                        <div class="absolute top-4 left-1/2 -translate-x-1/2 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                        </div>
+            
+                    </div>
+                    <div class="py-2">
+                        <p class="text-sm">FEBRUARY 19TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">How To Start Your Own Online Magazine</p>
+            
+                    </div>
+                </div>
+                <div class="flex flex-col pr-4 border-2 border-r-zinc-400 w-1/5 max-md:w-1/2 max-md:border-none max-md:pr-0 ">
+                    <div class="relative rounded-lg">
+                        <img src="Images/blog banner.png" alt="" class="rounded-lg h-48 object-cover transform transition-transform duration-300 ease-in-out
+                                    hover:scale-110">
+                        <div class="absolute top-4 left-1/2 -translate-x-1/2 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                        </div>
+            
+                    </div>
+                    <div class="p-2">
+                        <p class="text-sm">MARCH 25TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">Exploring Europe on a Budget: 7 Must-Visit Cities
+                        </p>
+            
+                    </div>
+            
+                </div>
+            </div>
+            <div class="max-md:flex max-md:flex-row gap-4 hidden">
+                <div class="flex flex-col pr-4 border-2 border-r-zinc-400 w-1/5 max-md:w-1/2 max-md:border-none max-md:pr-0">
+                    <div class="relative rounded-lg ">
+                        <img src="Images/blog banner.png" alt="" class="rounded-lg h-48 object-cover transform transition-transform duration-300 ease-in-out
+                                    hover:scale-110">
+                        <div class="absolute top-4 left-1/2 -translate-x-1/2 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                        </div>
+            
+                    </div>
+                    <div class="py-2">
+                        <p class="text-sm">FEBRUARY 19TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">How To Start Your Own Online Magazine</p>
+            
+                    </div>
+                </div>
+                <div class="flex flex-col pr-4 border-2 border-r-zinc-400 w-1/5 max-md:w-1/2 max-md:border-none max-md:pr-0 ">
+                    <div class="relative rounded-lg">
+                        <img src="Images/blog banner.png" alt="" class="rounded-lg h-48 object-cover transform transition-transform duration-300 ease-in-out
+                                    hover:scale-110">
+                        <div class="absolute top-4 left-1/2 -translate-x-1/2 bg-zinc-400 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                        </div>
+            
+                    </div>
+                    <div class="p-2">
+                        <p class="text-sm">MARCH 25TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">Exploring Europe on a Budget: 7 Must-Visit Cities
+                        </p>
+            
+                    </div>
+            
+                </div>
+            </div>
+        </div>
+
+
+        <p class="border-2 border-t-zinc-400 pt-6 text-3xl tracking-tighter max-md:text-center">Latest Posts</p>
+        <div class="max-md:h-auto max-md:w-full max-md:block hidden max-md:my-8">
+            <div class="relative rounded-lg">
+                <img src="Images/blog logo.png" alt="" class="rounded-lg h-48 max-md:w-full object-cover transform transition-transform duration-300 ease-in-out
+                                    ">
+                <div
+                    class="absolute top-4 right-4 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                    <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                </div>
+            </div>
+            <div class="flex flex-col items-start justify-end my-4">
+                <p class="text-sm text-black px-2 py-2 max-md:py-0">APRIL 3RD, 2025</p>
+                <p class="text-black text-3xl tracking-tighter font-bold px-2 py-2 max-md:text-2xl max-md:py-0">
+                    How Minimalism is Changing Modern Lifestyles.<br>
+                </p>
+                <p class="text-black text-lg px-2 py-2 max-md:py-0 tracking-tighter">Teahupo'o has one of the world's deadliest surf breaks in
+                    the
+                    world. Athletes could face waves...</p>
+            </div>
+        
+        </div>
+        <div class="max-md:h-auto max-md:w-full max-md:block hidden max-md:my-8">
+            <div class="relative rounded-lg">
+                <img src="Images/blog logo.png" alt="" class="rounded-lg h-48 max-md:w-full object-cover transform transition-transform duration-300 ease-in-out
+                                            ">
+                <div
+                    class="absolute top-4 right-4 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                    <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                </div>
+            </div>
+            <div class="flex flex-col items-start justify-end my-4">
+                <p class="text-sm text-black px-2 py-2 max-md:py-0">APRIL 3RD, 2025</p>
+                <p class="text-black text-3xl tracking-tighter font-bold px-2 py-2 max-md:text-2xl max-md:py-0">
+                    How Minimalism is Changing Modern Lifestyles.<br>
+                </p>
+                <p class="text-black text-lg px-2 py-2 max-md:py-0 tracking-tighter">Teahupo'o has one of the world's deadliest
+                    surf breaks in
+                    the
+                    world. Athletes could face waves...</p>
+            </div>
+        
+        </div>
+        <div class="max-md:h-auto max-md:w-full max-md:block hidden max-md:my-8">
+            <div class="relative rounded-lg">
+                <img src="Images/blog logo.png" alt="" class="rounded-lg h-48 max-md:w-full object-cover transform transition-transform duration-300 ease-in-out
+                                    ">
+                <div
+                    class="absolute top-4 right-4 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                    <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                </div>
+            </div>
+            <div class="flex flex-col items-start justify-end my-4">
+                <p class="text-sm text-black px-2 py-2 max-md:py-0">APRIL 3RD, 2025</p>
+                <p class="text-black text-3xl tracking-tighter font-bold px-2 py-2 max-md:text-2xl max-md:py-0">
+                    How Minimalism is Changing Modern Lifestyles.<br>
+                </p>
+                <p class="text-black text-lg px-2 py-2 max-md:py-0 tracking">Teahupo'o has one of the world's deadliest surf breaks in
+                    the
+                    world. Athletes could face waves...</p>
+            </div>
+        
+        </div>
+        <div class="max-md:flex max-md:flex-row gap-4 hidden">
+            <div class="flex flex-col pr-4 border-2 border-r-zinc-400 w-1/5 max-md:w-1/2 max-md:border-none max-md:pr-0 ">
+                <div class="relative rounded-lg ">
+                    <img src="Images/blog banner.png" alt="" class="rounded-lg h-48 object-cover transform transition-transform duration-300 ease-in-out
+                                            hover:scale-110 ">
+                    <div
+                        class="absolute top-4 left-1/2 -translate-x-1/2 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                        <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                    </div>
+        
+                </div>
+                <div class="py-2">
+                    <p class="text-sm">FEBRUARY 19TH, 2025</p>
+                    <p class="text-lg tracking-tight font-bold leading-tight">How To Start Your Own Online Magazine</p>
+        
+                </div>
+            </div>
+            <div class="flex flex-col pr-4 border-2 border-r-zinc-400 w-1/5 max-md:w-1/2 max-md:border-none  max-md:pr-0 ">
+                <div class="relative rounded-lg">
+                    <img src="Images/blog banner.png" alt="" class="rounded-lg h-48 object-cover transform transition-transform duration-300 ease-in-out
+                                            hover:scale-110">
+                    <div
+                        class="absolute top-4 left-1/2 -translate-x-1/2 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                        <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                    </div>
+        
+                </div>
+                <div class="p-2">
+                    <p class="text-sm">MARCH 25TH, 2025</p>
+                    <p class="text-lg tracking-tight font-bold leading-tight">Exploring Europe on a Budget: 7 Must-Visit Cities
+                    </p>
+        
+                </div>
+        
+            </div>
+        </div>
+        <div class="max-md:flex max-md:flex-row gap-4 hidden">
+            <div class="flex flex-col pr-4 border-2 border-r-zinc-400 w-1/5 max-md:w-1/2 max-md:border-none max-md:pr-0 ">
+                <div class="relative rounded-lg ">
+                    <img src="Images/blog banner.png" alt="" class="rounded-lg h-48 object-cover transform transition-transform duration-300 ease-in-out
+                                            hover:scale-110">
+                    <div
+                        class="absolute top-4 left-1/2 -translate-x-1/2 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                        <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                    </div>
+        
+                </div>
+                <div class="py-2">
+                    <p class="text-sm">FEBRUARY 19TH, 2025</p>
+                    <p class="text-lg tracking-tight font-bold leading-tight">How To Start Your Own Online Magazine</p>
+        
+                </div>
+            </div>
+            <div class="flex flex-col pr-4 border-2 border-r-zinc-400 w-1/5 max-md:w-1/2 max-md:border-none  max-md:pr-0 ">
+                <div class="relative rounded-lg">
+                    <img src="Images/blog banner.png" alt="" class="rounded-lg h-48 object-cover transform transition-transform duration-300 ease-in-out
+                                            hover:scale-110">
+                    <div
+                        class="absolute top-4 left-1/2 -translate-x-1/2 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                        <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                    </div>
+        
+                </div>
+                <div class="p-2">
+                    <p class="text-sm">MARCH 25TH, 2025</p>
+                    <p class="text-lg tracking-tight font-bold leading-tight">Exploring Europe on a Budget: 7 Must-Visit Cities
+                    </p>
+        
+                </div>
+        
+            </div>
+        </div>
+        
+        
+        
+        <!-- Desktop view for latest posts -->
+        <div class="flex flex-row space-x-4 my-8 w-full max-md:hidden">
+            <a href="" class="w-1/5">
+                <div class="flex flex-col border-2 border-r-zinc-400 pr-6">
+                    <div class="relative rounded-lg">
+                        <img src="Images/blog banner.png" alt="" class="w-76 h-64 object-cover rounded-lg transform transition-transform duration-300 ease-in-out
+                                    hover:scale-110">
+                        <div
+                            class="absolute top-4 right-4 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col justify-center py-2">
+                        <p class="text-sm">JUNE 19TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">How To Start Journaling For Mental Clarity</p>
+                    </div>
+                
+                </div>
+
+            </a>
+            <a href="#" class="w-1/5">
+                <div class="flex flex-col border-2 border-r-zinc-400 pr-6">
+                    <div class="relative rounded-lg">
+                        <img src="Images/blog banner.png" alt="" class="w-76 h-64 object-cover rounded-lg transform transition-transform duration-300 ease-in-out
+                                    hover:scale-110">
+                        <div
+                            class="absolute top-4 right-4 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col justify-center py-2">
+                        <p class="text-sm">AUGUST 7TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">Weekend Projects That Refresh Your Home And Save Money
+                        </p>
+                    </div>
+                
+                </div>
+
+            </a>
+
+            <a href="#" class="w-1/5">
+                <div class="flex flex-col border-2 border-r-zinc-400 pr-6">
+                    <div class="relative rounded-lg">
+                        <img src="Images/blog banner.png" alt="" class="w-76 h-64 object-cover rounded-lg transform transition-transform duration-300 ease-in-out
+                                    hover:scale-110">
+                        <div
+                            class="absolute top-4 right-4 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col justify-center py-2">
+                        <p class="text-sm">JANUARY 23RD, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">Healthy Treats Your Dog Will Love And Beg You For Daily
+                        </p>
+                    </div>
+                
+                </div>
+
+            </a>
+            
+            <a href="#" class="w-1/5">
+                <div class="flex flex-col border-2 border-r-zinc-400 pr-4">
+                    <div class="relative rounded-lg">
+                        <img src="Images/blog banner.png" alt="" class="w-76 h-64 object-cover rounded-lg transform transition-transform duration-300 ease-in-out
+                                    hover:scale-110">
+                        <div
+                            class="absolute top-4 right-4 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col justify-center py-2">
+                        <p class="text-sm">JANUARY 23RD, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">Healthy Treats Your Dog Will Love And Beg You For
+                            Daily</p>
+                    </div>
+                
+                
+                </div>
+
+            </a>
+
+            <a href="#" class="w-1/5">
+                <div class="flex flex-col border-2 border-none pr-4">
+                    <div class="relative rounded-lg">
+                        <img src="Images/blog banner.png" alt="" class="w-76 h-64 object-cover rounded-lg transform transition-transform duration-300 ease-in-out
+                                                hover:scale-110">
+                        <div
+                            class="absolute top-4 right-4 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter ">4 mins read</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col justify-center py-2">
+                        <p class="text-sm">JANUARY 23RD, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">Healthy Treats Your Dog Will Love And Beg You For
+                            Daily</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <p class="border-2 border-t-zinc-400 pt-6 text-3xl max-md:text-center tracking-tighter">Highlights</p>
+        <div class="flex flex-row max-md:flex-col my-8 space-x-4 max-md:space-x-0 w-full h-full max-md:pl-0 pl-2">
+            <div class="flex flex-col border-2 border-r-zinc-400 pr-4 max-md:pr-0 max-md:border-none max-md:1/3 max-md:w-full">
+                <a href="#">
+                    <div class="relative rounded-lg overflow-hidden">
+                        <img src="Images/blog banner.png" alt="" class="rounded-lg h-80 object-cover transform transition-transform duration-500 ease-in-out
+                        hover:scale-125">
+                        <div class="absolute top-4 right-4 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter">4 mins read</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col border-2 border-b-zinc-400 justify-center h-24">
+                        <p class="text-sm">MAY 6TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">Exploring Europe on a Budget: 7 Must-Visit Cities</p>
+                    </div>
+                </a>
+                <a href="#">
+                    <div class="flex flex-col border-2 border-b-zinc-400 justify-center h-24">
+                        <p class="text-sm">JULY 9TH 3RD, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">Weekend Projects That Refresh Your Home And Save Money</p>
+                    </div>
+                </a>
+                <a href="#">
+                    <div class="flex flex-col border-2 border-b-zinc-400 justify-center h-24 max-md:mb-4 max-md:border-none">
+                        <p class="text-sm">FEBRUARY 15TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">10 Simple Habits To Build A More Joyful And Fulfilling Life</p>
+                    </div>
+                </a>
+            </div>
+            <div class="flex flex-col border-2 border-r-zinc-400 pr-6 max-md:pr-0 max-md:border-none max-md:h-1/3 max-md:w-full">
+                <a href="#">
+                    <div class="relative rounded-lg overflow-hidden">
+                        <img src="Images/blog banner.png" alt="" class="rounded-lg h-80 object-cover transform transition-transform duration-500 ease-in-out
+                                    hover:scale-125">
+                        <div
+                            class="absolute top-4 right-4 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter">4 mins read</p>
+                        </div>
+            
+                    </div>
+                    <div class="flex flex-col border-2 border-b-zinc-400 justify-center h-24">
+                        <p class="text-sm">MAY 6TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">Exploring Europe on a Budget: 7 Must-Visit Cities
+                        </p>
+                    </div>
+                </a>
+            
+                <a href="#">
+                    <div class="flex flex-col border-2 border-b-zinc-400 justify-center h-24">
+                        <p class="text-sm">JULY 9TH 3RD, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">Weekend Projects That Refresh Your Home And Save
+                            Money</p>
+                    </div>
+                </a>
+                <a href="#">
+                    <div class="flex flex-col border-2 border-b-zinc-400 justify-center h-24 max-md:mb-4 max-md:border-none">
+                        <p class="text-sm">FEBRUARY 15TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">10 Simple Habits To Build A More Joyful And
+                            Fulfilling Life</p>
+                    </div>
+                </a>
+            
+            </div>
+            <div class="flex flex-col border-2 border-r-zinc-400 pr-4 max-md:pr-0 border-none max-md:h-1/3 max-md:w-full">
+                <a href="#">
+                    <div class="relative overflow-hidden rounded-lg">
+                        <img src="Images/blog banner.png" alt="" class="rounded-lg h-80 object-cover transform transition-transform duration-500 ease-in-out
+                        hover:scale-125">
+                        <div class="absolute top-4 right-4 bg-zinc-300 backdrop-blur-md border border-teal-500 rounded-full bg-base-200 px-2">
+                            <p class="text-black text-base tracking-tighter">4 mins read</p>
+                        </div>
+                    
+                    </div>
+                    <div class="flex flex-col border-2 border-b-zinc-400 justify-center h-24">
+                        <p class="text-sm">AUGUST 11TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">Healthy Treats Your Dog Will Love And Beg You For Daily</p>
+                    </div>
+                </a>
+                <a href="#">
+                    <div class="flex flex-col border-2 border-b-zinc-400 justify-center h-24">
+                        <p class="text-sm">MARCH 14TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">10 Simple Habits To Build A More Joyful And Fulfilling Life</p>
+                    </div>
+                </a>
+                <a href="#">
+                    <div class="flex flex-col border-2 border-b-zinc-400 justify-center h-24">
+                        <p class="text-sm">JANUARY 9TH, 2025</p>
+                        <p class="text-lg tracking-tight font-bold leading-tight">How To Start Journaling For Mental Clarity</p>
+                    </div>
+
+                </a>
+            
+            </div>
+        </div>
+        <div class="container-5 mt-48  bg-zinc-400/30 rounded-tl-lg rounded-tr-lg ">
+            <footer class="bg-base-200 text-base-content p-10 max-md:hidden">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 my-8">
+                    <!-- Logo + Description -->
+                    <aside>
+                        <img src="Images/blog_logo-removebg-preview.png" alt="Sample Image" class="w-32 ">
+                        <p class="font-medium">
+                            THE DAILY DIG.<br />
+                        </p>
+                    </aside>
+                    <!-- Services -->
+                    <nav class="flex flex-col space-y-2 px-12">
+                        <h6 class="footer-title underline underline-offset-8 decoration-zinc-400 decoration-1">Services</h6>
+                        <a class="hover:text-teal-800">Branding</a>
+                        <a class="hover:text-teal-800">Design</a>
+                        <a class="hover:text-teal-800">Marketing</a>
+                        <a class="hover:text-teal-800">Advertisement</a>
+                    </nav>
+                    <!-- Company -->
+                    <nav class="flex flex-col space-y-2 px-12">
+                        <h6 class="footer-title underline underline-offset-8 decoration-zinc-400 decoration-1">Company</h6>
+                        <a class="hover:text-teal-800">About us</a>
+                        <a class="hover:text-teal-800">Contact</a>
+                        <a class="hover:text-teal-800">Careers</a>
+                        <a class="hover:text-teal-800">Press kit</a>
+                    </nav>
+                    <!-- Legal -->
+                    <nav class="flex flex-col space-y-2 px-12">
+                        <h6 class="footer-title underline underline-offset-8 decoration-zinc-400 decoration-1">Legal</h6>
+                        <a class="hover:text-teal-800">Terms of use</a>
+                        <a class="hover:text-teal-800">Privacy policy</a>
+                        <a class="hover:text-teal-800">Cookie policy</a>
+                    </nav>
+                </div>
+            </footer>
+
+
+            <!--mobile footer-->
+            <div
+                class="container-5 my-16 max-md:mb-0 max-md:px-2 border-t-2 border-teal-500 max-md:bg-zinc-400/30 max-md:backdrop-blur-md max-md:shadow-lg max-md:border-none hidden max-md:block max-md:rounded-lg ">
+                <footer class="bg-base-200 text-base-content p-10 max-md:p-4">
+                    <div class="grid grid-cols-1 max-md:flex max-md:flex-row sm:grid-cols-2 lg:grid-cols-4 gap-8 max-md:gap-2 my-8">
+                        <!-- Logo + Description -->
+                        <aside class="max-md:hidden">
+                            <img src="Images/blog_logo-removebg-preview.png" alt="Sample Image" class="w-32 ">
+                            <p class="font-medium ">
+                                THE DAILY DIG.<br />
+            
+                            </p>
+                        </aside>
+            
+                        <!-- Services -->
+                        <nav class="flex flex-col space-y-2 px-12 max-md:px-0 max-sm:text-center max-md:mx-auto">
+                            <h6
+                                class="footer-title underline underline-offset-8 max-md:underline-offset-4 decoration-teal-500 decoration-1  max-md:tracking-tighter">
+                                SERVICES</h6>
+                            <a class="hover:text-teal-800 max-md:tracking-tighter">Branding</a>
+                            <a class="hover:text-teal-800 max-md:tracking-tighter">Design</a>
+                            <a class="hover:text-teal-800 max-md:tracking-tighter">Marketing</a>
+                            <a class="hover:text-teal-800 max-md:tracking-tighter">Advertisement</a>
+                        </nav>
+            
+                        <!-- Company -->
+                        <nav class="flex flex-col space-y-2 px-12 max-md:px-0 max-sm:text-center max-md:mx-auto">
+                            <h6
+                                class="footer-title underline underline-offset-8 max-md:underline-offset-4 decoration-teal-500 decoration-1  max-md:tracking-tighter">
+                                COMPANY</h6>
+                            <a class="hover:text-teal-800 max-md:tracking-tighter">About us</a>
+                            <a class="hover:text-teal-800 max-md:tracking-tighter">Contact</a>
+                            <a class="hover:text-teal-800 max-md:tracking-tighter">Careers</a>
+                            <a class="hover:text-teal-800 max-md:tracking-tighter">Press kit</a>
+                        </nav>
+            
+                        <!-- Legal -->
+                        <nav class="flex flex-col space-y-2 px-12 max-md:px-0 max-sm:text-center max-md:mx-auto">
+                            <h6
+                                class="footer-title underline underline-offset-8 max-md:underline-offset-4 decoration-teal-500 decoration-1  max-md:tracking-tighter">
+                                LEGAL</h6>
+                            <a class="hover:text-teal-800 max-md:tracking-tighter">Terms of use</a>
+                            <a class="hover:text-teal-800 max-md:tracking-tighter">Privacy policy</a>
+                            <a class="hover:text-teal-800 max-md:tracking-tighter">Cookie policy</a>
+                        </nav>
+                    </div>
+                    <div class="text-center">
+                        <p>Copyright © 2025 - All right reserved by The Daily Dig</p>
+                    </div>
+                </footer>
+            </div>
+        
+        </div>
+    </div>
+    
+    <script src="index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+</html>

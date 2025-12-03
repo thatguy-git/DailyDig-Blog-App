@@ -86,7 +86,8 @@ export const loginUser = async (req, res) => {
         const user = await User.findOne({ email });
         if (user) {
             if (!user.isVerified) {
-                return res.status(400).json({
+                return res.status(401).json({
+                    error: 'EMAIL_NOT_VERIFIED',
                     message: 'Please verify your email before logging in.',
                 });
             }

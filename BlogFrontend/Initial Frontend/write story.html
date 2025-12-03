@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Write Story</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+
+<body class="bg-zinc-200 text-black">
+    <div class="container-1 flex bg-zinc-400/30 h-24 sticky top-0  backdrop-blur-md shadow z-50 max-md:h-20">
+        <div class="flex flex-row justify-between items-center p-4 w-full max-md:px-0">
+            <img src="Images/blog_logo-removebg-preview.png" alt="Sample Image" class="w-32 max-md:w-24 ">
+            <div class="flex flex-row space-x-4">
+                <button id="mobile-menu-button" class="max-md:block md:hidden p-4 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                        </path>
+                    </svg>
+                </button>
+                <a href="about.html" class="p-8 hover:text-teal-500 max-md:hidden">About Us</a>
+                <a href="contact.html" class="p-8 hover:text-teal-500 max-md:hidden">Contact Us</a>
+                <a href="blog.html" class="p-8 hover:text-teal-500 max-md:hidden">Blog</a>
+                <a href="signup.html" class="p-8 hover:text-teal-500 max-md:hidden">Sign Up</a>
+            </div>
+        </div>
+    </div>
+    <div class="container-2 flex flex-col items-center px-24 ">
+        
+        <div class="flex flex-col items-center justify-center w-full gap-8 my-16">
+
+            <div class="">
+                <p class="text-4xl text font-bold max-md:text-2xl">Add story</p>
+            </div>
+
+            <div class="flex flex-col items-center justify-center max-sm:w-full">
+                <input type="text" id="name" name="name" required
+                    class="w-96 h-16 px-4 rounded-lg shadow-lg my-4 bg-slate-100 max-sm:w-72" placeholder="Title">
+
+                <label for="cars">Select Tag</label>
+                <select id="cars" name="cars" class="w-96 h-16 px-4 rounded-lg shadow-lg my-2 bg-slate-100 max-sm:w-72">
+                    <option value="volvo">Sports</option>
+                    <option value="saab">Science&Technology</option>
+                    <option value="fiat">Business</option>
+                    <option value="audi">Education</option>
+                </select>
+
+
+                
+            </div>
+            
+        </div>
+        <div class="flex flex-col w-screen justify-center items-center">
+            <textarea id="story" name="story" placeholder="Write your story..."
+                class="w-3/4 h-96 px-8 py-8 rounded-lg shadow-lg bg-slate-100 placeholder-gray-500"></textarea>
+
+
+            
+            <button class=" bg-teal-800 text-white px-8 py-4 rounded-lg my-8 hover:bg-teal-500 resize-none">Submit</button>
+        </div>
+
+
+
+        <div
+            class="container-5 my-16 max-md:my-0 max-md:w-screen border-t-2 border-teal-500 max-md:bg-zinc-400/30 max-md:backdrop-blur-md max-md:shadow-lg max-md:border-none">
+            <footer class="bg-base-200 text-base-content p-10 max-md:p-4 max-md:w-screen">
+                <div class="grid grid-cols-1 max-md:flex max-md:flex-row sm:grid-cols-2 lg:grid-cols-4 gap-8 max-md:gap-2 my-8">
+                    <!-- Logo + Description -->
+                    <aside class="max-md:hidden">
+                        <img src="Images/blog_logo-removebg-preview.png" alt="Sample Image" class="w-32 ">
+                        <p class="font-medium ">
+                            THE DAILY DIG.<br />
+        
+                        </p>
+                    </aside>
+        
+                    <!-- Services -->
+                    <nav class="flex flex-col space-y-2 px-12 max-md:px-0 max-sm:text-center max-md:mx-auto">
+                        <h6
+                            class="footer-title underline underline-offset-8 max-md:underline-offset-4 decoration-teal-500 decoration-1  max-md:tracking-tighter">
+                            Services</h6>
+                        <a class="hover:text-teal-800 max-md:tracking-normal max-md:text-sm">Branding</a>
+                        <a class="hover:text-teal-800 max-md:tracking-normal max-md:text-sm">Design</a>
+                        <a class="hover:text-teal-800 max-md:tracking-normal max-md:text-sm">Marketing</a>
+                        <a class="hover:text-teal-800 max-md:tracking-normal max-md:text-sm">Advertisement</a>
+                    </nav>
+        
+                    <!-- Company -->
+                    <nav class="flex flex-col space-y-2 px-12 max-md:px-0 max-sm:text-center max-md:mx-auto">
+                        <h6
+                            class="footer-title underline underline-offset-8 max-md:underline-offset-4 decoration-teal-500 decoration-1  max-md:tracking-tighter">
+                            Company</h6>
+                        <a class="hover:text-teal-800 max-md:tracking-normal max-md:text-sm">About us</a>
+                        <a class="hover:text-teal-800 max-md:tracking-normal max-md:text-sm">Contact</a>
+                        <a class="hover:text-teal-800 max-md:tracking-normal max-md:text-sm">Jobs</a>
+                        <a class="hover:text-teal-800 max-md:tracking-normal max-md:text-sm">Press kit</a>
+                    </nav>
+        
+                    <!-- Legal -->
+                    <nav class="flex flex-col space-y-2 px-12 max-md:px-0 max-sm:text-center max-md:mx-auto">
+                        <h6
+                            class="footer-title underline underline-offset-8 max-md:underline-offset-4 decoration-teal-500 decoration-1  max-md:tracking-tighter">
+                            Legal</h6>
+                        <a class="hover:text-teal-800 max-md:tracking-normal max-md:text-sm">Terms of use</a>
+                        <a class="hover:text-teal-800 max-md:tracking-normal max-md:text-sm">Privacy policy</a>
+                        <a class="hover:text-teal-800 max-md:tracking-normal max-md:text-sm">Cookie policy</a>
+                    </nav>
+                </div>
+                <div class="text-center max-md:text-sm max-md:tracking-normal">
+                    <p>Copyright © 2025 - All right reserved by The Daily Dig</p>
+                </div>
+            </footer>
+        </div>
+</body>
+
+</html>

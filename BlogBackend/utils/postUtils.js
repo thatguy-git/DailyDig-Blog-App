@@ -1,9 +1,3 @@
-/**
- * Extracts an introduction from the post content.
- * It takes the first 150 characters and appends '...' if the content is longer.
- * @param {string} content - The full content of the post.
- * @returns {string} The extracted introduction.
- */
 export const extractIntro = (content) => {
     if (!content) {
         return '';
@@ -14,4 +8,10 @@ export const extractIntro = (content) => {
         return textContent;
     }
     return textContent.substring(0, 150) + '...';
+};
+
+export const escapeLucene = (str) => {
+    if (!str) return '';
+    // Escape special Lucene characters
+    return str.replace(/([+\-&|!(){}\[\]^"~*?:\\/])/g, '\\$1');
 };

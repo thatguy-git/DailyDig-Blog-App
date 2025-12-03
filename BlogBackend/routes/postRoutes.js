@@ -12,6 +12,10 @@ import {
     searchPosts,
     getPopularPosts,
     getRelatedPosts,
+    getFeaturedPosts,
+    getEditorPicksPosts,
+    getHighlightsPosts,
+    getRecentPosts,
 } from '../controller/postController.js';
 
 export const router = express.Router();
@@ -21,6 +25,10 @@ router.get('/', getAllPosts);
 router.get('/search', searchPosts);
 router.get('/popular', getPopularPosts);
 router.get('/related/:id', getRelatedPosts);
+router.get('/featured', getFeaturedPosts);
+router.get('/editor-picks', getEditorPicksPosts);
+router.get('/highlights', getHighlightsPosts);
+router.get('/recent', getRecentPosts);
 router.get('/:id', getPostById);
 
 // Protected routes

@@ -26,6 +26,10 @@ const postSchema = new mongoose.Schema(
             type: Boolean,
             default: true,
         },
+        isEditorPick: {
+            type: Boolean,
+            default: false,
+        },
         estimatedReadTime: {
             type: Number, // in minutes
             default: 1,

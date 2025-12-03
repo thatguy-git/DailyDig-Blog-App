@@ -1,0 +1,13 @@
+FROM node:18-alpine
+
+WORKDIR /usr/src/app
+
+COPY BlogBackend/package*.json ./
+
+RUN npm install
+
+COPY BlogBackend/ .
+
+EXPOSE 3000
+
+CMD [ "node", "server.js" ]

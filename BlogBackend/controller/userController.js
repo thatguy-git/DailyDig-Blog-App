@@ -151,3 +151,45 @@ export const deleteUserAccount = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+
+export const searchUsers = async (req, res) => {
+    try {
+        const { q } = req.query;
+
+        // 1. Validation
+        if (!q) {
+            return res.status(400).json({
+                success: false,
+                message: 'Search query is required.',
+            });
+        }
+
+        // 2. Search
+        const users = await User.find(
+            {
+                // This uses the index you just created on name/username/email
+                $text: { $search: q },
+            },
+            {
+                // PROJECTION: This creates a temporary field 'score'
+                // representing how well the user matched the query.
+                score: { $meta: 'textScore' },
+            }
+        )
+            // 3. Sort by Relevance (Best match first)
+            .sort({ score: { $meta: 'textScore' } })
+
+            // 4. SECURITY: Only select public fields!
+            // Never return password or sensitive data in a search result.
+            .select('name username email role');
+
+        res.status(200).json({
+            success: true,
+            //count: users.length,
+            data: users,
+        });
+    } catch (error) {
+        console.error('User Search Error:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};

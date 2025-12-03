@@ -3,12 +3,14 @@ import {
     getUserProfile,
     updateUserProfile,
     deleteUserAccount,
+    searchUsers,
 } from '../controller/userController.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
 import { uploadProfileImage } from '../middleware/uploadMiddleware.js';
 
 const router = express.Router();
 
+router.get('/search', searchUsers);
 router.get('/profile', authMiddleware, getUserProfile);
 router.put(
     '/profile',
