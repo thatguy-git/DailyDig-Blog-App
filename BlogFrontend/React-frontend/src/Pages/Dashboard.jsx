@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Searchbar from '../Components/Searchbar.jsx';
 import Navbar from '../Components/Navbar.jsx';
-import { API_URL } from '../constants/links.jsx';
+import { API_URL } from '../constants/links';
 import { useAuth } from '../constants/AuthContext.jsx';
 import {
     LineChart,
