@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle } from '@fortawesome/free-regular-svg-icons';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
-import { API_URL } from '../constants/links.jsx';
+import { API_URL } from '../constants/links';
 
 const ProfilePage = () => {
     const { user, setUser, token } = useAuth();

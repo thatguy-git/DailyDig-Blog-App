@@ -5,7 +5,7 @@ import { BlogCardsA } from './BlogCards.jsx';
 import { useAuth } from '../constants/AuthContext.jsx';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { API_URL } from '../constants/links.jsx';
+import { API_URL } from '../constants/links';
 
 export const HeroSection = () => {
     return (
