@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { API_URL } from '../constants/links';
 
 export const VerifyEmail = () => {
     const navigate = useNavigate();
@@ -25,7 +26,7 @@ export const VerifyEmail = () => {
 
         try {
             const response = await fetch(
-                'http://localhost:3000/api/auth/verify-email-otp',
+                `${API_URL}/api/auth/verify-email-otp`,
                 {
                     method: 'POST',
                     headers: {
@@ -63,7 +64,7 @@ export const VerifyEmail = () => {
 
         try {
             const response = await fetch(
-                'http://localhost:3000/api/auth/send-email-verification-otp',
+                `${API_URL}/api/auth/send-email-verification-otp`,
                 {
                     method: 'POST',
                     headers: {

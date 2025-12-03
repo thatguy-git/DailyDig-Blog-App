@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Searchbar from '../Components/Searchbar.jsx';
 import Navbar from '../Components/Navbar.jsx';
+import { API_URL } from '../constants/links.jsx';
 import { useAuth } from '../constants/AuthContext.jsx';
 import {
     LineChart,
@@ -457,7 +458,7 @@ const ContentManagementPage = () => {
     const { data: postsData, isLoading: postsLoading } = useQuery({
         queryKey: ['adminPosts', searchQuery],
         queryFn: async () => {
-            const url = `http://localhost:3000/api/admin/posts${
+            const url = `${API_URL}/api/admin/posts${
                 searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : ''
             }`;
 
@@ -487,7 +488,7 @@ const ContentManagementPage = () => {
             };
 
             const response = await fetch(
-                `http://localhost:3000/api/admin/posts/${postId}`,
+                `${API_URL}/api/admin/posts/${postId}`,
                 {
                     method: 'DELETE',
                     headers,
@@ -525,7 +526,7 @@ const ContentManagementPage = () => {
                 ...(token ? { Authorization: `Bearer ${token}` } : {}),
             };
 
-            const response = await fetch(`http://localhost:3000/api/posts`, {
+            const response = await fetch(`${API_URL}/api/posts`, {
                 method: 'POST',
                 headers,
                 body: formData,
@@ -558,7 +559,7 @@ const ContentManagementPage = () => {
             };
 
             const response = await fetch(
-                `http://localhost:3000/api/admin/posts/${postId}/toggle-editor-pick`,
+                `${API_URL}/api/admin/posts/${postId}/toggle-editor-pick`,
                 {
                     method: 'PUT',
                     headers,
@@ -629,7 +630,7 @@ const ContentManagementPage = () => {
             };
 
             const response = await fetch(
-                `http://localhost:3000/api/admin/posts/${postId}`,
+                `${API_URL}/api/admin/posts/${postId}`,
                 {
                     method: 'PUT',
                     headers,
@@ -994,10 +995,10 @@ const UserManagementPage = () => {
         queryFn: async () => {
             const isSearch = searchQuery.trim() !== '';
             const url = isSearch
-                ? `http://localhost:3000/api/users/search?q=${encodeURIComponent(
+                ? `${API_URL}/api/users/search?q=${encodeURIComponent(
                       searchQuery
                   )}`
-                : 'http://localhost:3000/api/admin/users';
+                : `${API_URL}/api/admin/users`;
 
             const headers = {
                 'Content-Type': 'application/json',
@@ -1030,7 +1031,7 @@ const UserManagementPage = () => {
             };
 
             const response = await fetch(
-                `http://localhost:3000/api/admin/users/${userId}`,
+                `${API_URL}/api/admin/users/${userId}`,
                 {
                     method: 'DELETE',
                     headers,
@@ -1062,7 +1063,7 @@ const UserManagementPage = () => {
             };
 
             const response = await fetch(
-                `http://localhost:3000/api/admin/users/${userId}`,
+                `${API_URL}/api/admin/users/${userId}`,
                 {
                     method: 'PUT',
                     headers,
@@ -1094,15 +1095,12 @@ const UserManagementPage = () => {
                 ...(token ? { Authorization: `Bearer ${token}` } : {}),
             };
 
-            const response = await fetch(
-                'http://localhost:3000/api/admin/users',
-                {
-                    method: 'POST',
-                    headers,
-                    body: JSON.stringify(userData),
-                    credentials: 'include',
-                }
-            );
+            const response = await fetch(`${API_URL}/api/admin/users`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(userData),
+                credentials: 'include',
+            });
 
             if (!response.ok) {
                 const errorData = await response.json();
@@ -1460,15 +1458,15 @@ const SecurityMaintenancePage = () => {
             };
 
             const [healthRes, logsRes, maintenanceRes] = await Promise.all([
-                fetch('http://localhost:3000/api/admin/system/health', {
+                fetch(`${API_URL}/api/admin/system/health`, {
                     headers,
                     credentials: 'include',
                 }),
-                fetch('http://localhost:3000/api/admin/security/logs', {
+                fetch(`${API_URL}/api/admin/security/logs`, {
                     headers,
                     credentials: 'include',
                 }),
-                fetch('http://localhost:3000/api/admin/maintenance/info', {
+                fetch(`${API_URL}/api/admin/maintenance/info`, {
                     headers,
                     credentials: 'include',
                 }),
@@ -1496,7 +1494,7 @@ const SecurityMaintenancePage = () => {
             };
 
             const response = await fetch(
-                'http://localhost:3000/api/admin/maintenance/clear-cache',
+                `${API_URL}/api/admin/maintenance/clear-cache`,
                 {
                     method: 'POST',
                     headers,

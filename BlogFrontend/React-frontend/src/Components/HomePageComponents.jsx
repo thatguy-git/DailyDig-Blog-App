@@ -5,6 +5,7 @@ import { BlogCardsA } from './BlogCards.jsx';
 import { useAuth } from '../constants/AuthContext.jsx';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { API_URL } from '../constants/links.jsx';
 
 export const HeroSection = () => {
     return (
@@ -75,7 +76,7 @@ export const HomePageCardsSection = () => {
     } = useQuery({
         queryKey: ['posts'],
         queryFn: async () => {
-            const response = await fetch('http://localhost:3000/api/posts');
+            const response = await fetch(`${API_URL}/api/posts`);
             if (!response.ok) {
                 throw new Error('Failed to fetch posts');
             }
@@ -180,7 +181,7 @@ export const AddStory = () => {
             payload.append('tags', JSON.stringify(data.selectedTags || []));
             if (data.coverImage) payload.append('coverImage', data.coverImage);
 
-            const res = await fetch('http://localhost:3000/api/posts', {
+            const res = await fetch(`${API_URL}/api/posts`, {
                 method: 'POST',
                 headers: token ? { Authorization: `Bearer ${token}` } : {},
                 body: payload,
@@ -479,16 +480,13 @@ export const SignupLayout = () => {
 
     const signupMutation = useMutation({
         mutationFn: async (data) => {
-            const response = await fetch(
-                'http://localhost:3000/api/auth/signup',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data),
-                }
-            );
+            const response = await fetch(`${API_URL}/api/auth/signup`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'Signup failed');
@@ -527,7 +525,7 @@ export const SignupLayout = () => {
 
     const handleGoogleSignUp = () => {
         console.log('handleGoogleSignUp clicked');
-        window.location.href = 'http://localhost:3000/api/auth/google';
+        window.location.href = `${API_URL}/api/auth/google`;
     };
 
     return (
@@ -684,14 +682,11 @@ export const ResetPasswordLayout = () => {
 
     const mutation = useMutation({
         mutationFn: async (email) => {
-            const response = await fetch(
-                'http://localhost:3000/api/auth/send-otp',
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email }),
-                }
-            );
+            const response = await fetch(`${API_URL}/api/auth/send-otp`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email }),
+            });
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'Failed to send OTP');
@@ -811,7 +806,7 @@ export const VerifyOTPLayout = () => {
 
     const verifyEmailMutation = useMutation({
         mutationFn: (data) =>
-            fetch('http://localhost:3000/api/auth/verify-email-otp', {
+            fetch(`${API_URL}/api/auth/verify-email-otp`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data),
@@ -833,14 +828,11 @@ export const VerifyOTPLayout = () => {
     const resetPasswordMutation = useMutation({
         mutationFn: async ({ email, otp, newPassword }) => {
             // Step 1: Verify OTP to get tempToken
-            const verifyRes = await fetch(
-                'http://localhost:3000/api/auth/verify-otp',
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, otp }),
-                }
-            );
+            const verifyRes = await fetch(`${API_URL}/api/auth/verify-otp`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, otp }),
+            });
             if (!verifyRes.ok)
                 throw new Error(
                     (await verifyRes.json()).message || 'Invalid OTP'
@@ -848,17 +840,14 @@ export const VerifyOTPLayout = () => {
             const { tempToken } = await verifyRes.json();
 
             // Step 2: Reset password with tempToken
-            const resetRes = await fetch(
-                'http://localhost:3000/api/auth/reset-password',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${tempToken}`,
-                    },
-                    body: JSON.stringify({ newPassword }),
-                }
-            );
+            const resetRes = await fetch(`${API_URL}/api/auth/reset-password`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${tempToken}`,
+                },
+                body: JSON.stringify({ newPassword }),
+            });
             if (!resetRes.ok)
                 throw new Error(
                     (await resetRes.json()).message ||
@@ -967,16 +956,13 @@ export const LoginLayout = () => {
 
     const loginMutation = useMutation({
         mutationFn: async (data) => {
-            const response = await fetch(
-                'http://localhost:3000/api/auth/login',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data),
-                }
-            );
+            const response = await fetch(`${API_URL}/api/auth/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
             const responseData = await response.json();
             if (!response.ok) {
                 throw responseData;
@@ -1030,7 +1016,7 @@ export const LoginLayout = () => {
 
     const handleGoogleSignIn = () => {
         console.log('handleGoogleSignIn clicked');
-        window.location.href = 'http://localhost:3000/api/auth/google';
+        window.location.href = `${API_URL}/api/auth/google`;
     };
 
     return (

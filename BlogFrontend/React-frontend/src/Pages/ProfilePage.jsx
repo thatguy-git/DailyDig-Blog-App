@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle } from '@fortawesome/free-regular-svg-icons';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
+import { API_URL } from '../constants/links.jsx';
 
 const ProfilePage = () => {
     const { user, setUser, token } = useAuth();
@@ -54,12 +55,9 @@ const ProfilePage = () => {
                 ...(token ? { Authorization: `Bearer ${token}` } : {}),
             };
 
-            const response = await fetch(
-                'http://localhost:3000/api/users/profile',
-                {
-                    headers,
-                }
-            );
+            const response = await fetch(`${API_URL}/api/users/profile`, {
+                headers,
+            });
 
             if (!response.ok) {
                 const text = await response.text().catch(() => '');
@@ -139,17 +137,14 @@ const ProfilePage = () => {
 
     const updateProfileMutation = useMutation({
         mutationFn: async (dataToSend) => {
-            const response = await fetch(
-                'http://localhost:3000/api/users/profile',
-                {
-                    method: 'PUT',
-                    headers: {
-                        // If sending FormData, do NOT set Content-Type manually
-                        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-                    },
-                    body: dataToSend,
-                }
-            );
+            const response = await fetch(`${API_URL}/api/users/profile`, {
+                method: 'PUT',
+                headers: {
+                    // If sending FormData, do NOT set Content-Type manually
+                    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                },
+                body: dataToSend,
+            });
 
             // 1. Intercept the error from the backend
             if (!response.ok) {

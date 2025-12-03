@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from './links';
 
 const AuthContext = createContext();
 
@@ -68,10 +69,8 @@ export const AuthProvider = ({ children, queryClient }) => {
     };
 
     const handleGoogleLogin = () => {
-        window.location.href = 'http://localhost:3000/api/auth/google';
+        window.location.href = `${API_URL}/api/auth/google`;
     };
-
-
 
     const updateUser = (userData) => {
         setUser(userData);

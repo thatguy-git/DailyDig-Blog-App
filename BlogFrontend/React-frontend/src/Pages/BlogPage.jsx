@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
+import { API_URL } from '../constants/links';
 import Searchbar from '../Components/Searchbar.jsx';
 import {
     BlogCardsA,
@@ -63,10 +64,10 @@ const BlogPage = ({ Links }) => {
         queryFn: async () => {
             console.log('useQuery for search running with query:', searchQuery);
             const url = searchQuery
-                ? `http://localhost:3000/api/posts/search?q=${encodeURIComponent(
+                ? `${API_URL}/api/posts/search?q=${encodeURIComponent(
                       searchQuery
                   )}`
-                : 'http://localhost:3000/api/posts';
+                : `${API_URL}/api/posts`;
             const response = await fetch(url);
             if (!response.ok) {
                 throw new Error('Failed to fetch posts');
@@ -83,9 +84,7 @@ const BlogPage = ({ Links }) => {
     } = useQuery({
         queryKey: ['popularPosts'],
         queryFn: async () => {
-            const response = await fetch(
-                'http://localhost:3000/api/posts/popular'
-            );
+            const response = await fetch(`${API_URL}/api/posts/popular`);
             if (!response.ok) {
                 throw new Error('Failed to fetch popular posts');
             }
@@ -102,9 +101,7 @@ const BlogPage = ({ Links }) => {
     } = useQuery({
         queryKey: ['featuredPosts'],
         queryFn: async () => {
-            const response = await fetch(
-                'http://localhost:3000/api/posts/featured'
-            );
+            const response = await fetch(`${API_URL}/api/posts/featured`);
             if (!response.ok) {
                 throw new Error('Failed to fetch featured posts');
             }
@@ -121,9 +118,7 @@ const BlogPage = ({ Links }) => {
     } = useQuery({
         queryKey: ['editorPicksPosts'],
         queryFn: async () => {
-            const response = await fetch(
-                'http://localhost:3000/api/posts/editor-picks'
-            );
+            const response = await fetch(`${API_URL}/api/posts/editor-picks`);
             if (!response.ok) {
                 throw new Error('Failed to fetch editor picks posts');
             }
@@ -140,9 +135,7 @@ const BlogPage = ({ Links }) => {
     } = useQuery({
         queryKey: ['highlightsPosts'],
         queryFn: async () => {
-            const response = await fetch(
-                'http://localhost:3000/api/posts/highlights'
-            );
+            const response = await fetch(`${API_URL}/api/posts/highlights`);
             if (!response.ok) {
                 throw new Error('Failed to fetch highlights posts');
             }
@@ -159,9 +152,7 @@ const BlogPage = ({ Links }) => {
     } = useQuery({
         queryKey: ['recentPosts'],
         queryFn: async () => {
-            const response = await fetch(
-                'http://localhost:3000/api/posts/recent'
-            );
+            const response = await fetch(`${API_URL}/api/posts/recent`);
             if (!response.ok) {
                 throw new Error('Failed to fetch recent posts');
             }

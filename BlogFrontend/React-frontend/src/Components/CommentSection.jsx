@@ -6,11 +6,12 @@ import {
 } from '@tanstack/react-query';
 import { useAuth } from '../constants/AuthContext';
 import { FaHeart, FaRegHeart, FaTrash } from 'react-icons/fa';
+import { API_URL } from '../constants/links';
 
 const fetchComments = async ({ queryKey, pageParam = 1 }) => {
     const [, postId] = queryKey;
     const res = await fetch(
-        `http://localhost:3000/api/comments/${postId}?page=${pageParam}&limit=5`
+        `${API_URL}/api/comments/${postId}?page=${pageParam}&limit=5`
     );
     if (!res.ok) {
         throw new Error('Failed to fetch comments');
@@ -19,7 +20,7 @@ const fetchComments = async ({ queryKey, pageParam = 1 }) => {
 };
 
 const postComment = async ({ postId, content, token }) => {
-    const res = await fetch(`http://localhost:3000/api/comments/${postId}`, {
+    const res = await fetch(`${API_URL}/api/comments/${postId}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -34,13 +35,10 @@ const postComment = async ({ postId, content, token }) => {
 };
 
 const likeComment = async ({ commentId, token }) => {
-    const res = await fetch(
-        `http://localhost:3000/api/comments/${commentId}/like`,
-        {
-            method: 'PUT',
-            headers: { Authorization: `Bearer ${token}` },
-        }
-    );
+    const res = await fetch(`${API_URL}/api/comments/${commentId}/like`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}` },
+    });
     if (!res.ok) {
         throw new Error('Failed to like comment');
     }
@@ -48,7 +46,7 @@ const likeComment = async ({ commentId, token }) => {
 };
 
 const deleteComment = async ({ commentId, token }) => {
-    const res = await fetch(`http://localhost:3000/api/comments/${commentId}`, {
+    const res = await fetch(`${API_URL}/api/comments/${commentId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
     });

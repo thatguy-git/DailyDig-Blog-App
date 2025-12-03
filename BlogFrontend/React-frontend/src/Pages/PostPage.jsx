@@ -5,6 +5,7 @@ import Navbar from '../Components/Navbar.jsx';
 import Footer from '../Components/Footer.jsx';
 import { useAuth } from '../constants/AuthContext.jsx';
 import CommentSection from '../Components/CommentSection.jsx';
+import { API_URL } from '../constants/links';
 
 export const PostPage = () => {
     const { id } = useParams();
@@ -26,12 +27,9 @@ export const PostPage = () => {
                 ...(token ? { Authorization: `Bearer ${token}` } : {}),
             };
 
-            const response = await fetch(
-                `http://localhost:3000/api/posts/${id}`,
-                {
-                    headers,
-                }
-            );
+            const response = await fetch(`${API_URL}/api/posts/${id}`, {
+                headers,
+            });
             if (!response.ok) {
                 throw new Error('Failed to fetch post');
             }
@@ -52,9 +50,7 @@ export const PostPage = () => {
     const { data: relatedPosts, isLoading: relatedLoading } = useQuery({
         queryKey: ['relatedPosts', id],
         queryFn: async () => {
-            const response = await fetch(
-                `http://localhost:3000/api/posts/related/${id}`
-            );
+            const response = await fetch(`${API_URL}/api/posts/related/${id}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch related posts');
             }
@@ -82,13 +78,10 @@ export const PostPage = () => {
                 ...(token ? { Authorization: `Bearer ${token}` } : {}),
             };
 
-            const response = await fetch(
-                `http://localhost:3000/api/posts/${id}/like`,
-                {
-                    method: 'POST',
-                    headers,
-                }
-            );
+            const response = await fetch(`${API_URL}/api/posts/${id}/like`, {
+                method: 'POST',
+                headers,
+            });
             if (!response.ok) {
                 console.error(
                     'likeMutation fetch failed with status: ',

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../constants/AuthContext';
+import { API_URL } from '../constants/links';
 
 const AuthCallback = () => {
     const [searchParams] = useSearchParams();
@@ -21,16 +22,13 @@ const AuthCallback = () => {
                 localStorage.setItem('token', newToken);
 
                 // 2. Fetch the user's profile from your backend
-                const response = await fetch(
-                    'http://localhost:3000/api/users/profile',
-                    {
-                        method: 'GET',
-                        headers: {
-                            Authorization: `Bearer ${newToken}`,
-                            'Content-Type': 'application/json',
-                        },
-                    }
-                );
+                const response = await fetch(`${API_URL}/api/users/profile`, {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${newToken}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
 
                 if (response.ok) {
                     const userData = await response.json();

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
+import { API_URL } from '../constants/links';
 
 export const BannerImage = ({ imageUrl }) => {
     return (
@@ -18,16 +19,13 @@ export const BannerImage = ({ imageUrl }) => {
 export const ContactForm = () => {
     const submitContactMutation = useMutation({
         mutationFn: async (formData) => {
-            const response = await fetch(
-                'http://localhost:3000/api/contact/submit',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData),
-                }
-            );
+            const response = await fetch(`${API_URL}/api/contact/submit`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
 
             if (!response.ok) {
                 throw new Error('Failed to send message');
