@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useAuth } from '../constants/AuthContext';
+import { useAuth } from '../constants/useAuth';
 import { API_URL } from '../constants/links';
 
 const AuthCallback = () => {
@@ -32,12 +32,12 @@ const AuthCallback = () => {
 
                 if (response.ok) {
                     const userData = await response.json();
-                    // 3. Now we have both Token AND User Data -> Login fully
+                    //Now we have both Token and User Data to Login fully
                     login(newToken, userData.user);
                     return true;
                 } else {
                     console.error('Failed to fetch user profile');
-                    logout(); // Cleanup if failed
+                    logout();
                     return false;
                 }
             } catch (error) {

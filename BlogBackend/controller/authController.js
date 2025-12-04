@@ -81,6 +81,7 @@ export const createUser = async (req, res) => {
 
 // User Login
 export const loginUser = async (req, res) => {
+    console.log('Login request body:', req.body); // Debug log
     const { email, password } = req.body;
     try {
         const user = await User.findOne({ email });
@@ -89,6 +90,12 @@ export const loginUser = async (req, res) => {
                 return res.status(401).json({
                     error: 'EMAIL_NOT_VERIFIED',
                     message: 'Please verify your email before logging in.',
+                });
+            }
+            if (!user.password) {
+                return res.status(400).json({
+                    message:
+                        'This account was created with Google. Please log in with Google.',
                 });
             }
             console.log('youre a user'); // Debug log
@@ -121,6 +128,7 @@ export const loginUser = async (req, res) => {
             return res.status(400).json({ message: 'No user with this email' });
         }
     } catch (error) {
+        console.error('Login error:', error);
         return res.status(500).json({ message: 'Log in error.' });
     }
 };

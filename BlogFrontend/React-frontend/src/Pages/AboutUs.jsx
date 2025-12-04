@@ -2,7 +2,7 @@ import React from 'react';
 import Footer from '../Components/Footer.jsx';
 import { AboutUsBody } from '../Components/AboutUsComponents.jsx';
 
-const AboutUs = ({ Links }) => {
+const AboutUs = () => {
     return (
         <div>
             <div className="mt-8">

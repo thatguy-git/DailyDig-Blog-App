@@ -6,7 +6,7 @@ import {
     deleteComment,
     likeComment,
 } from '../controller/commentController.js';
-import authMiddleware from '../middleware/authMiddleware.js';
+import { authMiddleware } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 

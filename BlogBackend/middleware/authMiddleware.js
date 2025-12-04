@@ -5,7 +5,7 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export const authMiddleware = (req, res, next) => {
-    // 1. Get token
+    // Get token
     const token = req.header('Authorization')?.replace('Bearer ', '');
 
     if (!token) {
@@ -14,13 +14,10 @@ export const authMiddleware = (req, res, next) => {
     }
 
     try {
-        // 2. Verify token
+        // Verify token
         const decoded = jwt.verify(token, JWT_SECRET);
 
-        // 3. DEBUG: Check what is inside the token
-        // console.log("Decoded Token:", decoded);
-
-        // 4. FIX: Handle both 'id' (standard) and 'userId' (Google Auth)
+        // FIX: Handle both 'id' (standard) and 'userId' (Google Auth)
         const userId = decoded.userId || decoded.id;
 
         if (!userId) {
@@ -29,7 +26,7 @@ export const authMiddleware = (req, res, next) => {
             return next();
         }
 
-        // 5. Attach to request
+        // Attach to request
         // We attach to BOTH req.user and req.user_id to be safe and compatible with all your routes
         req.user_id = userId;
         req.user = {
@@ -48,12 +45,21 @@ export const authMiddleware = (req, res, next) => {
 };
 
 export const adminMiddleware = (req, res, next) => {
-    if (req.user_role !== 'admin') {
+    if (
+        req.user &&
+        (req.user_role === 'admin' || req.user_role === 'demo_admin')
+    ) {
+        next();
+    } else {
+        res.status(403).json({ message: 'Not authorized as an admin' });
+    }
+};
+
+export const restrictDemoAdmin = (req, res, next) => {
+    if (req.user_role === 'demo_admin' && req.method !== 'GET') {
         return res
             .status(403)
-            .json({ message: 'Access denied. Admin role required.' });
+            .json({ message: 'Action disabled in Demo mode.' });
     }
     next();
 };
-
-export default authMiddleware;

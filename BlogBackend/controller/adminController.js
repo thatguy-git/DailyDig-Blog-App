@@ -8,9 +8,29 @@ import mongoose from 'mongoose';
 // Get all users (admin only)
 export const getAllUsers = async (req, res) => {
     try {
-        const users = await User.find().select(
-            '-password -resetOTP -otpExpiration -emailVerificationOTP -emailOTPExpiration'
-        );
+        const users = await User.find()
+            .sort({ createdAt: -1 })
+            .select(
+                '-password -resetOTP -otpExpiration -emailVerificationOTP -emailOTPExpiration'
+            );
+
+        if (req.user_role === 'demo_admin') {
+            const safeUsers = users.map((user) => {
+                const userObject = user.toObject();
+
+                return {
+                    ...userObject,
+                    _id: 'HIDDEN',
+                    email: 'h***@demo.mode',
+                    googleId: 'HIDDEN',
+                };
+            });
+            return res.status(200).json({
+                users: safeUsers,
+                count: safeUsers.length,
+            });
+        }
+
         res.status(200).json({
             message: 'Users retrieved successfully',
             users,
@@ -146,7 +166,10 @@ export const updateUserByAdmin = async (req, res) => {
         if (name !== undefined) user.name = name;
         if (username !== undefined) user.username = username;
         if (email !== undefined) user.email = email;
-        if (role !== undefined && ['user', 'admin'].includes(role))
+        if (
+            role !== undefined &&
+            ['user', 'admin', 'demo_admin'].includes(role)
+        )
             user.role = role;
         if (isVerified !== undefined) user.isVerified = isVerified;
 
@@ -227,7 +250,7 @@ export const createUserByAdmin = async (req, res) => {
         }
 
         // Validate role
-        if (!['user', 'admin'].includes(role)) {
+        if (!['user', 'admin', 'demo_admin'].includes(role)) {
             return res
                 .status(400)
                 .json({ message: 'Invalid role. Must be user or admin' });
@@ -573,8 +596,7 @@ export const toggleIsEditorPick = async (req, res) => {
             });
             if (editorPicksCount >= 5) {
                 return res.status(400).json({
-                    message:
-                        "You can only have a maximum of 5 Editor's Picks.",
+                    message: "You can only have a maximum of 5 Editor's Picks.",
                 });
             }
         }

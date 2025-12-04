@@ -21,11 +21,12 @@ import {
     authMiddleware,
     adminMiddleware,
 } from '../middleware/authMiddleware.js';
+import { restrictDemoAdmin } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// All admin routes require authentication and admin role
-router.use(authMiddleware, adminMiddleware);
+// All admin routes require authentication and admin role and demo admin restrictions
+router.use(authMiddleware, adminMiddleware, restrictDemoAdmin);
 
 // User management routes
 router.get('/users', getAllUsers);

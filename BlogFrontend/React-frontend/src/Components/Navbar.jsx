@@ -2,27 +2,13 @@ import React, { useState, useRef, useEffect } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { HiMenu, HiOutlineMenu } from 'react-icons/hi';
 import { LogOut } from 'lucide-react';
-import { useAuth } from '../constants/AuthContext.jsx';
+import { useAuth } from '../constants/useAuth.js';
 
-const Navbar = (props) => {
+const Navbar = () => {
     const { user, logout } = useAuth();
 
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const profileRef = useRef(null);
-
-    //mostly not functional code for navlinks
-    const getLinkClasses = ({ isActive }) => {
-        // Base classes that all links should have
-        const baseClasses =
-            'transition duration-300 ease-out text-zinc-900 hover:text-zinc-500 text-lg hover:underline-offset-4 hover:underline font-normal cursor-pointer tracking-tighter';
-
-        // Conditional styling based on the active state
-        const activeStyle = isActive
-            ? 'text-zinc-500 underline underline-offset-4 ' // <--- Active: Make it blue and underlined
-            : ''; // Inactive: Regular color with hover effect
-
-        return `${baseClasses} ${activeStyle}`;
-    };
 
     // Toggle handler for profile dropdown
     const toggleProfileDropdown = () => {

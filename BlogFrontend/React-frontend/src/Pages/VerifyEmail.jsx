@@ -51,7 +51,8 @@ export const VerifyEmail = () => {
             } else {
                 setError(data.message || 'Verification failed');
             }
-        } catch (err) {
+// eslint-disable-next-line no-unused-vars
+        } catch (_) {
             setError('Network error. Please try again.');
         } finally {
             setLoading(false);
@@ -83,7 +84,8 @@ export const VerifyEmail = () => {
             } else {
                 setError(data.message || 'Failed to send OTP');
             }
-        } catch (err) {
+// eslint-disable-next-line no-unused-vars
+        } catch (_) {
             setError('Network error. Please try again.');
         } finally {
             setResendLoading(false);

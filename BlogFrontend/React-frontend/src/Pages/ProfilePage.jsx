@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../constants/AuthContext.jsx';
+import { useAuth } from '../constants/useAuth.js';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserCircle } from '@fortawesome/free-regular-svg-icons';
+
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import { API_URL } from '../constants/links';
@@ -210,8 +209,8 @@ const ProfilePage = () => {
     };
 
     return (
-        <div className="min-h-screen py-8">
-            <div className="max-w-2xl mx-auto p-8 relative border-2 border-white rounded-lg shadow-sm bg-white">
+        <div className="max-h-screen mt-8">
+            <div className="max-w-3xl mx-auto p-8 relative border-2 border-white rounded-lg shadow-sm bg-white">
                 <h1 className="text-3xl font-bold text-gray-800 mb-6 pl-5">
                     Profile
                 </h1>
@@ -230,7 +229,7 @@ const ProfilePage = () => {
                                 '/default-user-icon.svg'
                             }
                             alt="Profile"
-                            className="w-32 h-32 rounded-full object-cover border-4 border-teal-200"
+                            className="w-32 h-32 rounded-full object-cover border-2 border-teal-200"
                         />
                     </div>
                     <div className="grow">
@@ -375,21 +374,15 @@ const ProfilePage = () => {
                                     </div>
 
                                     <div>
-                                        <label
-                                            className="mb-1.5 block text-sm font-semibold text-gray-700"
-                                            htmlFor="email"
-                                        >
-                                            Email
-                                        </label>
-                                        <input
-                                            type="email"
-                                            id="email"
-                                            name="email"
-                                            value={formData.email}
-                                            onChange={handleInputChange}
-                                            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
-                                            required
-                                        />
+                                        <div className="rounded-lg bg-gray-100 p-4 border border-gray-100">
+                                            <label className="mb-1.5 block text-sm font-semibold text-gray-700 tracking-wider">
+                                                Email
+                                            </label>
+                                            <div className="text-sm font-medium text-gray-400 bg-white border border-gray-200 px-3 py-2 rounded">
+                                                {formData.email}
+                                            </div>
+                                        </div>
+
                                         {errors.email && (
                                             <p className="text-red-500 text-xs mt-1 flex items-center">
                                                 <span className="mr-1">⚠️</span>{' '}
@@ -417,9 +410,9 @@ const ProfilePage = () => {
                                     </div>
 
                                     {/* 4. Read-Only Info Section */}
-                                    <div className="rounded-lg bg-gray-50 p-4 border border-gray-100">
-                                        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
-                                            Account Status (Read Only)
+                                    <div className="rounded-lg bg-gray-100 p-4 border border-gray-100">
+                                        <h3 className="text-xs font-bold text-gray-700 uppercase tracking-wider mb-3">
+                                            Account Status
                                         </h3>
                                         <div className="grid grid-cols-2 gap-4">
                                             <div>

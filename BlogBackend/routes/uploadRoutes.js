@@ -10,6 +10,7 @@ import {
     deleteProfileImage,
     deletePostImage,
 } from '../controller/uploadController.js';
+import { handleUploadErrors } from '../middleware/errorMiddleware.js';
 
 const router = express.Router();
 
@@ -20,6 +21,7 @@ router.use(authMiddleware);
 router.post(
     '/profile-image',
     uploadProfileImage.single('image'),
+    handleUploadErrors,
     uploadProfileImageController
 );
 
@@ -27,6 +29,7 @@ router.post(
 router.post(
     '/post-image',
     uploadPostImage.single('image'),
+    handleUploadErrors,
     uploadPostImageController
 );
 

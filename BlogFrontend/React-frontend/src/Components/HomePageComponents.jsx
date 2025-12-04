@@ -1,10 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { BlogCardsA } from './BlogCards.jsx';
-import { useAuth } from '../constants/AuthContext.jsx';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { useAuth } from '../constants/useAuth.js';
 import { API_URL } from '../constants/links';
 
 export const HeroSection = () => {
@@ -153,310 +151,6 @@ export const Mission = () => {
     );
 };
 
-export const AddStory = () => {
-    const fileInputRef = useRef(null);
-
-    // 1. Update State to include image data
-    const [formData, setFormData] = useState({
-        title: '',
-        content: '',
-        selectedTags: [],
-        coverImage: null, // The actual file object
-        coverImagePreview: '', // The URL for display
-    });
-
-    const [publishError, setPublishError] = useState('');
-    const [publishSuccess, setPublishSuccess] = useState('');
-    const navigate = useNavigate();
-
-    const publishMutation = useMutation({
-        // 1. Move the async function to the 'mutationFn' property
-        mutationFn: async (data) => {
-            // Make sure this matches what you saved in AuthCallback ('authToken' or 'token')
-            const token = localStorage.getItem('token');
-
-            const payload = new FormData();
-            payload.append('title', data.title);
-            payload.append('content', data.content);
-            payload.append('tags', JSON.stringify(data.selectedTags || []));
-            if (data.coverImage) payload.append('coverImage', data.coverImage);
-
-            const res = await fetch(`${API_URL}/api/posts`, {
-                method: 'POST',
-                headers: token ? { Authorization: `Bearer ${token}` } : {},
-                body: payload,
-            });
-
-            if (!res.ok) {
-                const err = await res.json().catch(() => ({}));
-                throw new Error(
-                    err.message || `Publish failed (${res.status})`
-                );
-            }
-            return res.json();
-        },
-        // 2. Keep onSuccess and onError in the same object
-        onSuccess: (result) => {
-            setPublishSuccess('Story published successfully.');
-            setPublishError('');
-            const newId = result?.data?._id || result?.post?._id || result?.id;
-            if (newId) navigate(`/post/${newId}`);
-        },
-        onError: (err) => {
-            setPublishError(err.message || 'Failed to publish story');
-            setPublishSuccess('');
-        },
-    });
-
-    const AVAILABLE_TAGS = [
-        'Technology',
-        'Health',
-        'Business',
-        'Science',
-        'Education',
-        'Sports',
-        'Lifestyle',
-        'Politics',
-        'Entertainment',
-    ];
-
-    // --- Handlers ---
-
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-
-    const handleEditorChange = (event, editor) => {
-        const data = editor.getData();
-        setFormData((prev) => ({ ...prev, content: data }));
-    };
-
-    const toggleTag = (tag) => {
-        setFormData((prev) => {
-            if (prev.selectedTags.includes(tag)) {
-                return {
-                    ...prev,
-                    selectedTags: prev.selectedTags.filter((t) => t !== tag),
-                };
-            } else {
-                return { ...prev, selectedTags: [...prev.selectedTags, tag] };
-            }
-        });
-    };
-
-    // 2. Handle Image Selection
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            // Create a fake URL for immediate preview
-            const previewUrl = URL.createObjectURL(file);
-            setFormData((prev) => ({
-                ...prev,
-                coverImage: file,
-                coverImagePreview: previewUrl,
-            }));
-        }
-    };
-
-    // 3. Handle Image Removal
-    const removeImage = () => {
-        setFormData((prev) => ({
-            ...prev,
-            coverImage: null,
-            coverImagePreview: '',
-        }));
-        // Reset file input so selecting the same file works again if needed
-        if (fileInputRef.current) {
-            fileInputRef.current.value = '';
-        }
-    };
-
-    const triggerFileInput = () => {
-        fileInputRef.current.click();
-    };
-
-    const handlePublish = (e) => {
-        if (e && e.preventDefault) e.preventDefault();
-        setPublishError('');
-        setPublishSuccess('');
-        if (!formData.title || !formData.content) {
-            setPublishError('Title and content are required.');
-            return;
-        }
-        publishMutation.mutate(formData);
-    };
-
-    return (
-        <div className="min-h-screen  py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="p-8 sm:p-12">
-                    <div className="mb-10 border-b border-gray-100 pb-6">
-                        <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
-                            Write a New Story
-                        </h1>
-                    </div>
-
-                    {/* --- 4. New Cover Image Section --- */}
-                    <div className="mb-8">
-                        <label className="block text-sm font-medium text-gray-700 mb-3">
-                            Cover Image (Optional)
-                        </label>
-
-                        {/* Hidden Input */}
-                        <input
-                            type="file"
-                            ref={fileInputRef}
-                            onChange={handleImageChange}
-                            accept="image/*"
-                            className="hidden"
-                        />
-
-                        {formData.coverImagePreview ? (
-                            // PREVIEW STATE
-                            <div className="relative w-full h-64 md:h-80 rounded-xl overflow-hidden group">
-                                <img
-                                    src={formData.coverImagePreview}
-                                    alt="Cover Preview"
-                                    className="w-full h-full object-cover"
-                                />
-                                {/* Overlay with Remove Button */}
-                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                    <button
-                                        onClick={removeImage}
-                                        className="bg-red-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-600 transition shadow-lg flex items-center gap-2 hover:cursor-pointer"
-                                    >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="20"
-                                            height="20"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                        >
-                                            <path d="M3 6h18" />
-                                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                            <path d="M8 6V4c0-1 1-1 1-1h6c1 0 1 1 1 1v2" />
-                                        </svg>
-                                        Remove Image
-                                    </button>
-                                </div>
-                            </div>
-                        ) : (
-                            // UPLOAD STATE
-                            <div
-                                onClick={triggerFileInput}
-                                className="w-full h-32 border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center text-gray-500 cursor-pointer hover:border-teal-500 hover:text-teal-600 hover:bg-gray-50 transition-all duration-200"
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="32"
-                                    height="32"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    className="mb-2"
-                                >
-                                    <rect
-                                        width="18"
-                                        height="18"
-                                        x="3"
-                                        y="3"
-                                        rx="2"
-                                        ry="2"
-                                    />
-                                    <circle cx="9" cy="9" r="2" />
-                                    <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
-                                </svg>
-                                <span className="text-sm font-medium">
-                                    Click to add a cover image
-                                </span>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Title Input */}
-                    <div className="mb-8">
-                        <input
-                            type="text"
-                            id="title"
-                            name="title"
-                            value={formData.title}
-                            onChange={handleChange}
-                            placeholder="Give your story a title..."
-                            className="block w-full text-4xl font-bold text-gray-900 placeholder-gray-300 border-none focus:ring-0 focus:outline-none px-0 py-3 bg-transparent leading-normal h-auto"
-                        />
-                    </div>
-
-                    {/* Tag Selection */}
-                    <div className="mb-8">
-                        <div className="flex flex-wrap gap-2">
-                            {AVAILABLE_TAGS.map((tag) => {
-                                const isSelected =
-                                    formData.selectedTags.includes(tag);
-                                return (
-                                    <button
-                                        key={tag}
-                                        type="button"
-                                        onClick={() => toggleTag(tag)}
-                                        className={`
-                                            px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 hover:cursor-pointer
-                                            ${
-                                                isSelected
-                                                    ? 'bg-teal-600 text-white shadow-md transform scale-105'
-                                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                                            }
-                                        `}
-                                    >
-                                        {tag}
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </div>
-
-                    {/* Content Editor */}
-                    <div className="mb-8">
-                        <CKEditor
-                            editor={ClassicEditor}
-                            data={formData.content}
-                            onChange={handleEditorChange}
-                        />
-                    </div>
-
-                    {/* Buttons */}
-                    <div className="flex items-center justify-end gap-4">
-                        <button className="px-6 py-3 text-gray-600 hover:text-gray-900 font-medium transition-colors hover:cursor-pointer">
-                            Cancel
-                        </button>
-                        <button
-                            type="button"
-                            onClick={handlePublish}
-                            disabled={publishMutation.isLoading}
-                            className="px-8 py-3 bg-teal-600 text-white font-bold rounded-lg shadow-lg hover:bg-teal-700 transform transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 disabled:opacity-50"
-                        >
-                            {publishMutation.isLoading
-                                ? 'Publishing...'
-                                : 'Publish Story'}
-                        </button>
-                    </div>
-                    {publishError && (
-                        <p className="text-red-500 mt-3">{publishError}</p>
-                    )}
-                    {publishSuccess && (
-                        <p className="text-green-500 mt-3">{publishSuccess}</p>
-                    )}
-                </div>
-            </div>
-        </div>
-    );
-};
-
 export const HomePageLayout = () => {
     return (
         <>
@@ -476,7 +170,6 @@ export const SignupLayout = () => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const navigate = useNavigate();
-    const { login } = useAuth();
 
     const signupMutation = useMutation({
         mutationFn: async (data) => {
@@ -820,7 +513,7 @@ export const VerifyOTPLayout = () => {
         onSuccess: (data) => {
             setSuccess(data.message + ' Redirecting to login...');
             setError('');
-            setTimeout(() => navigate('/login'), 3000);
+            setTimeout(() => navigate('/login'), 2000);
         },
         onError: (error) => setError(error.message),
     });
@@ -952,6 +645,7 @@ export const LoginLayout = () => {
     });
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    // eslint-disable-next-line no-unused-vars
     const { login } = useAuth();
 
     const loginMutation = useMutation({
@@ -974,7 +668,7 @@ export const LoginLayout = () => {
             // ensure server returned token and user
             if (!data?.token || !data?.user) return;
             login(data.token, data.user);
-            if (data.user.role === 'admin') {
+            if (data.user.role === 'admin' || data.user.role === 'demo_admin') {
                 navigate('/dashboard', { replace: true });
             } else {
                 navigate('/blog', { replace: true });
@@ -1120,9 +814,27 @@ export const LoginLayout = () => {
                     <button
                         type="submit"
                         disabled={loginMutation.isPending}
-                        className="bg-teal-800 text-white px-4 py-2 w-full rounded-lg hover:bg-teal-500 font-bold disabled:opacity-50 mb-6"
+                        className="bg-teal-800 text-white px-4 py-2 w-full rounded-lg hover:bg-teal-500 font-bold disabled:opacity-50 mb-4"
                     >
                         {loginMutation.isPending ? 'Logging in...' : 'Login'}
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setError('');
+                            // NOTE: Replace with your actual demo admin credentials
+                            loginMutation.mutate({
+                                email: 'admin@demo.com',
+                                password: '123456',
+                            });
+                        }}
+                        disabled={loginMutation.isPending}
+                        className="bg-gray-600 text-white px-4 py-2 w-full rounded-lg hover:bg-gray-700 font-bold disabled:opacity-50 mb-6"
+                    >
+                        {loginMutation.isPending
+                            ? 'Logging in...'
+                            : 'Login as Demo Admin'}
                     </button>
 
                     {/* Removed <br> tags, used flex col + margin */}

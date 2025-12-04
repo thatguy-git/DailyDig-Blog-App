@@ -14,8 +14,14 @@ services:
         container_name: blog-backend
         ports:
             - '3001:3000'
+
+        env_file:
+            - .env
+
         environment:
-            - ./BlogBackend/.env
+            - DATABASE_URL=mongodb://database:27017/blog
+            - PORT=3000
+
         depends_on:
             - database
 

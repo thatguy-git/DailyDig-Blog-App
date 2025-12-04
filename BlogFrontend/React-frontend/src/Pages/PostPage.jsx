@@ -3,9 +3,11 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Navbar from '../Components/Navbar.jsx';
 import Footer from '../Components/Footer.jsx';
-import { useAuth } from '../constants/AuthContext.jsx';
+import { useAuth } from '../constants/useAuth.js';
 import CommentSection from '../Components/CommentSection.jsx';
 import { API_URL } from '../constants/links';
+import DeletePostButton from '../Components/DeletePostButton.jsx';
+import EditPostButton from '../Components/EditPostButton.jsx';
 
 export const PostPage = () => {
     const { id } = useParams();
@@ -280,6 +282,12 @@ export const PostPage = () => {
                                     >
                                         Share
                                     </button>
+                                    {user && post.author && user._id === post.author._id && (
+                                        <>
+                                            <EditPostButton postId={post._id} />
+                                            <DeletePostButton postId={post._id} />
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         </div>

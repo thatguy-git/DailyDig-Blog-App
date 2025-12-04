@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
     useInfiniteQuery,
     useMutation,
     useQueryClient,
 } from '@tanstack/react-query';
-import { useAuth } from '../constants/AuthContext';
+import { useAuth } from '../constants/useAuth';
 import { FaHeart, FaRegHeart, FaTrash } from 'react-icons/fa';
 import { API_URL } from '../constants/links';
 
@@ -66,7 +66,6 @@ const CommentSection = ({ postId }) => {
         error,
         fetchNextPage,
         hasNextPage,
-        isFetching,
         isFetchingNextPage,
         status,
     } = useInfiniteQuery({

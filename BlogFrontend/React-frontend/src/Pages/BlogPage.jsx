@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { API_URL } from '../constants/links';
@@ -51,7 +51,17 @@ const SearchResults = ({ posts }) => {
     );
 };
 
-const BlogPage = ({ Links }) => {
+const shuffleArray = (array) => {
+    if (!array) return [];
+    const newArray = [...array];
+    for (let i = newArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    return newArray;
+};
+
+const BlogPage = () => {
     const [searchQuery, setSearchQuery] = useState('');
     console.log('Render BlogPage, searchQuery:', searchQuery);
 
@@ -95,23 +105,6 @@ const BlogPage = ({ Links }) => {
     });
 
     const {
-        data: featuredPosts,
-        isLoading: isLoadingFeaturedPosts,
-        error: errorFeaturedPosts,
-    } = useQuery({
-        queryKey: ['featuredPosts'],
-        queryFn: async () => {
-            const response = await fetch(`${API_URL}/api/posts/featured`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch featured posts');
-            }
-            const result = await response.json();
-            return result.data;
-        },
-        enabled: !searchQuery,
-    });
-
-    const {
         data: editorPicksPosts,
         isLoading: isLoadingEditorPicksPosts,
         error: errorEditorPicksPosts,
@@ -128,39 +121,28 @@ const BlogPage = ({ Links }) => {
         enabled: !searchQuery,
     });
 
-    const {
-        data: highlightsPosts,
-        isLoading: isLoadingHighlightsPosts,
-        error: errorHighlightsPosts,
-    } = useQuery({
-        queryKey: ['highlightsPosts'],
-        queryFn: async () => {
-            const response = await fetch(`${API_URL}/api/posts/highlights`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch highlights posts');
-            }
-            const result = await response.json();
-            return result.data;
-        },
-        enabled: !searchQuery,
-    });
+    const recentPosts = useMemo(() => {
+        if (!allPosts) return [];
+        return [...allPosts].sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+    }, [allPosts]);
 
-    const {
-        data: recentPosts,
-        isLoading: isLoadingRecentPosts,
-        error: errorRecentPosts,
-    } = useQuery({
-        queryKey: ['recentPosts'],
-        queryFn: async () => {
-            const response = await fetch(`${API_URL}/api/posts/recent`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch recent posts');
-            }
-            const result = await response.json();
-            return result.data;
-        },
-        enabled: !searchQuery,
-    });
+    const postsForD = recentPosts.slice(0, 10);
+
+    const remainingPosts = useMemo(() => {
+        if (!allPosts) return [];
+        const recentPostIds = new Set(postsForD.map((p) => p._id));
+        return allPosts.filter((p) => !recentPostIds.has(p._id));
+    }, [allPosts, postsForD]);
+
+    const shuffledRemainingPosts = useMemo(
+        () => shuffleArray(remainingPosts),
+        [remainingPosts]
+    );
+
+    const postsForA = shuffledRemainingPosts.slice(0, 5);
+    const postsForE = shuffledRemainingPosts.slice(5, 10);
 
     const handleSearch = (query) => {
         console.log('handleSearch called with:', query);
@@ -170,19 +152,11 @@ const BlogPage = ({ Links }) => {
     const isLoading =
         isLoadingAllPosts ||
         (isLoadingPopularPosts && !searchQuery) ||
-        (isLoadingFeaturedPosts && !searchQuery) ||
-        (isLoadingEditorPicksPosts && !searchQuery) ||
-        (isLoadingHighlightsPosts && !searchQuery) ||
-        (isLoadingRecentPosts && !searchQuery);
+        (isLoadingEditorPicksPosts && !searchQuery);
 
     const error =
         errorAllPosts ||
-        (!searchQuery &&
-            (errorPopularPosts ||
-                errorFeaturedPosts ||
-                errorEditorPicksPosts ||
-                errorHighlightsPosts ||
-                errorRecentPosts));
+        (!searchQuery && (errorPopularPosts || errorEditorPicksPosts));
 
     if (isLoading) {
         return (
@@ -231,12 +205,12 @@ const BlogPage = ({ Links }) => {
                     <SearchResults posts={allPosts} />
                 ) : (
                     <>
-                        <BlogCardsA posts={featuredPosts} />
+                        <BlogCardsA posts={postsForA} />
                         <BannerCard post={editorPicksPosts?.[0]} />
                         <BlogCardsB posts={popularPosts} />
                         <BlogCardsC posts={editorPicksPosts?.slice(1) || []} />
-                        <BlogCardsD posts={recentPosts} />
-                        <BlogCardsE posts={highlightsPosts} />
+                        <BlogCardsD posts={postsForD} />
+                        <BlogCardsE posts={postsForE} />
                     </>
                 )}
             </div>

@@ -1,12 +1,11 @@
 import React from 'react';
-import { AddStory } from '../Components/HomePageComponents';
-import Navbar from '../Components/Navbar';
+import StoryForm from '../Components/StoryForm';
 import Footer from '../Components/Footer';
 
-const WriteStory = ({ Links }) => {
+const WriteStory = () => {
     return (
         <div>
-            <AddStory />
+            <StoryForm />
             <Footer />
         </div>
     );

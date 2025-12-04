@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import toast, { Toaster } from 'react-hot-toast';
 import Searchbar from '../Components/Searchbar.jsx';
 import Navbar from '../Components/Navbar.jsx';
 import { API_URL } from '../constants/links';
-import { useAuth } from '../constants/AuthContext.jsx';
+import { useAuth } from '../constants/useAuth.js';
 import {
     LineChart,
     Line,
@@ -133,7 +134,7 @@ const getRoleBadgeClasses = (role) => {
             return 'bg-blue-100 text-blue-800 border-blue-300';
         case 'Author':
             return 'bg-teal-100 text-teal-800 border-teal-300';
-        case 'Contributor':
+        case 'demo_admin':
             return 'bg-yellow-100 text-yellow-800 border-yellow-300';
         case 'Subscriber':
             return 'bg-gray-100 text-gray-800 border-gray-300';
@@ -154,6 +155,7 @@ const navItems = [
     { name: 'Notifications & Alerts', icon: Bell, view: 'NotificationsAlerts' },
 ];
 
+// eslint-disable-next-line no-unused-vars
 const StatsCard = ({ title, value, change, icon: Icon, color, bgColor }) => {
     const isPositive = change.startsWith('+');
 
@@ -455,7 +457,7 @@ const ContentManagementPage = () => {
         coverImage: null,
     });
 
-    const { data: postsData, isLoading: postsLoading } = useQuery({
+    const { data: postsData, isPending: postsLoading } = useQuery({
         queryKey: ['adminPosts', searchQuery],
         queryFn: async () => {
             const url = `${API_URL}/api/admin/posts${
@@ -473,7 +475,8 @@ const ContentManagementPage = () => {
             });
 
             if (!response.ok) {
-                throw new Error('Failed to fetch posts');
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to fetch posts');
             }
 
             return response.json();
@@ -497,18 +500,22 @@ const ContentManagementPage = () => {
             );
 
             if (!response.ok) {
-                throw new Error('Failed to delete post');
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to delete post');
             }
 
             return response.json();
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['adminPosts'] });
-            alert('Post deleted successfully!');
+            toast.success('Post deleted successfully!');
         },
         onError: (error) => {
-            console.error('Error deleting post:', error);
-            alert('Error deleting post');
+            if (error.message === 'Action disabled in Demo mode.') {
+                toast.error('This action is disabled in demo mode.');
+            } else {
+                toast.error(error.message || 'Error deleting post');
+            }
         },
     });
 
@@ -542,12 +549,15 @@ const ContentManagementPage = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['adminPosts'] });
-            alert('Post created successfully!');
+            toast.success('Post created successfully!');
             setShowCreatePostModal(false);
         },
         onError: (error) => {
-            console.error('Error creating post:', error);
-            alert(`Error creating post: ${error.message}`);
+            if (error.message === 'Action disabled in Demo mode.') {
+                toast.error('This action is disabled in demo mode.');
+            } else {
+                toast.error(error.message || 'Error creating post');
+            }
         },
     });
 
@@ -568,17 +578,26 @@ const ContentManagementPage = () => {
             );
 
             if (!response.ok) {
-                throw new Error("Failed to toggle Editor's Pick status");
+                const errorData = await response.json();
+                throw new Error(
+                    errorData.message || "Failed to toggle Editor's Pick status"
+                );
             }
 
             return response.json();
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['adminPosts'] });
+            toast.success("Editor's Pick status toggled.");
         },
         onError: (error) => {
-            console.error("Error toggling Editor's Pick:", error);
-            alert("Error toggling Editor's Pick status");
+            if (error.message === 'Action disabled in Demo mode.') {
+                toast.error('This action is disabled in demo mode.');
+            } else {
+                toast.error(
+                    error.message || "Error toggling Editor's Pick status"
+                );
+            }
         },
     });
 
@@ -648,12 +667,15 @@ const ContentManagementPage = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['adminPosts'] });
-            alert('Post updated successfully!');
+            toast.success('Post updated successfully!');
             setShowEditPostModal(false);
         },
         onError: (error) => {
-            console.error('Error updating post:', error);
-            alert(`Error updating post: ${error.message}`);
+            if (error.message === 'Action disabled in Demo mode.') {
+                toast.error('This action is disabled in demo mode.');
+            } else {
+                toast.error(error.message || 'Error updating post');
+            }
         },
     });
 
@@ -721,7 +743,7 @@ const ContentManagementPage = () => {
                                     Status
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Views
+                                    Likes
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Actions
@@ -990,7 +1012,7 @@ const UserManagementPage = () => {
     const { token } = useAuth();
     const [searchQuery, setSearchQuery] = useState('');
 
-    const { data: users, isLoading: usersLoading } = useQuery({
+    const { data: users, isPending: usersLoading } = useQuery({
         queryKey: ['users', searchQuery],
         queryFn: async () => {
             const isSearch = searchQuery.trim() !== '';
@@ -1011,7 +1033,10 @@ const UserManagementPage = () => {
             });
 
             if (!response.ok) {
-                throw new Error(`Failed to fetch users from ${url}`);
+                const errorData = await response.json();
+                throw new Error(
+                    errorData.message || `Failed to fetch users from ${url}`
+                );
             }
 
             const data = await response.json();
@@ -1040,18 +1065,22 @@ const UserManagementPage = () => {
             );
 
             if (!response.ok) {
-                throw new Error('Failed to delete user');
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to delete user');
             }
 
             return response.json();
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['users'] });
-            alert('User deleted successfully!');
+            toast.success('User deleted successfully!');
         },
         onError: (error) => {
-            console.error('Error deleting user:', error);
-            alert('Error deleting user');
+            if (error.message === 'Action disabled in Demo mode.') {
+                toast.error('This action is disabled in demo mode.');
+            } else {
+                toast.error(error.message || 'Error deleting user');
+            }
         },
     });
 
@@ -1073,18 +1102,22 @@ const UserManagementPage = () => {
             );
 
             if (!response.ok) {
-                throw new Error('Failed to update user');
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to update user');
             }
 
             return response.json();
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['users'] });
-            alert('User updated successfully!');
+            toast.success('User updated successfully!');
         },
         onError: (error) => {
-            console.error('Error updating user:', error);
-            alert('Error updating user');
+            if (error.message === 'Action disabled in Demo mode.') {
+                toast.error('This action is disabled in demo mode.');
+            } else {
+                toast.error(error.message || 'Error updating user');
+            }
         },
     });
 
@@ -1111,11 +1144,14 @@ const UserManagementPage = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['users'] });
-            alert('User created successfully!');
+            toast.success('User created successfully!');
         },
         onError: (error) => {
-            console.error('Error creating user:', error);
-            alert(`Error creating user: ${error.message}`);
+            if (error.message === 'Action disabled in Demo mode.') {
+                toast.error('This action is disabled in demo mode.');
+            } else {
+                toast.error(error.message || 'Error creating user');
+            }
         },
     });
 
@@ -1398,6 +1434,9 @@ const UserManagementPage = () => {
                                     >
                                         <option value="user">User</option>
                                         <option value="admin">Admin</option>
+                                        <option value="demo_admin">
+                                            Demo Admin
+                                        </option>
                                     </select>
                                 </div>
                                 <div className="flex items-center">
@@ -1449,7 +1488,7 @@ const SecurityMaintenancePage = () => {
     const queryClient = useQueryClient();
     const { token } = useAuth();
 
-    const { data: systemData, isLoading } = useQuery({
+    const { data: systemData, isPending: isLoading } = useQuery({
         queryKey: ['systemData'],
         queryFn: async () => {
             const headers = {
@@ -1503,18 +1542,22 @@ const SecurityMaintenancePage = () => {
             );
 
             if (!response.ok) {
-                throw new Error('Failed to clear cache');
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to clear cache');
             }
 
             return response.json();
         },
         onSuccess: () => {
-            alert('Cache cleared successfully!');
+            toast.success('Cache cleared successfully!');
             queryClient.invalidateQueries({ queryKey: ['systemData'] });
         },
         onError: (error) => {
-            console.error('Error clearing cache:', error);
-            alert('Error clearing cache');
+            if (error.message === 'Action disabled in Demo mode.') {
+                toast.error('This action is disabled in demo mode.');
+            } else {
+                toast.error(error.message || 'Error clearing cache');
+            }
         },
     });
 
@@ -1746,20 +1789,213 @@ const SecurityMaintenancePage = () => {
 };
 
 const NotificationsAlertsPage = () => {
+    const { user, token } = useAuth();
+    const queryClient = useQueryClient();
+
+    const {
+        data: messages,
+        isPending: isLoading,
+        isError,
+        error,
+    } = useQuery({
+        queryKey: ['contactMessages'],
+        queryFn: async () => {
+            const response = await fetch(`${API_URL}/api/contact`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(
+                    errorData.message || 'Failed to fetch messages'
+                );
+            }
+            const result = await response.json();
+            return result.data;
+        },
+        enabled: user?.role === 'admin' || user?.role === 'demo_admin',
+    });
+
+    const markAsReadMutation = useMutation({
+        mutationFn: async (messageId) => {
+            const response = await fetch(
+                `${API_URL}/api/contact/${messageId}/read`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to mark as read');
+            }
+            return response.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['contactMessages'] });
+            toast.success('Message marked as read.');
+        },
+        onError: (error) => {
+            if (error.message === 'Action disabled in Demo mode.') {
+                toast.error('This action is disabled in demo mode.');
+            } else {
+                toast.error(error.message || 'An error occurred.');
+            }
+        },
+    });
+
+    const deleteMutation = useMutation({
+        mutationFn: async (messageId) => {
+            const response = await fetch(
+                `${API_URL}/api/contact/${messageId}`,
+                {
+                    method: 'DELETE',
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(
+                    errorData.message || 'Failed to delete message'
+                );
+            }
+            return response.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['contactMessages'] });
+            toast.success('Message deleted!');
+        },
+        onError: (error) => {
+            if (error.message === 'Action disabled in Demo mode.') {
+                toast.error('This action is disabled in demo mode.');
+            } else {
+                toast.error(error.message || 'An error occurred.');
+            }
+        },
+    });
+
+    if (user?.role !== 'admin' && user?.role !== 'demo_admin') {
+        return (
+            <div className="mt-10">
+                <h2 className="text-2xl font-semibold mb-4">
+                    Notifications & Alerts
+                </h2>
+                <div className="p-6 bg-white rounded-xl shadow">
+                    You do not have permission to view this page.
+                </div>
+            </div>
+        );
+    }
+
+    if (isLoading) {
+        return (
+            <div className="mt-10">
+                <h2 className="text-2xl font-semibold mb-4">
+                    Contact Messages
+                </h2>
+                <div className="p-6 bg-white rounded-xl shadow">
+                    Loading messages...
+                </div>
+            </div>
+        );
+    }
+
+    if (isError) {
+        return (
+            <div className="mt-10">
+                <h2 className="text-2xl font-semibold mb-4">
+                    Contact Messages
+                </h2>
+                <div className="p-6 bg-white rounded-xl shadow text-red-500">
+                    Error: {error.message}
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="mt-10">
             <h2 className="text-2xl font-semibold mb-4">
-                Notifications & Alerts
+                Contact Form Messages
             </h2>
-            <div className="p-6 bg-white rounded-xl shadow">
-                Real-time alerts for failures or high-priority stuff will go
-                here. Any bs information like "Your aws bill is $129..."
+            <div className="space-y-4">
+                {messages && messages.length > 0 ? (
+                    messages.map((message) => (
+                        <div
+                            key={message._id}
+                            className={`p-6 rounded-xl shadow ${
+                                message.isRead ? 'bg-gray-100' : 'bg-white'
+                            }`}
+                        >
+                            <div className="flex justify-between items-start">
+                                <div>
+                                    <p className="font-semibold text-lg">
+                                        {message.subject}
+                                    </p>
+                                    <p className="text-sm text-gray-600">
+                                        From: {message.name} ({message.email})
+                                    </p>
+                                    <p className="text-xs text-gray-500">
+                                        Received:{' '}
+                                        {new Date(
+                                            message.createdAt
+                                        ).toLocaleString()}
+                                    </p>
+                                </div>
+                                <div className="flex space-x-2">
+                                    {!message.isRead && (
+                                        <button
+                                            onClick={() =>
+                                                markAsReadMutation.mutate(
+                                                    message._id
+                                                )
+                                            }
+                                            disabled={
+                                                markAsReadMutation.isPending
+                                            }
+                                            className="px-2 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
+                                        >
+                                            Mark as Read
+                                        </button>
+                                    )}
+                                    <button
+                                        onClick={() => {
+                                            if (
+                                                window.confirm(
+                                                    'Are you sure you want to delete this message?'
+                                                )
+                                            ) {
+                                                deleteMutation.mutate(
+                                                    message._id
+                                                );
+                                            }
+                                        }}
+                                        disabled={deleteMutation.isPending}
+                                        className="px-2 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50"
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                            <p className="mt-4">{message.message}</p>
+                        </div>
+                    ))
+                ) : (
+                    <div className="p-6 bg-white rounded-xl shadow">
+                        No messages found.
+                    </div>
+                )}
             </div>
         </div>
     );
 };
 
-export const Dashboard = ({ Links }) => {
+export const Dashboard = () => {
     const { user, token, logout } = useAuth();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [currentView, setCurrentView] = useState('UserManagement');
@@ -1788,6 +2024,7 @@ export const Dashboard = ({ Links }) => {
 
     return (
         <div className="min-h-screen">
+            <Toaster position="top-center" reverseOrder={false} />
             <div className="">
                 <DashboardHeader toggleSidebar={toggleSidebar} user={user} />
                 <Sidebar

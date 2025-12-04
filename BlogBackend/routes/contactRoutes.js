@@ -9,6 +9,7 @@ import {
 import {
     authMiddleware,
     adminMiddleware,
+    restrictDemoAdmin,
 } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -19,7 +20,7 @@ router.post('/submit', submitContact);
 // Admin-only routes
 router.get('/', authMiddleware, adminMiddleware, getContacts);
 router.get('/unread-count', authMiddleware, adminMiddleware, getUnreadCount);
-router.put('/:contactId/read', authMiddleware, adminMiddleware, markAsRead);
-router.delete('/:contactId', authMiddleware, adminMiddleware, deleteContact);
+router.put('/:contactId/read', authMiddleware, adminMiddleware, restrictDemoAdmin, markAsRead);
+router.delete('/:contactId', authMiddleware, adminMiddleware, restrictDemoAdmin, deleteContact);
 
 export default router;

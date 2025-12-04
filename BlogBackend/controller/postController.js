@@ -31,7 +31,7 @@ export const createPost = async (req, res) => {
             title,
             content,
             author: authorId,
-            tags: tags ? tags.split(',').map((tag) => tag.trim()) : [],
+            tags: tags ? JSON.parse(tags) : [],
             featuredImage,
             published: true, // Or based on a request body field
         });

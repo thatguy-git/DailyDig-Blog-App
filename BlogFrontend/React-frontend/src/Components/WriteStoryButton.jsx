@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../constants/AuthContext.jsx';
+import { useAuth } from '../constants/useAuth.js';
 
 const WriteStoryButton = () => {
     const { isLoggedIn } = useAuth();
@@ -12,7 +12,7 @@ const WriteStoryButton = () => {
         <button
             type="button"
             aria-label="Write a story"
-            onClick={() => navigate('/write')}
+            onClick={() => navigate('/write-story')}
             className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 hover:cursor-pointer rounded-full bg-teal-600 hover:bg-teal-700 text-white shadow-lg transition-colors focus:outline-none"
             title="Write a story"
         >

@@ -17,6 +17,7 @@ import {
     getHighlightsPosts,
     getRecentPosts,
 } from '../controller/postController.js';
+import { handleUploadErrors } from '../middleware/errorMiddleware.js';
 
 export const router = express.Router();
 
@@ -36,9 +37,10 @@ router.post(
     '/',
     authMiddleware,
     uploadPostImage.single('coverImage'),
+    handleUploadErrors,
     createPost
 );
-router.put('/:id', authMiddleware, updatePost);
+router.put('/:id', authMiddleware, uploadPostImage.single('coverImage'), handleUploadErrors, updatePost);
 router.delete('/:id', authMiddleware, deletePost);
 router.get('/user/posts', authMiddleware, getUserPosts);
 router.post('/:id/like', authMiddleware, likePost);

@@ -46,7 +46,7 @@ const userSchema = new mongoose.Schema(
         },
         role: {
             type: String,
-            enum: ['user', 'admin'],
+            enum: ['user', 'admin', 'demo_admin'],
             default: 'user',
         },
         profileImage: {
@@ -54,8 +54,6 @@ const userSchema = new mongoose.Schema(
             publicId: String,
         },
         googleId: { type: String, unique: true, sparse: true },
-        twitterId: { type: String, unique: true, sparse: true },
-        facebookId: { type: String, unique: true, sparse: true },
     },
     {
         timestamps: true,

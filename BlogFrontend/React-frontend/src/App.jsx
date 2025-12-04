@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from './constants/AuthContext.jsx';
+import { useAuth } from './constants/useAuth.js';
 import { publicLinks, userLinks } from './constants/links.js';
 import BlogPage from './Pages/BlogPage';
 import { PostPage } from './Pages/PostPage';
@@ -17,7 +17,7 @@ import { VerifyEmail } from './Pages/VerifyEmail';
 import ProfilePage from './Pages/ProfilePage';
 import Navbar from './Components/Navbar';
 import WriteStoryButton from './Components/WriteStoryButton.jsx';
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 import AuthCallback from './Components/AuthCallback.jsx';
 
 // Protected Route Component
@@ -30,8 +30,9 @@ const ProtectedRoute = ({ children }) => {
 const PublicRoute = ({ children }) => {
     const { isLoggedIn, user } = useAuth();
     if (!isLoggedIn) return children;
-    // If logged in, redirect by role
-    if (user?.role === 'admin') return <Navigate to="/dashboard" replace />;
+    // If logged in, redirect based off role
+    if (user?.role === 'admin' || user?.role === 'demo_admin')
+        return <Navigate to="/dashboard" replace />;
     return <Navigate to="/blog" replace />;
 };
 
@@ -43,15 +44,6 @@ const App = () => {
     const handleLogout = () => {
         logout();
     };
-
-    const notify = () => {
-        toast('Wow so easy!');
-        toast.success('Success notification!');
-        toast.error('Error notification!');
-    };
-
-    // Determine links based on auth status
-    const currentLinks = isLoggedIn ? userLinks : publicLinks;
 
     // Add logout handler to userLinks if logged in
     const linksWithLogout = isLoggedIn
@@ -66,18 +58,19 @@ const App = () => {
     const hideWriteButtonPaths = [
         '/login',
         '/signup',
-        '/write', // Hide on the write page itself
+        '/write-story',
         '/reset-password',
         '/verify-otp',
         '/verify-email',
-        '/dashboard', // Optional: Maybe you don't want it on dashboard
+        '/dashboard',
+        '/profile',
     ];
 
-    const shouldShowWriteButton = !hideWriteButtonPaths.includes(
-        location.pathname
+    const shouldShowWriteButton = !hideWriteButtonPaths.some((path) =>
+        location.pathname.startsWith(path)
     );
 
-    // Hide navbar on login, signup, reset-password, verify-otp, verify-email, and dashboard pages
+    // Hide navbar on specific routes
     const hideNavbar = [
         '/login',
         '/signup',
@@ -161,7 +154,15 @@ const App = () => {
                     }
                 />
                 <Route
-                    path="/write"
+                    path="/write-story"
+                    element={
+                        <ProtectedRoute>
+                            <WriteStory />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/write-story/:id"
                     element={
                         <ProtectedRoute>
                             <WriteStory />
