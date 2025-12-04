@@ -1,7 +1,12 @@
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.join(__dirname, '../.env') });
 import passport from 'passport';
+dotenv.config({ path: path.join(__dirname, '../../.env') });
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-// import { Strategy as FacebookStrategy } from 'passport-facebook';
-import { Strategy as TwitterStrategy } from 'passport-twitter';
 import User from '../model/userModel.js';
 
 passport.use(
@@ -14,10 +19,10 @@ passport.use(
         },
         async (accessToken, refreshToken, profile, done) => {
             try {
-                // 1) Try to find by provider id
+                // find by provider id
                 let user = await User.findOne({ googleId: profile.id });
 
-                // 2) If not found, try to find by email and link accounts
+                // If not found, try to find by email and link accounts
                 if (!user && profile.emails?.[0]?.value) {
                     user = await User.findOne({
                         email: profile.emails[0].value,

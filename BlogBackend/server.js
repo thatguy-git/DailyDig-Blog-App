@@ -1,8 +1,16 @@
-import 'dotenv/config'; // First: Load ENV variables
+// 1. Core Configuration (MUST BE FIRST)
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.join(__dirname, '../.env') });
 import express from 'express';
 import session from 'express-session';
 import passport from 'passport';
-import './config/passport.js'; // now sees process.env values
+import cors from 'cors';
+import connectDB from './config/db.js';
+import './config/passport.js';
 import route from './routes/userRoutes.js';
 import authRoute from './routes/authRoutes.js';
 import { router as postRoute } from './routes/postRoutes.js';
@@ -10,8 +18,6 @@ import { router as adminRoutes } from './routes/adminRoutes.js';
 import commentRoute from './routes/commentRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
-import cors from 'cors';
-import connectDB from './config/db.js';
 
 // Connect to Database
 connectDB();
