@@ -76,8 +76,7 @@ const Navbar = () => {
                                     >
                                         View Profile
                                     </Link>
-                                    {(user.role === 'admin' ||
-                                        user.role === 'demo_admin') && (
+                                    {user.role === 'admin' && (
                                         <Link
                                             to="/dashboard"
                                             onClick={() =>

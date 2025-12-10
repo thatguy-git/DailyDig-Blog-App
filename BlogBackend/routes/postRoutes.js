@@ -18,6 +18,8 @@ import {
     getHighlightsPosts,
     getRecentPosts,
     sharePost,
+    getTopPerformingPosts,
+    getTopPerformingPostsByScore,
 } from '../controller/postController.js';
 import { handleUploadErrors } from '../middleware/errorMiddleware.js';
 
@@ -32,6 +34,8 @@ router.get('/featured', getFeaturedPosts);
 router.get('/editor-picks', getEditorPicksPosts);
 router.get('/highlights', getHighlightsPosts);
 router.get('/recent', getRecentPosts);
+router.get('/top-performing', getTopPerformingPosts);
+router.get('/top-performing-score', getTopPerformingPostsByScore);
 router.get('/:id', getPostById);
 router.post('/:id/share', sharePost);
 

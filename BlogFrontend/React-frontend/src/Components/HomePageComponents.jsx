@@ -6,6 +6,7 @@ import { useAuth } from '../constants/useAuth.js';
 import { API_URL } from '../constants/links';
 
 export const HeroSection = () => {
+    const { user } = useAuth();
     return (
         <div>
             <div className="container-2 flex flex-row max-md:flex-col 100vh px-12 py-12 max-md:py-4 max-md:px-2 justify-between items-center max-md:mb-12">
@@ -17,11 +18,20 @@ export const HeroSection = () => {
                         From forgotten facts to future trends, we dig deep to
                         bring you the stories you won't find anywhere else.
                     </p>
-                    <Link to="/blog">
-                        <button className="bg-teal-800 text-white px-4 py-2 rounded-lg hover:bg-teal-500 hover:cursor-pointer w-32 h-12 max-md:h-auto max-md:py-4 max-md:px-10 max-md:w-1/2">
-                            Go To Blog
-                        </button>
-                    </Link>
+                    {user &&
+                    (user.role === 'admin' || user.role === 'demo_admin') ? (
+                        <Link to="/dashboard">
+                            <button className="bg-teal-800 text-white px-4 py-2 rounded-lg hover:bg-teal-500 hover:cursor-pointer w-48 h-12 max-md:h-auto max-md:py-4 max-md:px-10 max-md:w-1/2">
+                                Go To Dashboard
+                            </button>
+                        </Link>
+                    ) : (
+                        <Link to="/blog">
+                            <button className="bg-teal-800 text-white px-4 py-2 rounded-lg hover:bg-teal-500 hover:cursor-pointer w-32 h-12 max-md:h-auto max-md:py-4 max-md:px-10 max-md:w-1/2">
+                                Go To Blog
+                            </button>
+                        </Link>
+                    )}
                 </div>
                 <div className="hero image ml-8 max-md:w-full max-md:m-2 max-md:order-first">
                     <img

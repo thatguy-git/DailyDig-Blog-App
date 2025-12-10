@@ -1,5 +1,6 @@
 import Post from '../model/postModel.js';
 import User from '../model/userModel.js';
+import Comment from '../model/commentModel.js';
 import { v2 as cloudinary } from 'cloudinary';
 import { extractIntro } from '../utils/postUtils.js';
 
@@ -134,6 +135,10 @@ export const getPostById = async (req, res) => {
         if (!post || !post.published) {
             return res.status(404).json({ message: 'Post not found' });
         }
+
+        // Increment view count
+        post.viewCount = (post.viewCount || 0) + 1;
+        await post.save();
 
         const postObject = post.toObject();
         postObject.intro = extractIntro(post.content);
@@ -443,6 +448,95 @@ export const deletePost = async (req, res) => {
         res.status(200).json({
             success: true,
             message: 'Post deleted successfully',
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+// Get top performing posts by score
+export const getTopPerformingPostsByScore = async (req, res) => {
+    try {
+        const topPosts = await Post.aggregate([
+            {
+                $match: { published: true },
+            },
+            {
+                $lookup: {
+                    from: 'comments',
+                    localField: '_id',
+                    foreignField: 'post',
+                    as: 'comments',
+                },
+            },
+            {
+                $addFields: {
+                    commentCount: { $size: '$comments' },
+                },
+            },
+            {
+                $addFields: {
+                    score: {
+                        $add: [
+                            { $multiply: ['$likeCount', 1] },
+                            { $multiply: ['$commentCount', 2] },
+                            { $multiply: ['$shareCount', 3] },
+                        ],
+                    },
+                },
+            },
+            {
+                $sort: { score: -1 },
+            },
+            {
+                $limit: 5,
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'author',
+                    foreignField: '_id',
+                    as: 'author',
+                },
+            },
+            {
+                $unwind: '$author',
+            },
+            {
+                $project: {
+                    title: 1,
+                    score: 1,
+                    likeCount: 1,
+                    commentCount: 1,
+                    viewCount: 1,
+                    shareCount: 1,
+                    'author.name': 1,
+                    'author.username': 1,
+                },
+            },
+        ]);
+
+        res.status(200).json({
+            success: true,
+            data: topPosts,
+        });
+    } catch (error) {
+        console.error('Error fetching top performing posts by score:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+// Get top performing posts
+export const getTopPerformingPosts = async (req, res) => {
+    try {
+        const topPosts = await Post.find({ published: true })
+            .sort({ viewCount: -1, likeCount: -1 })
+            .limit(5)
+            .populate('author', 'name username');
+
+        res.status(200).json({
+            success: true,
+            data: topPosts,
         });
     } catch (error) {
         res.status(500).json({ message: 'Internal server error' });

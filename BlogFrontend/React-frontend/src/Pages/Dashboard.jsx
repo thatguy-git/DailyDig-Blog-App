@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast, { Toaster } from 'react-hot-toast';
 import Searchbar from '../Components/Searchbar.jsx';
@@ -48,45 +49,6 @@ const chartData = [
 ];
 
 //Demo Data for charts
-const topPosts = [
-    {
-        rank: 1,
-        title: 'The Future of AI in Modern Web Development',
-        views: '15.4k',
-        shares: '3.2k',
-        comments: '452',
-    },
-    {
-        rank: 2,
-        title: 'Understanding React Hooks: A Complete Guide',
-        views: '12.1k',
-        shares: '1.8k',
-        comments: '230',
-    },
-    {
-        rank: 3,
-        title: 'Why I Switched from SQL to MongoDB',
-        views: '9.8k',
-        shares: '2.1k',
-        comments: '890',
-    },
-    {
-        rank: 4,
-        title: '10 CSS Tricks You Need to Know in 2025',
-        views: '8.5k',
-        shares: '950',
-        comments: '120',
-    },
-    {
-        rank: 5,
-        title: 'Deploying Node.js Apps to Render and Vercel',
-        views: '6.2k',
-        shares: '400',
-        comments: '85',
-    },
-];
-
-//Demo Data for charts
 
 const getRoleBadgeClasses = (role) => {
     switch (role) {
@@ -119,6 +81,7 @@ const navItems = [
         view: 'SecurityMaintenance',
     },
     { name: 'Notifications & Alerts', icon: Bell, view: 'NotificationsAlerts' },
+    { name: 'Go to Blog', icon: BookOpen, path: '/blog' },
 ];
 
 const StatsCard = ({ title, value, change, icon: Icon, color, bgColor }) => {
@@ -198,19 +161,33 @@ const Sidebar = ({
                     <ul className="space-y-2">
                         {navItems.map((item) => (
                             <li key={item.name}>
-                                <button
-                                    onClick={() => handleNavigation(item.view)}
-                                    className={`flex items-center w-full p-3 rounded-xl transition duration-200 ${
-                                        item.view === currentView
-                                            ? 'bg-teal-600 text-white shadow-md'
-                                            : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                                    }`}
-                                >
-                                    <item.icon size={20} className="mr-3" />
-                                    <span className="font-medium whitespace-nowrap">
-                                        {item.name}
-                                    </span>
-                                </button>
+                                {item.path ? (
+                                    <Link
+                                        to={item.path}
+                                        className="flex items-center w-full p-3 rounded-xl transition duration-200 text-gray-300 hover:bg-gray-700 hover:text-white"
+                                    >
+                                        <item.icon size={20} className="mr-3" />
+                                        <span className="font-medium whitespace-nowrap">
+                                            {item.name}
+                                        </span>
+                                    </Link>
+                                ) : (
+                                    <button
+                                        onClick={() =>
+                                            handleNavigation(item.view)
+                                        }
+                                        className={`flex items-center w-full p-3 rounded-xl transition duration-200 ${
+                                            item.view === currentView
+                                                ? 'bg-teal-600 text-white shadow-md'
+                                                : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                                        }`}
+                                    >
+                                        <item.icon size={20} className="mr-3" />
+                                        <span className="font-medium whitespace-nowrap">
+                                            {item.name}
+                                        </span>
+                                    </button>
+                                )}
                             </li>
                         ))}
                     </ul>
@@ -281,6 +258,32 @@ const AnalyticsPage = () => {
         enabled: !!token,
     });
 
+    const {
+        data: topPerformingPostsData,
+        isLoading: topPerformingPostsLoading,
+    } = useQuery({
+        queryKey: ['topPerformingPostsByScore'],
+        queryFn: async () => {
+            const response = await fetch(
+                `${API_URL}/api/posts/top-performing-score`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            if (!response.ok) {
+                throw new Error('Failed to fetch top performing posts');
+            }
+            const result = await response.json();
+            return result.data;
+        },
+        enabled: !!token,
+    });
+
+    const { stats = [] } = statsData || {};
+    const topPosts = topPerformingPostsData || [];
+
     const statIcons = {
         'Total Users': {
             icon: Users,
@@ -304,14 +307,13 @@ const AnalyticsPage = () => {
         },
     };
 
-    const stats =
-        statsData?.map((stat) => ({
-            ...stat,
-            ...(statIcons[stat.title] || {}),
-            change: `${stat.change}%`,
-        })) || [];
+    const formattedStats = stats.map((stat) => ({
+        ...stat,
+        ...(statIcons[stat.title] || {}),
+        change: `${stat.change}%`,
+    }));
 
-    if (isLoading) {
+    if (isLoading || topPerformingPostsLoading) {
         return (
             <div className="mt-10 py-6 px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center mb-6 bg-white rounded-lg px-4 py-2">
@@ -339,7 +341,7 @@ const AnalyticsPage = () => {
                 </select>
             </div>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
-                {stats.map((stat, index) => (
+                {formattedStats.map((stat, index) => (
                     <StatsCard key={index} {...stat} />
                 ))}
             </div>
@@ -441,33 +443,39 @@ const AnalyticsPage = () => {
                                     Likes
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Comments
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Shares
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Comments
+                                    Score
                                 </th>
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {topPosts.map((post) => (
+                            {topPosts.map((post, index) => (
                                 <tr
-                                    key={post.rank}
+                                    key={post._id}
                                     className="hover:bg-gray-50 transition duration-150"
                                 >
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                        {post.rank}
+                                        {index + 1}
                                     </td>
                                     <td className="px-6 py-4 whitespace-normal text-sm text-gray-500 hover:text-blue-800 cursor-pointer">
                                         {post.title}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {post.views}
+                                        {post.likeCount}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {post.shares}
+                                        {post.commentCount}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {post.comments}
+                                        {post.shareCount}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {post.score}
                                     </td>
                                 </tr>
                             ))}

@@ -717,9 +717,14 @@ export const getDashboardStats = async (req, res) => {
             },
         ];
 
+        const topPosts = await getTopPerformingPosts(req,res,true);
+
         res.status(200).json({
             success: true,
-            data: stats,
+            data: {
+                stats,
+                topPosts,
+            },
         });
     } catch (error) {
         console.error('Error fetching dashboard stats:', error);
@@ -730,7 +735,7 @@ export const getDashboardStats = async (req, res) => {
     }
 };
 
-export const getTopPerformingPosts = async (req, res) => {
+export const getTopPerformingPosts = async (req, res, returnResult = false) => {
     try {
         const topPosts = await Post.aggregate([
             {
@@ -788,15 +793,22 @@ export const getTopPerformingPosts = async (req, res) => {
             },
         ]);
 
+        if (returnResult) {
+            return topPosts;
+        }
+
         res.status(200).json({
             success: true,
             data: topPosts,
         });
     } catch (error) {
         console.error('Error fetching top performing posts:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Internal server error',
-        });
+        if (!returnResult) {
+            res.status(500).json({
+                success: false,
+                message: 'Internal server error',
+            });
+        }
+        throw error;
     }
 };
