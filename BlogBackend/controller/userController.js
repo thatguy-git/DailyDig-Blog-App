@@ -18,11 +18,12 @@ export const getUserProfile = async (req, res) => {
 
 export const updateUserProfile = async (req, res) => {
     try {
-        const { name, username, email } = req.body;
+        const { name, username, bio } = req.body;
         const user = await User.findById(req.user_id);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
+
         if (username && username !== user.username) {
             const userExists = await User.findOne({ username });
             if (userExists)
@@ -31,17 +32,9 @@ export const updateUserProfile = async (req, res) => {
                 });
         }
 
-        if (email && email !== user.email) {
-            const emailExists = await User.findOne({ email });
-            if (emailExists)
-                return res
-                    .status(400)
-                    .json({ message: 'Email already in use' });
-        }
-
         if (name) user.name = name;
         if (username) user.username = username;
-        if (email) user.email = email;
+        if (bio) user.bio = bio;
 
         if (req.file) {
             // Delete old profile image from Cloudinary if exists
@@ -67,7 +60,10 @@ export const updateUserProfile = async (req, res) => {
         await user.save();
         const userResponse = user.toObject();
         delete userResponse.password;
-        res.status(200).json({ message: 'Profile updated successfully', user });
+        res.status(200).json({
+            message: 'Profile updated successfully',
+            user: userResponse,
+        });
     } catch (error) {
         console.error('Error updating user profile:', error);
         res.status(500).json({ message: 'Internal server error' });
@@ -148,6 +144,19 @@ export const deleteUserAccount = async (req, res) => {
         });
     } catch (error) {
         console.error('Error deleting user account:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+export const getUserById = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.userId).select('-password');
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json({ user });
+    } catch (error) {
+        console.error('Error fetching user by ID:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };

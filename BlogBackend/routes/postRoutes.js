@@ -8,6 +8,7 @@ import {
     updatePost,
     deletePost,
     getUserPosts,
+    getUserPostsById,
     likePost,
     searchPosts,
     getPopularPosts,
@@ -16,6 +17,7 @@ import {
     getEditorPicksPosts,
     getHighlightsPosts,
     getRecentPosts,
+    sharePost,
 } from '../controller/postController.js';
 import { handleUploadErrors } from '../middleware/errorMiddleware.js';
 
@@ -31,6 +33,7 @@ router.get('/editor-picks', getEditorPicksPosts);
 router.get('/highlights', getHighlightsPosts);
 router.get('/recent', getRecentPosts);
 router.get('/:id', getPostById);
+router.post('/:id/share', sharePost);
 
 // Protected routes
 router.post(
@@ -42,5 +45,6 @@ router.post(
 );
 router.put('/:id', authMiddleware, uploadPostImage.single('coverImage'), handleUploadErrors, updatePost);
 router.delete('/:id', authMiddleware, deletePost);
+router.get('/user/:userId/posts', getUserPostsById);
 router.get('/user/posts', authMiddleware, getUserPosts);
 router.post('/:id/like', authMiddleware, likePost);

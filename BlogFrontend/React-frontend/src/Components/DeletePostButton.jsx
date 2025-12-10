@@ -40,7 +40,7 @@ const DeletePostButton = ({ postId }) => {
         <button
             onClick={handleDelete}
             disabled={deleteMutation.isLoading}
-            className="ml-2 p-2 rounded-full hover:bg-gray-200 hover:cursor-pointer transition duration-300"
+            className=" p-2 rounded-full hover:bg-gray-200 hover:cursor-pointer transition duration-300"
             title="Delete Post"
         >
             {deleteMutation.isLoading ? (

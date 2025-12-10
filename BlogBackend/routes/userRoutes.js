@@ -4,6 +4,7 @@ import {
     updateUserProfile,
     deleteUserAccount,
     searchUsers,
+    getUserById,
 } from '../controller/userController.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
 import { uploadProfileImage } from '../middleware/uploadMiddleware.js';
@@ -12,6 +13,7 @@ import { handleUploadErrors } from '../middleware/errorMiddleware.js';
 const router = express.Router();
 
 router.get('/search', searchUsers);
+router.get('/profile/:userId', getUserById);
 router.get('/profile', authMiddleware, getUserProfile);
 router.put(
     '/profile',

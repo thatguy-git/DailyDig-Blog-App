@@ -87,40 +87,6 @@ const topPosts = [
 ];
 
 //Demo Data for charts
-const stats = [
-    {
-        title: 'Total Page Views',
-        value: '58K',
-        change: '+15%',
-        icon: TrendingUp,
-        color: 'text-teal-500',
-        bgColor: 'bg-teal-50',
-    },
-    {
-        title: 'New Subscribers',
-        value: '840',
-        change: '+5.1%',
-        icon: Users,
-        color: 'text-blue-500',
-        bgColor: 'bg-blue-50',
-    },
-    {
-        title: 'Avg. Time on Page',
-        value: '3:45 min',
-        change: '-2.4%',
-        icon: Clock,
-        color: 'text-yellow-600',
-        bgColor: 'bg-yellow-50',
-    },
-    {
-        title: 'Total Shares',
-        value: '18.5K',
-        change: '+22%',
-        icon: Share2,
-        color: 'text-purple-500',
-        bgColor: 'bg-purple-50',
-    },
-];
 
 const getRoleBadgeClasses = (role) => {
     switch (role) {
@@ -155,7 +121,6 @@ const navItems = [
     { name: 'Notifications & Alerts', icon: Bell, view: 'NotificationsAlerts' },
 ];
 
-// eslint-disable-next-line no-unused-vars
 const StatsCard = ({ title, value, change, icon: Icon, color, bgColor }) => {
     const isPositive = change.startsWith('+');
 
@@ -296,154 +261,223 @@ const DashboardHeader = ({ toggleSidebar, user }) => (
     </header>
 );
 
-const AnalyticsPage = () => (
-    <div className="mt-10 py-6 px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center mb-6 bg-white rounded-lg px-4 py-2">
-            <h2 className="text-2xl font-semibold text-gray-900 tracking-tighter">
-                Traffic & Engagement Analytics
-            </h2>
-            <select className="p-2 border-2 bg-teal-500 text-white rounded-lg  focus:ring-white focus:border-white transition duration-150 text-sm">
-                <option>Last 7 Days</option>
-                <option>Last 30 Days</option>
-                <option>All Time</option>
-            </select>
-        </div>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
-            {stats.map((stat, index) => (
-                <StatsCard key={index} {...stat} />
-            ))}
-        </div>
-        <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 mb-8">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                Monthly Traffic & Engagement Trend
-            </h2>
-            <div className="h-80 w-full">
-                <ResponsiveContainer
-                    width="100%"
-                    height="100%"
-                    style={{ outline: 'none' }}
-                >
-                    <LineChart
-                        data={chartData}
-                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                        onClick={() => {}}
+const AnalyticsPage = () => {
+    const { token } = useAuth();
+
+    const { data: statsData, isLoading } = useQuery({
+        queryKey: ['dashboardStats'],
+        queryFn: async () => {
+            const response = await fetch(`${API_URL}/api/admin/stats`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (!response.ok) {
+                throw new Error('Failed to fetch dashboard stats');
+            }
+            const result = await response.json();
+            return result.data;
+        },
+        enabled: !!token,
+    });
+
+    const statIcons = {
+        'Total Users': {
+            icon: Users,
+            color: 'text-blue-500',
+            bgColor: 'bg-blue-50',
+        },
+        'Total Posts': {
+            icon: BookOpen,
+            color: 'text-teal-500',
+            bgColor: 'bg-teal-50',
+        },
+        'Total Comments': {
+            icon: TrendingUp,
+            color: 'text-purple-500',
+            bgColor: 'bg-purple-50',
+        },
+        'Contact Messages': {
+            icon: Share2,
+            color: 'text-yellow-600',
+            bgColor: 'bg-yellow-50',
+        },
+    };
+
+    const stats =
+        statsData?.map((stat) => ({
+            ...stat,
+            ...(statIcons[stat.title] || {}),
+            change: `${stat.change}%`,
+        })) || [];
+
+    if (isLoading) {
+        return (
+            <div className="mt-10 py-6 px-4 sm:px-6 lg:px-8">
+                <div className="flex justify-between items-center mb-6 bg-white rounded-lg px-4 py-2">
+                    <h2 className="text-2xl font-semibold text-gray-900 tracking-tighter">
+                        Traffic & Engagement Analytics
+                    </h2>
+                </div>
+                <div className="text-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600 mx-auto"></div>
+                    <p className="mt-2 text-gray-600">Loading statistics...</p>
+                </div>
+            </div>
+        );
+    }
+    return (
+        <div className="mt-10 py-6 px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center mb-6 bg-white rounded-lg px-4 py-2">
+                <h2 className="text-2xl font-semibold text-gray-900 tracking-tighter">
+                    Traffic & Engagement Analytics
+                </h2>
+                <select className="p-2 border-2 bg-teal-500 text-white rounded-lg  focus:ring-white focus:border-white transition duration-150 text-sm">
+                    <option>Last 7 Days</option>
+                    <option>Last 30 Days</option>
+                    <option>All Time</option>
+                </select>
+            </div>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
+                {stats.map((stat, index) => (
+                    <StatsCard key={index} {...stat} />
+                ))}
+            </div>
+            <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 mb-8">
+                <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                    Monthly Traffic & Engagement Trend
+                </h2>
+                <div className="h-100 w-full">
+                    <ResponsiveContainer
+                        width="100%"
+                        height="100%"
                         style={{ outline: 'none' }}
                     >
-                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                        <XAxis dataKey="name" stroke="#6b7280" />
-                        {/* YAxis for Page Views (left) - Primary Metric */}
-                        <YAxis
-                            yAxisId="left"
-                            stroke="#0d9488"
-                            label={{
-                                value: 'Views',
-                                angle: -90,
-                                position: 'left',
-                                fill: '#0d9488',
-                            }}
-                        />
-                        {/* YAxis for Comments (right) - Secondary Metric */}
-                        <YAxis
-                            yAxisId="right"
-                            orientation="right"
-                            stroke="#3b82f6"
-                            label={{
-                                value: 'Comments',
-                                angle: 90,
-                                position: 'right',
-                                fill: '#3b82f6',
-                            }}
-                        />
-                        <Tooltip
-                            contentStyle={{
-                                borderRadius: '8px',
-                                border: 'none',
-                                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                            }}
-                            labelStyle={{
-                                fontWeight: 'bold',
-                                color: '#1f2937',
-                            }}
-                        />
-                        <Legend wrapperStyle={{ paddingTop: '16px' }} />
-                        {/* Page Views line (using left Y-axis) */}
-                        <Line
-                            yAxisId="left"
-                            type="monotone"
-                            dataKey="Page Views"
-                            stroke="#0d9488"
-                            strokeWidth={3}
-                            dot={{ r: 5 }}
-                            activeDot={{ r: 8 }}
-                        />
-                        {/* Comments line (using right Y-axis) */}
-                        <Line
-                            yAxisId="right"
-                            type="monotone"
-                            dataKey="Comments"
-                            stroke="#3b82f6"
-                            strokeWidth={3}
-                            dot={{ r: 5 }}
-                            activeDot={{ r: 8 }}
-                        />
-                    </LineChart>
-                </ResponsiveContainer>
+                        <LineChart
+                            data={chartData}
+                            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                            onClick={() => {}}
+                            style={{ outline: 'none' }}
+                        >
+                            <CartesianGrid
+                                strokeDasharray="3 3"
+                                stroke="#f0f0f0"
+                            />
+                            <XAxis dataKey="name" stroke="#6b7280" />
+                            {/* YAxis for Page Views (left) - Primary Metric */}
+                            <YAxis
+                                yAxisId="left"
+                                stroke="#0d9488"
+                                label={{
+                                    value: 'Views',
+                                    angle: -90,
+                                    position: 'left',
+                                    fill: '#0d9488',
+                                }}
+                            />
+                            {/* YAxis for Comments (right) - Secondary Metric */}
+                            <YAxis
+                                yAxisId="right"
+                                orientation="right"
+                                stroke="#3b82f6"
+                                label={{
+                                    value: 'Comments',
+                                    angle: 90,
+                                    position: 'right',
+                                    fill: '#3b82f6',
+                                }}
+                            />
+                            <Tooltip
+                                contentStyle={{
+                                    borderRadius: '8px',
+                                    border: 'none',
+                                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                                }}
+                                labelStyle={{
+                                    fontWeight: 'bold',
+                                    color: '#1f2937',
+                                }}
+                            />
+                            <Legend wrapperStyle={{ paddingTop: '16px' }} />
+                            {/* Page Views line (using left Y-axis) */}
+                            <Line
+                                yAxisId="left"
+                                type="monotone"
+                                dataKey="Page Views"
+                                stroke="#0d9488"
+                                strokeWidth={3}
+                                dot={{ r: 5 }}
+                                activeDot={{ r: 8 }}
+                            />
+                            {/* Comments line (using right Y-axis) */}
+                            <Line
+                                yAxisId="right"
+                                type="monotone"
+                                dataKey="Comments"
+                                stroke="#3b82f6"
+                                strokeWidth={3}
+                                dot={{ r: 5 }}
+                                activeDot={{ r: 8 }}
+                            />
+                        </LineChart>
+                    </ResponsiveContainer>
+                </div>
             </div>
-        </div>
-        <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                Top Performing Posts (Last 30 Days)
-            </h2>
-            <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                        <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Rank
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Post Title
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Views
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Shares
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Comments
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                        {topPosts.map((post) => (
-                            <tr
-                                key={post.rank}
-                                className="hover:bg-gray-50 transition duration-150"
-                            >
-                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    {post.rank}
-                                </td>
-                                <td className="px-6 py-4 whitespace-normal text-sm text-gray-500 hover:text-blue-800 cursor-pointer">
-                                    {post.title}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {post.views}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {post.shares}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {post.comments}
-                                </td>
+            <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                    Top Performing Posts (Last 30 Days)
+                </h2>
+                <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Rank
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Post Title
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Likes
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Shares
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Comments
+                                </th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {topPosts.map((post) => (
+                                <tr
+                                    key={post.rank}
+                                    className="hover:bg-gray-50 transition duration-150"
+                                >
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        {post.rank}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-normal text-sm text-gray-500 hover:text-blue-800 cursor-pointer">
+                                        {post.title}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {post.views}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {post.shares}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {post.comments}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
-);
+    );
+};
 
 const ContentManagementPage = () => {
     const queryClient = useQueryClient();
@@ -1919,8 +1953,8 @@ const NotificationsAlertsPage = () => {
     }
 
     return (
-        <div className="mt-10">
-            <h2 className="text-2xl font-semibold mb-4">
+        <div className="mt-10 mx-8">
+            <h2 className="text-2xl pl-4 font-semibold mb-4">
                 Contact Form Messages
             </h2>
             <div className="space-y-4">
@@ -1958,7 +1992,7 @@ const NotificationsAlertsPage = () => {
                                             disabled={
                                                 markAsReadMutation.isPending
                                             }
-                                            className="px-2 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
+                                            className="px-2 py-1 text-sm bg-teal-500 text-white rounded hover:bg-teal-600 disabled:opacity-50"
                                         >
                                             Mark as Read
                                         </button>

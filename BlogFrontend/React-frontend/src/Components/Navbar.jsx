@@ -70,12 +70,24 @@ const Navbar = () => {
                             {isProfileOpen && (
                                 <div className="absolute right-0 mt-2 w-44 bg-white border rounded-lg shadow-lg z-50">
                                     <Link
-                                        to="/profile"
+                                        to={`/profile/${user._id}`}
                                         onClick={() => setIsProfileOpen(false)}
                                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                     >
                                         View Profile
                                     </Link>
+                                    {(user.role === 'admin' ||
+                                        user.role === 'demo_admin') && (
+                                        <Link
+                                            to="/dashboard"
+                                            onClick={() =>
+                                                setIsProfileOpen(false)
+                                            }
+                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                        >
+                                            Dashboard
+                                        </Link>
+                                    )}
                                     <button
                                         type="button"
                                         onClick={() => {

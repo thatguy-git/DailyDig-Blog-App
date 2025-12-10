@@ -25,7 +25,7 @@ const formatDate = (dateString) => {
     return `${month} ${day}${ordinal(day)} ${year}`;
 };
 
-const BlogCardA = ({ blog = {}, removeBorder = false }) => {
+export const BlogCardA = ({ blog = {}, removeBorder = false }) => {
     const { title, featuredImage, createdAt } = blog;
     const date = formatDate(createdAt);
     const image = featuredImage?.url || '/blog banner.png';
@@ -99,8 +99,6 @@ export const BannerCard = ({ post = {} }) => {
 
                     {/* 1. items-start prevents the child from stretching to full width */}
                     <div className="absolute inset-0 flex flex-col items-start justify-end my-4 px-4 w-full">
-                        {/* 2. w-fit makes the box hug the content */}
-                        {/* Added padding (p-4) to the wrapper so text isn't touching the edges */}
                         <div className="w-fit max-w-full backdrop-blur-sm bg-black/40 rounded-xl overflow-hidden p-2">
                             <div className="text-sm text-white px-2">
                                 {date}

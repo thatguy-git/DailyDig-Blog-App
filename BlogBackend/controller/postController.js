@@ -189,13 +189,59 @@ export const getAllPosts = async (req, res) => {
 export const getUserPosts = async (req, res) => {
     try {
         const userId = req.user_id;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+
         const posts = await Post.find({ author: userId })
+            .skip(skip)
+            .limit(limit)
             .populate('author', 'name username')
             .sort({ createdAt: -1 });
+
+        const totalPosts = await Post.countDocuments({ author: userId });
+        const totalPages = Math.ceil(totalPosts / limit);
 
         res.status(200).json({
             success: true,
             data: posts,
+            pagination: {
+                totalPosts,
+                totalPages,
+                currentPage: page,
+            },
+        });
+    } catch (error) {
+        console.error('Error fetching user posts:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+// Get posts by a specific user
+export const getUserPostsById = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+
+        const posts = await Post.find({ author: userId })
+            .skip(skip)
+            .limit(limit)
+            .populate('author', 'name username')
+            .sort({ createdAt: -1 });
+
+        const totalPosts = await Post.countDocuments({ author: userId });
+        const totalPages = Math.ceil(totalPosts / limit);
+
+        res.status(200).json({
+            success: true,
+            data: posts,
+            pagination: {
+                totalPosts,
+                totalPages,
+                currentPage: page,
+            },
         });
     } catch (error) {
         console.error('Error fetching user posts:', error);
@@ -235,7 +281,7 @@ export const getPopularPosts = async (req, res) => {
     try {
         const popularPosts = await Post.find({ published: true })
             .sort({ likeCount: -1 })
-            .limit(20) // Get top 5 popular posts
+            .limit(20)
             .populate('author', 'name');
         res.status(200).json({ success: true, data: popularPosts });
     } catch (error) {
@@ -303,6 +349,27 @@ export const likePost = async (req, res) => {
                 likeCount: post.likeCount,
             });
         }
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+// post sharing
+export const sharePost = async (req, res) => {
+    try {
+        const post = await Post.findById(req.params.id);
+        if (!post) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
+
+        post.shareCount = (post.shareCount || 0) + 1;
+        await post.save();
+
+        res.status(200).json({
+            success: true,
+            message: 'Post shared successfully',
+            shareCount: post.shareCount,
+        });
     } catch (error) {
         res.status(500).json({ message: 'Internal server error' });
     }

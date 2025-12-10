@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../constants/useAuth.js';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
+import {
+    useInfiniteQuery,
+    useMutation,
+    useQuery,
+    useQueryClient,
+} from '@tanstack/react-query';
 
-import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import { API_URL } from '../constants/links';
 
+import ProfileCard from '../Components/ProfileCard';
+
 const ProfilePage = () => {
+    const { userId } = useParams();
     const { user, setUser, token } = useAuth();
     console.log('ProfilePage user from context:', user);
     const [errors, setErrors] = useState({});
@@ -21,24 +29,8 @@ const ProfilePage = () => {
         isVerified: false,
         profileImage: null,
         profileImagePreview: '',
+        bio: '',
     });
-
-    // Initialize formData
-    useEffect(() => {
-        if (user) {
-            console.log(user);
-            setFormData({
-                name: user.name || '',
-                username: user.username || '',
-                email: user.email || '',
-                role: user.role || '',
-                isVerified: user.isVerified || false,
-                profileImage: null,
-                profileImagePreview:
-                    user.profileImage?.url || '/default-user-icon.svg',
-            });
-        }
-    }, [user]);
 
     // Fetch profile data from backend
     const {
@@ -47,16 +39,11 @@ const ProfilePage = () => {
         isError,
         isSuccess,
     } = useQuery({
-        queryKey: ['userProfile'],
+        queryKey: ['userProfile', userId],
         queryFn: async () => {
-            const headers = {
-                'Content-Type': 'application/json',
-                ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            };
-
-            const response = await fetch(`${API_URL}/api/users/profile`, {
-                headers,
-            });
+            const response = await fetch(
+                `${API_URL}/api/users/profile/${userId}`
+            );
 
             if (!response.ok) {
                 const text = await response.text().catch(() => '');
@@ -68,34 +55,58 @@ const ProfilePage = () => {
 
             return result.user || result.data || result;
         },
+        enabled: !!userId,
+    });
 
-        // ensure we refresh when the page mounts
-        refetchOnMount: true,
-        refetchOnWindowFocus: false,
+    const {
+        data: userPosts,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+        isLoading: postsLoading,
+    } = useInfiniteQuery({
+        queryKey: ['userPosts', userId],
+        queryFn: async ({ pageParam = 1 }) => {
+            const response = await fetch(
+                `${API_URL}/api/posts/user/${userId}/posts?page=${pageParam}`
+            );
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch user posts');
+            }
+
+            return response.json();
+        },
+
+        getNextPageParam: (lastPage) => {
+            if (
+                lastPage.pagination.currentPage < lastPage.pagination.totalPages
+            ) {
+                return lastPage.pagination.currentPage + 1;
+            }
+
+            return undefined;
+        },
+
+        enabled: !!userId,
     });
 
     useEffect(() => {
-        if (isSuccess && fetchedProfile) {
-            //Profile fetch successful, syncing state
-            // Update Form Data
+        const profileData = fetchedProfile || user;
+        if (profileData) {
             setFormData({
-                name: fetchedProfile.name || '',
-                username: fetchedProfile.username || '',
-                email: fetchedProfile.email || '',
-                role: fetchedProfile.role || '',
-                isVerified: fetchedProfile.isVerified || false,
+                name: profileData.name || '',
+                username: profileData.username || '',
+                email: profileData.email || '',
+                role: profileData.role || '',
+                isVerified: profileData.isVerified || false,
                 profileImage: null,
                 profileImagePreview:
-                    fetchedProfile.profileImage?.url ||
-                    '/default-user-icon.svg',
+                    profileData.profileImage?.url || '/default-user-icon.svg',
+                bio: profileData.bio || '',
             });
-
-            // Update Global Context
-            if (setUser) {
-                setUser(fetchedProfile);
-            }
         }
-    }, [isSuccess, fetchedProfile, setUser]);
+    }, [fetchedProfile, user]);
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -124,9 +135,15 @@ const ProfilePage = () => {
         e.preventDefault();
 
         const dataToSend = new FormData();
-        dataToSend.append('name', formData.name);
-        dataToSend.append('username', formData.username);
-        dataToSend.append('email', formData.email);
+        if (formData.name !== user.name) {
+            dataToSend.append('name', formData.name);
+        }
+        if (formData.username !== user.username) {
+            dataToSend.append('username', formData.username);
+        }
+        if (formData.bio !== user.bio) {
+            dataToSend.append('bio', formData.bio);
+        }
         if (formData.profileImage) {
             dataToSend.append('profileImage', formData.profileImage);
         }
@@ -139,16 +156,13 @@ const ProfilePage = () => {
             const response = await fetch(`${API_URL}/api/users/profile`, {
                 method: 'PUT',
                 headers: {
-                    // If sending FormData, do NOT set Content-Type manually
                     ...(token ? { Authorization: `Bearer ${token}` } : {}),
                 },
                 body: dataToSend,
             });
 
-            // 1. Intercept the error from the backend
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
-                // Throw the specific message so 'onError' can catch it
                 throw new Error(
                     errorData.message || 'Failed to update profile'
                 );
@@ -157,29 +171,37 @@ const ProfilePage = () => {
             return response.json();
         },
         onSuccess: (data) => {
-            // Update Global User Context
-            if (data.user && setUser) {
-                setUser(data.user);
+            const updatedUser = data.user;
+            if (updatedUser && setUser) {
+                setUser(updatedUser);
+                // Immediately update the form data state to reflect changes
+                setFormData({
+                    name: updatedUser.name || '',
+                    username: updatedUser.username || '',
+                    email: updatedUser.email || '',
+                    role: updatedUser.role || '',
+                    isVerified: updatedUser.isVerified || false,
+                    profileImage: null, // Reset file input
+                    profileImagePreview:
+                        updatedUser.profileImage?.url ||
+                        '/default-user-icon.svg',
+                    bio: updatedUser.bio || '',
+                });
             }
-            // Refetch the profile query to ensure fresh data
             queryClient.invalidateQueries({
-                queryKey: ['userProfile'],
+                queryKey: ['userProfile', userId],
             });
-
+            queryClient.invalidateQueries({ queryKey: ['userPosts', userId] });
             setIsModalOpen(false);
             setErrors({});
-            // Show success toast
             toast.success('Profile updated!');
         },
         onError: (error) => {
             console.error('Mutation failed:', error);
             const msg = error.message.toLowerCase();
 
-            // 2. Set specific field errors based on the message
             if (msg.includes('username')) {
                 setErrors({ username: error.message });
-            } else if (msg.includes('email')) {
-                setErrors({ email: error.message });
             } else {
                 alert(error.message); // Fallback for generic errors
             }
@@ -196,6 +218,7 @@ const ProfilePage = () => {
             profileImage: null,
             profileImagePreview:
                 user?.profileImage?.url || '/default-user-icon.svg',
+            bio: user?.bio || '',
         });
         setIsModalOpen(false);
 
@@ -209,18 +232,20 @@ const ProfilePage = () => {
     };
 
     return (
-        <div className="max-h-screen mt-8">
-            <div className="max-w-3xl mx-auto p-8 relative border-2 border-white rounded-lg shadow-sm bg-white">
+        <div className="max-h-screen mt-8 px-4">
+            <div className="max-w-full mx-auto p-8 relative border-2 border-white rounded-lg shadow-sm ">
                 <h1 className="text-3xl font-bold text-gray-800 mb-6 pl-5">
                     Profile
                 </h1>
-                <button
-                    className="hover:cursor-pointer absolute top-8 right-8 bg-teal-500 text-white px-3 py-1 rounded hover:bg-teal-600"
-                    onClick={() => setIsModalOpen(true)}
-                    aria-label="Edit Profile"
-                >
-                    Edit
-                </button>
+                {user && user._id === userId && (
+                    <button
+                        className="hover:cursor-pointer absolute top-8 right-8 bg-teal-500 text-white px-3 py-1 rounded hover:bg-teal-600"
+                        onClick={() => setIsModalOpen(true)}
+                        aria-label="Edit Profile"
+                    >
+                        Edit
+                    </button>
+                )}
                 <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
                     <div className="shrink-0">
                         <img
@@ -229,56 +254,60 @@ const ProfilePage = () => {
                                 '/default-user-icon.svg'
                             }
                             alt="Profile"
-                            className="w-32 h-32 rounded-full object-cover border-2 border-teal-200"
+                            className="w-36 h-36 rounded-full object-cover border-2 border-teal-200"
                         />
                     </div>
-                    <div className="grow">
-                        <div className="mb-4">
+                    <div className="grow pt-4">
+                        <div className="flex flex-row space-x-36">
+                            <div className="mb-4">
+                                <label className="block text-base font-bold text-gray-700">
+                                    Name
+                                </label>
+                                <p className="text-base text-gray-900">
+                                    {formData.name || ''}
+                                    {console.log('testing:', formData.name)}
+                                </p>
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-base font-bold text-gray-700">
+                                    Username
+                                </label>
+                                <p className="text-base text-gray-900">
+                                    {formData.username || ''}
+                                </p>
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-base font-bold text-gray-700">
+                                    Email
+                                </label>
+                                <p className="text-base text-gray-900">
+                                    {formData.email || ''}
+                                </p>
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-base font-bold text-gray-700">
+                                    Verified
+                                </label>
+                                <span
+                                    className={`inline-flex items-center px-3 py-1 rounded-full text-base font-medium ${
+                                        formData.isVerified
+                                            ? 'bg-green-100 text-green-800'
+                                            : 'bg-yellow-100 text-yellow-800'
+                                    }`}
+                                >
+                                    {formData.isVerified
+                                        ? 'Verified'
+                                        : 'Pending'}
+                                </span>
+                            </div>
+                        </div>
+                        <div className="">
                             <label className="block text-base font-bold text-gray-700">
-                                Name
+                                Bio
                             </label>
                             <p className="text-base text-gray-900">
-                                {formData.name || ''}
-                                {console.log('testing:', formData.name)}
+                                {formData.bio || ''}
                             </p>
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-base font-bold text-gray-700">
-                                Username
-                            </label>
-                            <p className="text-base text-gray-900">
-                                {formData.username || ''}
-                            </p>
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-base font-bold text-gray-700">
-                                Email
-                            </label>
-                            <p className="text-base text-gray-900">
-                                {formData.email || ''}
-                            </p>
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-base font-bold text-gray-700">
-                                Role
-                            </label>
-                            <p className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                {formData.role || ''}
-                            </p>
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-base font-bold text-gray-700">
-                                Verified
-                            </label>
-                            <span
-                                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                    formData.isVerified
-                                        ? 'bg-green-100 text-green-800'
-                                        : 'bg-yellow-100 text-yellow-800'
-                                }`}
-                            >
-                                {formData.isVerified ? 'Verified' : 'Pending'}
-                            </span>
                         </div>
                     </div>
                 </div>
@@ -371,6 +400,23 @@ const ProfilePage = () => {
                                                 </p>
                                             )}
                                         </div>
+                                    </div>
+
+                                    <div>
+                                        <label
+                                            className="mb-1.5 block text-sm font-semibold text-gray-700"
+                                            htmlFor="bio"
+                                        >
+                                            Bio
+                                        </label>
+                                        <textarea
+                                            id="bio"
+                                            name="bio"
+                                            rows="3"
+                                            value={formData.bio}
+                                            onChange={handleInputChange}
+                                            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900  focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
+                                        ></textarea>
                                     </div>
 
                                     <div>
@@ -473,6 +519,36 @@ const ProfilePage = () => {
                                 </button>
                             </div>
                         </div>
+                    </div>
+                )}
+            </div>
+            <div className="max-w-full mx-auto p-8 px-0">
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                    Your Posts
+                </h2>
+                {postsLoading ? (
+                    <p>Loading posts...</p>
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {userPosts?.pages.map((page, i) => (
+                            <React.Fragment key={i}>
+                                {page.data.map((post) => (
+                                    <ProfileCard key={post._id} blog={post} />
+                                ))}
+                            </React.Fragment>
+                        ))}
+                    </div>
+                )}
+                {hasNextPage && (
+                    <div className="flex justify-center mt-4">
+                        <button
+                            onClick={() => fetchNextPage()}
+                            disabled={isFetchingNextPage}
+                        >
+                            {isFetchingNextPage
+                                ? 'Loading more...'
+                                : 'Load More'}
+                        </button>
                     </div>
                 )}
             </div>

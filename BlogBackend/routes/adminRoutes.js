@@ -16,6 +16,8 @@ import {
     updatePostByAdmin,
     deletePostByAdmin,
     toggleIsEditorPick,
+    getDashboardStats,
+    getTopPerformingPosts,
 } from '../controller/adminController.js';
 import {
     authMiddleware,
@@ -45,11 +47,13 @@ router.get('/posts', getAllPosts);
 router.put('/posts/:id', updatePostByAdmin);
 router.delete('/posts/:id', deletePostByAdmin);
 router.put('/posts/:id/toggle-editor-pick', toggleIsEditorPick);
+router.get('/posts/top-performing', getTopPerformingPosts);
 
 // Security and Maintenance routes
 router.get('/system/health', getSystemHealth);
 router.get('/security/logs', getSecurityLogs);
 router.get('/maintenance/info', getMaintenanceInfo);
 router.post('/maintenance/clear-cache', clearCache);
+router.get('/stats', getDashboardStats);
 
 export { router };

@@ -136,13 +136,8 @@ const BlogPage = () => {
         return allPosts.filter((p) => !recentPostIds.has(p._id));
     }, [allPosts, postsForD]);
 
-    const shuffledRemainingPosts = useMemo(
-        () => shuffleArray(remainingPosts),
-        [remainingPosts]
-    );
-
-    const postsForA = shuffledRemainingPosts.slice(0, 5);
-    const postsForE = shuffledRemainingPosts.slice(5, 10);
+    const postsForA = remainingPosts.slice(0, 5);
+    const postsForE = remainingPosts.slice(5, 10);
 
     const handleSearch = (query) => {
         console.log('handleSearch called with:', query);

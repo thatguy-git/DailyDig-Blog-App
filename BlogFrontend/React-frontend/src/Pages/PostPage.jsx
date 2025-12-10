@@ -16,6 +16,7 @@ export const PostPage = () => {
     const isLoggedIn = !!token || !!user;
     const [isLiked, setIsLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(0);
+    const [shareCount, setShareCount] = useState(0);
 
     const {
         data: post,
@@ -43,6 +44,7 @@ export const PostPage = () => {
         onSuccess: (data) => {
             setIsLiked(data.likes?.includes(user?._id) || false);
             setLikeCount(data.likes?.length || 0);
+            setShareCount(data.shareCount || 0);
         },
         refetchOnWindowFocus: true,
         refetchOnMount: true,
@@ -66,6 +68,7 @@ export const PostPage = () => {
         if (post) {
             setIsLiked(post.isLiked);
             setLikeCount(post.likeCount);
+            setShareCount(post.shareCount || 0);
         }
     }, [post]);
 
@@ -105,6 +108,22 @@ export const PostPage = () => {
         },
         onError: (error) => {
             console.error('likeMutation onError: ', error);
+        },
+    });
+
+    const shareMutation = useMutation({
+        mutationFn: async () => {
+            const response = await fetch(`${API_URL}/api/posts/${id}/share`, {
+                method: 'POST',
+            });
+            if (!response.ok) {
+                throw new Error('Failed to share post');
+            }
+            return response.json();
+        },
+        onSuccess: (data) => {
+            setShareCount(data.shareCount);
+            queryClient.invalidateQueries(['post', id]);
         },
     });
 
@@ -195,18 +214,22 @@ export const PostPage = () => {
                         </h1>
                         {/* Author Info */}
                         <div className="flex items-center mb-8">
-                            <img
-                                src={
-                                    post.author?.profileImage?.url ||
-                                    '/default-user-icon.svg'
-                                }
-                                alt={post.author?.name || 'Author'}
-                                className="w-12 h-12 rounded-full mr-4"
-                            />
+                            <Link to={`/profile/${post.author?._id}`}>
+                                <img
+                                    src={
+                                        post.author?.profileImage?.url ||
+                                        '/default-user-icon.svg'
+                                    }
+                                    alt={post.author?.name || 'Author'}
+                                    className="w-12 h-12 rounded-full mr-4"
+                                />
+                            </Link>
                             <div>
-                                <p className="text-lg font-semibold">
-                                    {post.author?.name || 'Anonymous'}
-                                </p>
+                                <Link to={`/profile/${post.author?._id}`}>
+                                    <p className="text-lg font-semibold">
+                                        {post.author?.name || 'Anonymous'}
+                                    </p>
+                                </Link>
                                 <p className="text-sm text-gray-600">
                                     {new Date(
                                         post.createdAt
@@ -262,6 +285,7 @@ export const PostPage = () => {
                                 <div className="flex items-center space-x-2">
                                     <button
                                         onClick={() => {
+                                            shareMutation.mutate();
                                             navigator
                                                 .share({
                                                     title: post.title,
@@ -278,16 +302,22 @@ export const PostPage = () => {
                                                     );
                                                 });
                                         }}
-                                        className="px-3 py-1 bg-teal-600 text-white hover:cursor-pointer rounded-sm hover:bg-teal-400 transition-colors"
+                                        className="flex items-center space-x-1 px-3 py-1 bg-teal-600 text-white hover:cursor-pointer rounded-sm hover:bg-teal-400 transition-colors"
                                     >
-                                        Share
+                                        <span>Share</span>
                                     </button>
-                                    {user && post.author && user._id === post.author._id && (
-                                        <>
-                                            <EditPostButton postId={post._id} />
-                                            <DeletePostButton postId={post._id} />
-                                        </>
-                                    )}
+                                    {user &&
+                                        post.author &&
+                                        user._id === post.author._id && (
+                                            <>
+                                                <EditPostButton
+                                                    postId={post._id}
+                                                />
+                                                <DeletePostButton
+                                                    postId={post._id}
+                                                />
+                                            </>
+                                        )}
                                 </div>
                             </div>
                         </div>

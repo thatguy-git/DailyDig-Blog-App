@@ -54,6 +54,10 @@ const userSchema = new mongoose.Schema(
             publicId: String,
         },
         googleId: { type: String, unique: true, sparse: true },
+        bio: {
+            type: String,
+            maxlength: 250,
+        },
     },
     {
         timestamps: true,

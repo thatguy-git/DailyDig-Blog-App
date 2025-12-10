@@ -1,6 +1,7 @@
 import User from '../model/userModel.js';
 import Contact from '../model/contactModel.js';
 import Post from '../model/postModel.js';
+import Comment from '../model/commentModel.js';
 import bcrypt from 'bcrypt';
 import os from 'os';
 import mongoose from 'mongoose';
@@ -629,6 +630,170 @@ export const clearCache = async (req, res) => {
         });
     } catch (error) {
         console.error('Error clearing cache:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error',
+        });
+    }
+};
+
+// Get dashboard statistics
+export const getDashboardStats = async (req, res) => {
+    try {
+        const today = new Date();
+        const sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+        const fourteenDaysAgo = new Date(
+            today.getTime() - 14 * 24 * 60 * 60 * 1000
+        );
+
+        // Get total counts
+        const totalUsers = await User.countDocuments();
+        const totalPosts = await Post.countDocuments();
+        const totalComments = await Comment.countDocuments();
+        const totalContacts = await Contact.countDocuments();
+
+        // Get counts from the last 7 days (current period)
+        const usersLast7Days = await User.countDocuments({
+            createdAt: { $gte: sevenDaysAgo },
+        });
+        const postsLast7Days = await Post.countDocuments({
+            createdAt: { $gte: sevenDaysAgo },
+        });
+        const commentsLast7Days = await Comment.countDocuments({
+            createdAt: { $gte: sevenDaysAgo },
+        });
+        const contactsLast7Days = await Contact.countDocuments({
+            createdAt: { $gte: sevenDaysAgo },
+        });
+
+        // Get counts from the 7 days before that (previous period)
+        const usersPrevious7Days = await User.countDocuments({
+            createdAt: { $gte: fourteenDaysAgo, $lt: sevenDaysAgo },
+        });
+        const postsPrevious7Days = await Post.countDocuments({
+            createdAt: { $gte: fourteenDaysAgo, $lt: sevenDaysAgo },
+        });
+        const commentsPrevious7Days = await Comment.countDocuments({
+            createdAt: { $gte: fourteenDaysAgo, $lt: sevenDaysAgo },
+        });
+        const contactsPrevious7Days = await Contact.countDocuments({
+            createdAt: { $gte: fourteenDaysAgo, $lt: sevenDaysAgo },
+        });
+
+        // Simple function to calculate percentage change
+        const calculateChange = (current, previous) => {
+            if (previous === 0) {
+                return current > 0 ? 100 : 0;
+            }
+            return (((current - previous) / previous) * 100).toFixed(2);
+        };
+
+        const stats = [
+            {
+                title: 'Total Users',
+                value: totalUsers,
+                change: calculateChange(usersLast7Days, usersPrevious7Days),
+            },
+            {
+                title: 'Total Posts',
+                value: totalPosts,
+                change: calculateChange(postsLast7Days, postsPrevious7Days),
+            },
+            {
+                title: 'Total Comments',
+                value: totalComments,
+                change: calculateChange(
+                    commentsLast7Days,
+                    commentsPrevious7Days
+                ),
+            },
+            {
+                title: 'Contact Messages',
+                value: totalContacts,
+                change: calculateChange(
+                    contactsLast7Days,
+                    contactsPrevious7Days
+                ),
+            },
+        ];
+
+        res.status(200).json({
+            success: true,
+            data: stats,
+        });
+    } catch (error) {
+        console.error('Error fetching dashboard stats:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error',
+        });
+    }
+};
+
+export const getTopPerformingPosts = async (req, res) => {
+    try {
+        const topPosts = await Post.aggregate([
+            {
+                $lookup: {
+                    from: 'comments',
+                    localField: '_id',
+                    foreignField: 'post',
+                    as: 'comments',
+                },
+            },
+            {
+                $addFields: {
+                    commentCount: { $size: '$comments' },
+                },
+            },
+            {
+                $addFields: {
+                    performanceScore: {
+                        $add: [
+                            { $multiply: [{ $ifNull: ['$likeCount', 0] }, 1] },
+                            { $multiply: [{ $ifNull: ['$commentCount', 0] }, 3] },
+                            { $multiply: [{ $ifNull: ['$shareCount', 0] }, 5] },
+                        ],
+                    },
+                },
+            },
+            {
+                $sort: {
+                    performanceScore: -1,
+                },
+            },
+            {
+                $limit: 10,
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'author',
+                    foreignField: '_id',
+                    as: 'author',
+                },
+            },
+            {
+                $unwind: '$author',
+            },
+            {
+                $project: {
+                    title: 1,
+                    performanceScore: 1,
+                    likeCount: 1,
+                    commentCount: 1,
+                    shareCount: 1,
+                    'author.name': 1,
+                },
+            },
+        ]);
+
+        res.status(200).json({
+            success: true,
+            data: topPosts,
+        });
+    } catch (error) {
+        console.error('Error fetching top performing posts:', error);
         res.status(500).json({
             success: false,
             message: 'Internal server error',
